@@ -91,19 +91,50 @@ canvas{display:block;width:100%;height:100%;touch-action:none;background:#265c29
 
 .lockedFeature{display:none!important}.bagToggle{position:fixed;right:8px;top:158px;z-index:9;border:2px solid #d6aa55;border-radius:9px;background:#241d1bee;color:#ffe7a0;padding:7px 10px;font-weight:bold}.bagPanel{display:none;position:fixed;right:8px;top:198px;z-index:9;width:190px;background:#201b1eef;border:2px solid #8c653d;border-radius:12px;padding:9px;box-shadow:0 8px 24px #000a}.bagPanel.show{display:block}.bagTabs{display:grid;grid-template-columns:1fr 1fr;gap:5px}.bagTabs button{background:#3a2c25;color:#ffe5ad;border:1px solid #8c653d;border-radius:7px;padding:5px}.bagBody{line-height:1.7;font-size:12px;margin-top:7px}.bagBody b{float:right;color:#ffd064}
 
-/* v0.20.00 responsive UI and art polish */
-:root{--panel:#171719eF;--edge:#8f6a42;--gold:#ffd064;--ink:#f7ebce}
-body{background:#17351f}
-.hudWrap{right:64px;gap:4px}.topHud>*{background:var(--panel);border-color:#72583c;padding:6px 9px;box-shadow:0 3px 9px #0008}.subHud{max-width:min(620px,calc(100vw - 80px))}#carryHud{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#15171aee}
-.cameraButtons button{background:#211d1cef;border-color:#76583a}.cameraButtons{gap:4px}
-.menuButtons{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));gap:6px}.menuButtons button{background:#211d1cf2;border-color:#76583a;min-height:44px;font-size:10.5px}.menuButtons button:active,.cameraButtons button:active,.taskBtn:active{transform:translateY(1px);filter:brightness(1.18)}
-.bagToggle{top:144px;background:#211d1cf2;border-color:#8f6a42;font-size:11px;padding:8px 10px}.bagPanel{top:188px;background:#171719f4;backdrop-filter:blur(8px)}
-.tutorial{top:112px;left:10px;width:min(330px,calc(100% - 78px))}.tutorialCard{background:#171719f2;border-width:1px;padding:9px 11px}.tutorialCard p{font-size:11px}.tutHead{gap:8px}
-.actionBar{bottom:calc(66px + env(safe-area-inset-bottom))}.actionBar button{background:#251e19f2;border-color:#e0ad50;animation:none;box-shadow:0 5px 14px #0009}
-.panel{background:linear-gradient(145deg,#29231f,#151518);border-color:#8f6a42}.card{background:#171719;border-color:#554536}.toast{background:#171719f7}
-@media(max-width:560px){
- .hudWrap{top:6px;left:6px;right:54px}.topHud{gap:3px}.topHud>*{font-size:10px;padding:5px 7px;border-radius:8px}#heroHud{display:none}.subHud{width:100%}#carryHud{font-size:10px;padding:5px 7px}.taskBtn{font-size:10px;padding:5px 7px}
- .cameraButtons{right:6px;top:6px}.cameraButtons button{width:38px;height:34px}.bagToggle{right:6px;top:116px}.bagPanel{right:6px;top:158px;width:174px}
- .tutorial{top:91px;width:calc(100% - 76px)}.menuButtons{grid-template-columns:repeat(6,minmax(58px,1fr));overflow-x:auto}.menuButtons button{font-size:9px;padding:7px 2px}
- .version{display:none}.panel{inset:3% 2.5% calc(70px + env(safe-area-inset-bottom))}
+/* v0.21.00 player engagement UI */
+.hudWrap{max-width:720px;gap:6px}.journeyHud{display:flex;align-items:center;gap:9px;width:min(470px,100%);padding:8px 8px 8px 11px;background:linear-gradient(90deg,#211b1df5,#302720f2);border:1px solid #a77a45;border-radius:13px;box-shadow:0 6px 18px #0008;pointer-events:auto}.questCopy{min-width:0;display:flex;flex-direction:column}.questCopy small{font-size:8px;letter-spacing:1.2px;color:#d8ad5a;font-weight:900}.questCopy b{font-size:12px;color:#fff1c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.questCopy span{font-size:9.5px;color:#cdbda5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.journeyHud .taskBtn{margin-left:auto;min-width:54px;min-height:36px;border:0;background:linear-gradient(#f2cf72,#c98a33);color:#2a1b0a;box-shadow:0 3px 0 #80531e}.bagToggle{width:58px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px!important}.bagToggle span{font-size:8px}.menuButtons{left:50%;right:auto;transform:translateX(-50%);width:min(700px,calc(100% - 12px));padding:5px;background:#151314e8;border:1px solid #4d3c2c;border-radius:15px;box-shadow:0 8px 25px #000c}.menuButtons button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;border:0!important;background:transparent!important;box-shadow:none!important}.menuButtons button span{font-size:18px}.menuButtons button b{font-size:8px;letter-spacing:.5px}.actionBar button{animation:none}.tutorial{width:min(310px,calc(100% - 82px))}.tutorialCard{border-width:1px}.toast{max-width:90%;white-space:normal;text-align:center}@media(max-width:560px){.topHud>*{font-size:9px;padding:4px 6px}.topHud #heroHud{display:none}.journeyHud{padding:7px 7px 7px 9px}.questCopy b{font-size:11px}.questCopy span{font-size:9px}.menuButtons{gap:2px;padding:4px}.menuButtons button{min-height:48px}.menuButtons button span{font-size:16px}.menuButtons button b{font-size:7.5px}.tutorial{left:7px;width:calc(100% - 68px)}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* v0.21.01 mobile layout and button placement */
+@media (max-width: 700px){
+  .hudWrap{top:max(6px,env(safe-area-inset-top));left:6px;right:48px;max-width:none;gap:4px;pointer-events:none}
+  .topHud{display:grid;grid-template-columns:repeat(4,max-content);gap:3px;align-items:center}
+  .topHud>*{min-width:0;padding:4px 6px;font-size:9px;border-radius:7px;white-space:nowrap}
+  .topHud #heroHud{display:none}
+  .journeyHud{width:min(100%,430px);min-height:45px;padding:6px 6px 6px 9px;gap:6px;border-radius:10px;pointer-events:auto}
+  .questCopy small{font-size:7px}.questCopy b{font-size:10.5px}.questCopy span{font-size:8.5px}
+  .journeyHud .taskBtn{min-width:48px;min-height:32px;padding:5px 7px;font-size:9px;border-radius:7px}
+  .subHud{width:min(100%,430px)}#carryHud{display:block;max-width:100%;padding:3px 6px;font-size:8.5px;border-width:1px}
+
+  .cameraButtons{top:max(6px,env(safe-area-inset-top));right:5px;gap:3px}
+  .cameraButtons button{width:38px;height:30px;padding:0;font-size:16px;border-radius:8px}
+  .cameraButtons #zoomIn,.cameraButtons #zoomOut{display:none}
+  .bagToggle{top:44px!important;right:5px!important;width:38px!important;height:38px!important;padding:2px!important;border-radius:8px!important;font-size:15px!important}
+  .bagToggle span{font-size:6.5px}
+  .bagPanel{top:86px!important;right:5px!important;width:min(188px,55vw)!important;max-height:55vh;overflow:auto}
+
+  .tutorial{top:112px!important;left:6px!important;width:calc(100% - 56px)!important;max-width:310px}
+  .tutorialCard{padding:7px 9px!important;border-radius:9px!important}.tutorialCard p{font-size:9.5px!important;margin:4px 0}.tutHead{font-size:10px!important}
+
+  .menuButtons{left:6px!important;right:6px!important;bottom:calc(5px + env(safe-area-inset-bottom))!important;transform:none!important;width:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:44px;gap:3px!important;padding:4px!important;border-radius:12px!important;overflow:visible!important}
+  .menuButtons button{min-width:0!important;min-height:44px!important;height:44px!important;padding:2px!important;border-radius:8px!important;gap:0!important}
+  .menuButtons button span{font-size:15px!important;line-height:17px!important}.menuButtons button b{font-size:7px!important;line-height:9px!important}
+  .menuButtons button.lockedFeature{display:none!important}
+
+  .actionBar{left:50%!important;bottom:calc(58px + env(safe-area-inset-bottom))!important;width:min(94%,460px)!important;transform:translateX(-50%)!important;gap:5px!important}
+  .actionBar button{min-width:0!important;max-width:100%!important;min-height:39px!important;padding:7px 10px!important;font-size:9px!important;border-radius:9px!important}
+  .toast{bottom:calc(108px + env(safe-area-inset-bottom))!important;font-size:10px!important;padding:7px 10px!important}
+
+  .panel{inset:max(6px,env(safe-area-inset-top)) 5px calc(54px + env(safe-area-inset-bottom)) 5px!important;padding:11px!important;border-radius:12px!important;overflow:auto!important}
+  .panel .close{right:6px!important;top:6px!important;width:34px!important;height:34px!important}.panel h2{font-size:15px!important;padding-right:38px}.panel .grid{grid-template-columns:1fr!important}.panel .card{padding:9px!important}
+  .daySummary{padding:7px!important}.summaryBox{width:min(94vw,430px)!important;max-height:86vh;overflow:auto;padding:14px!important}
+}
+@media (max-width: 700px) and (orientation: landscape){
+  .hudWrap{right:48px;max-width:56vw}.journeyHud{max-width:420px}.subHud{display:none}
+  .menuButtons{grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-auto-rows:42px}.menuButtons button{height:42px!important;min-height:42px!important}
+  .actionBar{bottom:calc(55px + env(safe-area-inset-bottom))!important;width:min(58%,480px)!important}
+  .tutorial{display:none!important}
+}
+@media (max-width: 360px){
+  .topHud{grid-template-columns:repeat(4,auto)}.topHud>*{font-size:8px;padding:3px 4px}
+  .questCopy span{display:none}.journeyHud{min-height:38px}.menuButtons{grid-auto-rows:42px}.menuButtons button{height:42px!important;min-height:42px!important}
 }

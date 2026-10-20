@@ -1,11 +1,11 @@
-// Weapon Shop Empire v0.20.00
+// Weapon Shop Empire v0.21.01
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.20.00';
+const VERSION='v0.21.01';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02000_slot_',OLD_PREFIXES=['wse_v01900_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02000',OLD_FOREVER_KEYS=['wse_forever_v01900','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02101_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02101',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -59,13 +59,13 @@ const MODULAR_PATHS={
 };
 for(const [k,path] of Object.entries(MODULAR_PATHS)){
   const img=new Image();
-  img.src=path+'?v=0.20.00';
+  img.src=path+'?v=0.19.00';
   SPRITES[k]=img;
 }
 
 let MAP_DATA=null;
-if(typeof fetch==='function'){fetch('data/world_map.json?v=0.20.00').then(r=>r.ok?r.json():Promise.reject(new Error('map data unavailable'))).then(data=>{MAP_DATA=data}).catch(()=>{})}
-function ensureMapAsset(path){const key='map:'+path;if(!SPRITES[key]){const img=new Image();img.src=path+'?v=0.20.00';SPRITES[key]=img}return SPRITES[key]}
+if(typeof fetch==='function'){fetch('data/world_map.json?v=0.19.00').then(r=>r.ok?r.json():Promise.reject(new Error('map data unavailable'))).then(data=>{MAP_DATA=data}).catch(()=>{})}
+function ensureMapAsset(path){const key='map:'+path;if(!SPRITES[key]){const img=new Image();img.src=path+'?v=0.19.00';SPRITES[key]=img}return SPRITES[key]}
 function drawMapObjects(layer){if(!MAP_DATA?.objects)return;for(const o of MAP_DATA.objects){if(o.layer!==layer)continue;const img=ensureMapAsset(o.asset);if(img.complete&&img.naturalWidth){const ax=o.anchor?.[0]??.5,ay=o.anchor?.[1]??1;g.drawImage(img,o.x-o.w*ax,o.y-o.h*ay,o.w,o.h)}}}
 function drawWallAssetSegment(seg){
   const horizontal=seg.w>=seg.h,img=SPRITES.wallStraight;
@@ -1272,89 +1272,114 @@ function drawTreeCanopy(x,y,kind=0){
 
 // LAYER 1 & 2: Modular Ground, Rooms, Walls, Empty Shelves & Workstations
 function drawLayer1And2(){
-  // v0.20.00 visual redesign. Geometry and collision remain the trusted v0.19.00 model.
-  // Meadow base with sparse pixels.
-  pxRect(0,0,WORLD.w,WORLD.h,'#386f36');
-  for(let y=24;y<WORLD.h;y+=72){
-    for(let x=24;x<WORLD.w;x+=72){
-      const n=(x*7+y*11)%29;
-      if(n<7)pxRect(x,y,7,4,n<3?'#6aaa54':'#4b8a43');
+  // 1. Base Grass & Meadow Texture
+  pxRect(0,0,WORLD.w,WORLD.h,'#3b7a38');
+  for(let y=0;y<WORLD.h;y+=64){
+    for(let x=0;x<WORLD.w;x+=64){
+      if((x*5+y*9)%13<3)pxRect(x+14,y+18,8,6,'#549949');
+      if((x*11+y*3)%19===0)pxRect(x+32,y+36,6,6,'#7bc768');
     }
   }
 
-  // Roads and shared circulation. The broad centre spine is always visible and matches door openings.
-  drawTiledRoomFloor(625,270,250,2110,'#b8945c','#8a693e','pathStone');
-  drawTiledRoomFloor(250,1080,1370,150,'#b8945c','#8a693e','pathStone');
-  drawTiledRoomFloor(250,1970,1370,160,'#b8945c','#8a693e','pathStone');
-  drawTiledRoomFloor(615,2040,265,560,'#ad8754','#806239','pathStone');
-  // Clear branch roads to all upper doors.
-  pxRect(280,630,405,94,'#bd995f');
-  pxRect(835,630,170,94,'#bd995f');
-  pxRect(1230,570,330,105,'#bd995f');
-  pxRect(1250,835,120,140,'#bd995f');
+  // Outdoor Roads & Corridors
+  drawTiledRoomFloor(585,295,740,425,'#b89d72','#a1865c','pathStone');
+  drawTiledRoomFloor(585,680,740,515,'#b89d72','#a1865c','pathStone');
+  drawTiledRoomFloor(45,1165,1235,880,'#cdb386','#b59a6d','floorWood');
+  drawTiledRoomFloor(615,2040,265,560,'#c2a576','#a6895b','pathStone');
+  drawTiledRoomFloor(1255,660,575,690,'#9d8663','#846e4d','pathMoss');
+  drawTiledRoomFloor(830,110,230,195,'#9c845d','#826b47','pathStone');
 
-  // River and bridge.
-  pxRect(350,2340,1496,230,'#197899');
-  for(let xx=370;xx<1830;xx+=62){pxRect(xx,2380+(xx%4)*34,32,5,'#62c7d6')}
-  drawTiledRoomFloor(645,2335,205,235,'#8d633a','#5c3c22','bridge');
-  pxRect(645,2335,12,235,'#50331e');pxRect(838,2335,12,235,'#50331e');
+  // Wide, quiet navigation spines. These intentionally cover busy floor texture.
+  pxRect(685,300,150,2040,'#bfa679');
+  pxRect(250,1115,1370,130,'#bfa679');
+  pxRect(250,1980,1370,150,'#bfa679');
+  g.save();g.globalAlpha=.22;g.strokeStyle='#8d7652';g.lineWidth=3;
+  g.strokeRect(685,300,150,2040);g.strokeRect(250,1115,1370,130);g.strokeRect(250,1980,1370,150);g.restore();
+  // Clearly marked approach roads into every upper room.
+  pxRect(280,640,125,105,'#d1a05d');pxRect(855,640,130,105,'#d1a05d');pxRect(1320,620,170,125,'#d1a05d');
+  pxRect(285,1115,140,75,'#d1a05d');pxRect(895,1115,135,75,'#d1a05d');pxRect(1280,840,75,135,'#d1a05d');
 
-  // Room floors, each district uses a restrained colour family.
-  const roomStyle={
-    material:['#756245','#aa8e5a'],staff:['#aa946d','#d1b98b'],training:['#796b4f','#a28a5d'],
-    forge:['#70554a','#a96a42'],alchemy:['#665b50','#7c6fb1'],contract:['#715b42','#9d7a45'],
-    attack:['#b19369','#bb5d4f'],defense:['#b19369','#5275a3'],other:['#b19369','#7d5aa4'],
-    rare:['#4d3d57','#8c5bb0'],counter:['#b59b72','#d1aa5c'],management:['#927858','#6686a0'],
-    visitor:['#817259','#9f875f'],gate:['#536f42','#73945b'],forest:['#275c2d','#378047']
-  };
-  for(const [key,rm] of Object.entries(R)){
-    const st=roomStyle[key]||[rm.floor,'#907552'];
-    drawTiledRoomFloor(rm.x,rm.y,rm.w,rm.h,st[0],st[1],key==='forge'||key==='alchemy'?'floorWork':'floorWood');
-    // A slim colour strip identifies each department without occupying walk space.
-    pxRect(rm.x+8,rm.y+8,Math.max(20,rm.w-16),8,st[1]);
+  // Southern River & Wooden Bridge
+  pxRect(350,2350,1520,200,'#1b7c9c');
+  for(let xx=360;xx<1840;xx+=55)pxRect(xx,2385+(xx%3)*45,28,5,'#5fd1e3');
+  // Central Stone/Wood Bridge (x:645..850)
+  drawTiledRoomFloor(645,2335,205,225,'#8f6339','#694626','bridge');
+  pxRect(645,2335,12,225,'#54381f');pxRect(838,2335,12,225,'#54381f');
+
+  // Functional Rooms Floors
+  for(const [rk,rm] of Object.entries(R)){
+    if(['counter','attack','defense','other','gate','forest'].includes(rk))continue;
+    drawTiledRoomFloor(rm.x,rm.y,rm.w,rm.h,rm.floor,'#5c4731',rk==='forge'||rk==='alchemy'?'floorWork':'floorWood');
   }
 
-  // Functional furniture, aligned to gameplay points.
-  // Forge benches and furnaces.
+  // Forge Furnaces & Anvils (Inside Forge x:55..635, y:730..1165)
   for(const fx of [185,435]){
-    pxRect(fx-54,778,108,82,'#3b3434');pxRect(fx-42,790,84,56,'#1e2022');
-    pxRect(fx-28,807,56,31,'#e76a2c');pxRect(fx-17,814,34,18,'#ffd05c');
-    pxRect(fx-34,915,68,34,'#555a60');pxRect(fx-22,907,44,12,'#81878e');
+    pxRect(fx-55,770,110,88,'#4a4c54');
+    pxRect(fx-42,784,84,62,'#2a2a30');
+    pxRect(fx-30,800,60,40,'#ea6227');
+    pxRect(fx-18,808,36,26,'#ffd24c');
+    if(sprReady('anvil'))g.drawImage(SPRITES.anvil,fx-32,915,64,54);
+    else{pxRect(fx-28,925,56,34,'#595d66');pxRect(fx-18,918,36,12,'#828792')}
   }
-  // Alchemy benches and cauldrons.
-  for(const ax of [805,1035]){
-    pxRect(ax-55,775,110,34,'#543925');pxRect(ax-44,753,20,24,'#57c67d');pxRect(ax,753,20,24,'#ad78e8');
-    pxRect(ax-38,905,76,62,'#2a2c31');pxRect(ax-29,900,58,17,ax<900?'#52d274':'#a46dea');
+
+  // Alchemy Cauldrons & Herb Shelves (Inside Alchemy x:660..1255, y:730..1165)
+  for(let i=0;i<4;i++){
+    pxRect(720+i*125,765,86,36,'#5c3b23');
+    pxRect(732+i*125,752,16,18,['#f25c5c','#58b0f7','#b56df2','#5ce07c'][i]);
+    pxRect(764+i*125,752,16,18,['#f5d04c','#5ce07c','#f25c5c','#58b0f7'][i]);
   }
-  // Beds, training dummies, desks and visitor well.
-  for(let i=0;i<3;i++){const bx=710+i*150;pxRect(bx,390,82,48,'#5c3b2b');pxRect(bx+7,397,68,34,['#668eb0','#9870a9','#689574'][i])}
-  for(const dx of [1345,1445]){pxRect(dx-6,470,12,46,'#69442b');pxRect(dx-22,482,44,8,'#8f5d38');pxRect(dx-13,454,26,26,'#d5b987')}
-  pxRect(1390,1510,180,74,'#62442c');pxRect(1402,1522,156,50,'#9c6a3f');
-  pxRect(1390,1810,180,74,'#39556c');pxRect(1402,1822,156,50,'#62829a');
-  pxRect(PTS.visitor.x-38,PTS.visitor.y-38,76,76,'#6c757c');pxRect(PTS.visitor.x-25,PTS.visitor.y-25,50,50,'#2282a1');
+  for(const cx of [845,1075]){
+    pxRect(cx-38,910,76,62,'#2d2e33');
+    pxRect(cx-30,902,60,18,cx===845?'#4cd964':'#a959f2');
+  }
 
-  // Hiring pad and checkout bar.
-  pxRect(PTS.hire.x-55,PTS.hire.y-27,110,54,'#2f7741');
-  g.strokeStyle='#9be3aa';g.lineWidth=2;g.strokeRect(PTS.hire.x-55,PTS.hire.y-27,110,54);
-  text('HIRE',PTS.hire.x,PTS.hire.y+4,10,'#fff');
-  pxRect(495,1905,465,52,'#5a3a25');pxRect(495,1905,465,12,'#bf8a49');
+  // Staff House Beds & Hiring Pad (Inside Staff House x:660..1225, y:310..680)
+  for(let i=0;i<3;i++){
+    const bx=725+i*145,by=385;
+    pxRect(bx,by,76,46,'#5c3a24');
+    pxRect(bx+6,by+6,64,34,['#5985b5','#9c68b2','#549e70'][i]);
+    pxRect(bx+8,by+8,20,14,'#f5ebd6');
+  }
+  pxRect(PTS.hire.x-54,PTS.hire.y-26,108,52,'#2c7a3e');
+  g.strokeStyle='#8effc1';g.lineWidth=2;g.strokeRect(PTS.hire.x-54,PTS.hire.y-26,108,52);
+  text('🤝 HIRE $120',PTS.hire.x,PTS.hire.y+5,11,'#fff');
 
-  // Every collision wall is rendered from the same SOLIDS array. No separate invisible geometry.
+  // Training Room Dummies (x:1265..1535, y:325..670)
+  for(const dx of [1345,1445]){
+    pxRect(dx-6,470,12,46,'#6e472b');
+    pxRect(dx-22,482,44,8,'#8c5c38');
+    pxRect(dx-13,454,26,26,'#d9be93');
+    text('🎯',dx,472,13,'#fff');
+  }
+
+  // Management Desk & Upgrade Blueprint Table (x:1285..1710, y:1350..2040)
+  pxRect(1420,1540,140,64,'#6e4427');
+  pxRect(1430,1548,120,48,'#9c653b');
+  text('📜 CONTRACTS',1490,1577,11,'#fff2c6');
+  pxRect(1420,1820,140,64,'#3c5670');
+  text('🛠️ UPGRADES',1490,1856,11,'#d4ecff');
+
+  // Special Visitor Plaza Well (x:315, y:2335)
+  if(sprReady('well'))g.drawImage(SPRITES.well,PTS.visitor.x-42,PTS.visitor.y-42,84,84);
+  else{
+    pxRect(PTS.visitor.x-36,PTS.visitor.y-36,72,72,'#6d7882');
+    pxRect(PTS.visitor.x-24,PTS.visitor.y-24,48,48,'#288fb0');
+  }
+
+  // Checkout Counter Bar
+  pxRect(495,1905,465,52,'#694024');
+  pxRect(495,1905,465,12,'#b88038');
+  text('🪙 CHECKOUT COUNTER',725,1938,12,'#ffe9b5');
+
+  // Physical walls now use existing transparent wall PNGs while collision stays independent.
   for(const wall of SOLIDS){
-    if(wall.y>=2340&&wall.h>=180)continue; // river collision already visible
-    if(wall.x===495&&wall.y===1905)continue; // checkout bar already visible
+    if(wall.y>=2340&&wall.h>=180)continue;
+    if(wall.x===495&&wall.y===1905)continue;
     drawWallAssetSegment(wall);
   }
-
-  // Doorway mats make openings obvious.
-  const doors=[
-    [280,648,125,30],[855,658,130,30],[1320,638,170,30],[285,1148,140,30],
-    [895,1148,135,30],[1272,840,38,135],[180,1632,125,30],[635,2030,225,34],
-    [1272,1570,38,125],[1272,1840,38,120]
-  ];
-  for(const d of doors){pxRect(d[0],d[1],d[2],d[3],'#e0c27e');g.strokeStyle='#8f6b3a';g.lineWidth=2;g.strokeRect(...d)}
   drawMapObjects('lowProps');
 }
+
 // LAYER 3: Dynamic World (Materials, Outputs, 12-Slot Shelves, Contract Crates, Rare Storage, Coins & Y-Sorted Characters)
 function drawCrate(x,y,filled=false){
   const spr=SPRITES.crates;
@@ -1499,7 +1524,7 @@ function drawLayer4To6(){
 
     // Room Header Signboards
     for(const rm of Object.values(R)){
-      if(rm.title)labelBadge(rm.title,rm.x+rm.w/2,rm.y+23,'#ffe9b5','#241a14e6',Math.min(176,rm.w-28));
+      if(rm.title)labelBadge(rm.title,rm.x+rm.w/2,rm.y+18,'#ffe9b5','#241a14e6',Math.min(210,rm.w-20));
     }
   }
 
@@ -1560,18 +1585,12 @@ function person(o,col='#302831',label='',hatType='none',badge=''){
   g.restore();
 }
 function drawRequest(o,label){
-  const near=Math.hypot(player.x-o.x,player.y-o.y)<250;
-  if(!near){
-    const first=label.split(' ')[0];
-    pxRect(o.x-17,o.y-58,34,24,'#fff0c9');
-    g.strokeStyle='#6d4931';g.lineWidth=2;g.strokeRect(o.x-17,o.y-58,34,24);
-    text(first,o.x,o.y-40,13,'#352619');
-    return;
-  }
-  const lines=label.split('\n'),w=118,h=14+lines.length*13,x=o.x-w/2,y=o.y-68-h;
-  pxRect(x,y,w,h,'#fff0c9');g.strokeStyle='#6d4931';g.lineWidth=2;g.strokeRect(x,y,w,h);
-  for(let i=0;i<lines.length;i++)text(lines[i],o.x,y+14+i*13,9,'#352619');
+  let lines=label.split('\n'),w=142,h=16+lines.length*14,x=o.x-w/2,y=o.y-70-h;
+  pxRect(x,y,w,h,'#fff0c9');
+  g.strokeStyle='#6d4931';g.lineWidth=3;g.strokeRect(x,y,w,h);
+  for(let i=0;i<lines.length;i++)text(lines[i],o.x,y+15+i*14,10,'#352619');
 }
+
 function draw(){
   g.save();
   g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
@@ -1754,11 +1773,11 @@ function openPage(p){
     </div>`;
   }
   if(p==='visual'){
-    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.19.00)</h2>
+    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.21.01)</h2>
     <div class="visualNote">
       <b>Live Modular Rendering Only:</b> Ground, walls, shelves, workstations, dynamic stock, and characters render in separate layers. Concept artwork is not available as a playable map background.
     </div>
-    <iframe src="art_preview.html?v=0.20.00" style="width:100%;height:56vh;border:2px solid #8c653d;border-radius:12px;background:#1a1e18"></iframe>`;
+    <iframe src="art_preview.html?v=0.19.00" style="width:100%;height:56vh;border:2px solid #8c653d;border-radius:12px;background:#1a1e18"></iframe>`;
   }
   if(p==='save'){
     h=`<h2>SAVE & EXIT</h2>
@@ -1962,6 +1981,8 @@ function refreshMenus(){
 }
 function toggleBag(){S.bagOpen=!S.bagOpen;$('bagPanel').classList.toggle('show',S.bagOpen);renderBag()}
 function renderBag(){if(!$('bagPanel'))return;const parts=`💧 Gel <b>${S.gel||0}</b><br>🦷 Fang <b>${S.fang||0}</b><br>🟫 Hide <b>${S.hide||0}</b><br>💎 Crystal <b>${S.crystal||0}</b><br>🔥 Ember <b>${S.ember||0}</b><br>🦴 Bone <b>${S.bone||0}</b>`;$('bagPanel').innerHTML=`<div class="bagTabs"><button data-bag="raw">RAW</button><button data-bag="parts">PARTS</button></div><div class="bagBody">${S.bagTab==='parts'?parts:`🪨 Iron <b>${S.iron}</b><br>🪵 Wood <b>${S.wood}</b><br>🌿 Herb <b>${S.herb}</b>`}</div>`;document.querySelectorAll('[data-bag]').forEach(b=>b.onclick=()=>{S.bagTab=b.dataset.bag;renderBag()})}
+function journeyGoal(){if(S.coinsFloor>0)return ['Collect today’s earnings','Coins are waiting at checkout','COLLECT'];if(player.carryCount>0){const i=recipes[player.carryKey];return ['Stock the '+i.name,'Carry it to the '+i.cat+' shelf','STOCK']}if(Object.values(S.output).some(v=>v>0))return ['Collect finished products','Pick them up from the output table','PICK UP'];if((S.lifetimeSales||0)<5)return ['Make your first five sales',(S.lifetimeSales||0)+'/5 sold • Alchemy unlocks next','GO'];if((S.shopLevel||1)<3)return ['Build a trusted shop',S.served+'/10 served • Team unlocks next','GO'];if(!S.expeditionUnlocked)return ['Prepare an expedition','Reach Day 3 and hire a helper','EXPLORE'];const r=recommendation();return [r.t,'Follow the marker to keep growing','GO']}
+function updateJourneyHud(){const q=journeyGoal();$('questTitle').textContent=q[0];$('questDetail').textContent=q[1];$('suggest').textContent=q[2]}
 function loop(t){
   let dt=Math.min(.035,(t-last)/1000);
   last=t;
@@ -1975,8 +1996,7 @@ function loop(t){
     $('clock').textContent=Math.max(0,Math.ceil(120-dayTime))+'s';
     $('heroHud').textContent=`${S.equipped.weapon.icon}${S.equipped.weapon.stat} ${S.equipped.armor.icon}${S.equipped.armor.stat}`;
     $('carryHud').textContent=`🤲 ${player.carryKey?recipes[player.carryKey].icon+' '+player.carryCount+'/'+player.carryCap:'Empty (0/'+player.carryCap+')'} | 🪙 $${S.coinsFloor} | 🪨${S.iron} 🪵${S.wood} 🌿${S.herb} 💧${S.gel}`;
-    let rec=recommendation();
-    $('suggest').textContent='💡 '+rec.t;
+    updateJourneyHud();
   }
   requestAnimationFrame(loop);
 }
