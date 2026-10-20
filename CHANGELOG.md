@@ -1,12 +1,13 @@
 # Changelog
 
-## v0.22.10 — Artwork First
+## v0.22.11 — Artwork Stabilisation
 
-- Reworked the live canvas renderer with a modern woodland workshop palette.
-- Added richer timber walls, visible end posts, wall shadows, improved floor materials, river shimmer, detailed bridge planks and a stronger Forest Gate silhouette.
-- Added room-specific props for the Material Yard, Staff House, Training Yard, Forge, Alchemy Lab, Contract Warehouse, retail areas, checkout, Rare Storage, Management and Visitor Plaza.
-- Added stateful AUTO CRAFT and AUTO BREW pads: inactive, ready, blocked and active-player states.
-- Reduced map-label obstruction by showing room labels only near the player.
-- Collapsed distant customer request bubbles to compact item icons.
-- Corrected the tutorial to describe automatic floor-logo crafting.
-- Preserved room coordinates, collision, doorways, navigation targets and save content.
+- Added room-label hysteresis to remove repeated label flicker at the proximity boundary.
+- Added a thin top-layer process-pad ring so Forge and Alchemy status remains readable when entities cover the floor logo.
+- Moved distant customer request icons above patience bars.
+- Reduced the Alchemy cauldron footprint so it does not visually compete with the AUTO BREW pad.
+- Added a recoverable renderer error state instead of an uncaught blank-canvas failure.
+- Added accessible labels to Overview, panel Close and tutorial Skip controls.
+- Increased portrait utility controls to 44 × 44 CSS px and separated the BAG stack from the tutorial area.
+- Added keyboard focus styling and maintained reduced-motion support.
+- Preserved v0.22.10 map geometry, gameplay and saves; added v0.22.10 keys to migration lookup.

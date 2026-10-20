@@ -1,496 +1,243 @@
-# Weapon Shop Empire — Mobile-First Development and GitHub Implementation Plan
+# Weapon Shop Empire — Development Priority Plan
 
-**Plan version:** 1.1  
-**Planning date:** 20 October 2026  
-**Trusted baseline:** v0.22.00  
-**Trusted gameplay lineage:** v0.19.00  
-**Deployment:** GitHub Pages, static HTML/CSS/JavaScript  
-**Primary device:** iPhone Safari portrait  
-**Secondary devices:** Android Chrome portrait, mobile landscape, desktop browsers  
-**Document rule:** update this file in every change chat and commit it with the related source change.
+**Plan version:** 1.2  
+**Updated:** 20 October 2026  
+**Trusted baseline:** v0.22.11 Stabilisation Build  
+**Previous executable baseline:** v0.22.00  
+**Deployment model:** static HTML, CSS and JavaScript on GitHub Pages  
+**Primary target:** iPhone Safari portrait  
+**Secondary targets:** Android Chrome portrait, mobile landscape and desktop browsers  
+**Document rule:** update this file in every implementation chat and commit it with the related source changes.
 
 ---
 
-## 1. Current repository baseline
+## 1. Trusted baseline inventory
 
-The v0.21.05 package currently contains:
+The v0.22.10 build was created from the latest user-supplied source files:
 
 ```text
-/
-├── index.html                         2,963 bytes
-├── style.css                        21,882 bytes
-├── game.js                          95,328 bytes
-├── README.md                           677 bytes
-├── DEVELOPMENT_PRIORITY_PLAN.md      7,269 bytes
-└── backup_v0.19.00/
-    ├── index.html                    2,593 bytes
-    ├── style.css                     9,649 bytes
-    └── game.js                      91,915 bytes
+index.html
+game.js
+style.css
+data/map_model.json
+js/debug-overlay.js
+tests/route-matrix.mjs
 ```
 
-Current implementation anchors in `game.js`:
+The route test was supplied as `route-matrix.txt` because the upload interface did not accept `.mjs`; the build stores and executes the same content as `tests/route-matrix.mjs`.
+
+### Current application type
+
+- Browser game
+- Canvas-based world renderer
+- Plain JavaScript, HTML and CSS
+- LocalStorage save system
+- Static GitHub Pages deployment
+- No backend, database, authentication or remote API
+
+### Current geometry inventory
 
 ```text
-line 4     VERSION
-line 153   SOLIDS
-line 244   DOOR_CLEARANCES
-line 258   PROCESS_PADS
-line 265   collides()
-line 283   processAutoCraftPads()
-line 318   buildNavGrid()
-line 954   updateContextActions()
-line 1026  playerTick()
-line 1194  endDay()
-line 1325  drawLayer1And2()
-```
-
-> Line numbers are baseline references only. After editing, locate code by function or constant name rather than by line number.
-
-Current cache-busted assets:
-
-```text
-style.css?v=0.21.05
-game.js?v=0.21.05
+World:       1870 × 2870 px
+Rooms:       15
+Walls:       76
+Doorways:    13
+Process pads: 2
 ```
 
 ---
 
-## 2. Product objective and release gates
+## 2. v0.22.10 release summary
 
-The mobile-first foundation must deliver this loop without opening a management panel:
+### Artwork changes completed
+
+- Reworked the live map renderer with a warmer woodland workshop palette.
+- Added deeper timber walls, joints, highlights, shadows and doorway end posts.
+- Improved room floors with controlled plank and workshop patterns.
+- Added water-bank shadow, river shimmer, detailed bridge planks and bridge rails.
+- Added a stronger Forest Gate silhouette.
+- Added room-specific props to Material Yard, Staff House, Training Yard, Forge, Alchemy Lab, Contract Warehouse, retail departments, Customer Hall, Rare Storage, Management and Visitor Plaza.
+- Added local retail rugs instead of room-wide category colour flooding.
+- Added a larger brass-trimmed checkout counter and queue markers.
+- Added proximity-based room labels.
+- Collapsed distant customer requests to compact product icons.
+- Added ready, blocked and active-player artwork states for `AUTO CRAFT` and `AUTO BREW`.
+- Corrected the onboarding text to describe automatic floor-logo crafting.
+- Updated the mobile UI skin with dark timber, brass and cream colours.
+
+### Compatibility preserved
+
+- Room coordinates unchanged
+- Wall/collision rectangles unchanged
+- Doorways unchanged
+- Navigation targets unchanged
+- Existing crafting, quality and rarity logic retained
+- Customer, employee, contract and expedition systems retained
+- Existing v0.22.00 saves included in migration lookup
+
+### Executed checks
 
 ```text
-Collect Iron and Wood
-→ enter Forge
-→ step on AUTO CRAFT
-→ collect Iron Sword output
-→ step at Attack Shelf
-→ customer buys Sword
-→ collect checkout coins
+JavaScript syntax:                 PASS
+Debug overlay JavaScript syntax:   PASS
+Route matrix:                      PASS — 40/40
+Version/cache consistency:         PASS
+Duplicate HTML IDs:                PASS
+ZIP integrity:                     PASS
 ```
 
-### Target outcomes
+### Not executed
 
-- First material: under 20 seconds
-- First Sword: under 45 seconds
-- First sale: under 90 seconds
-- Menus required before first sale: zero
-- Inaccessible critical rooms: zero
-- Collision-related navigation retries: zero
-- Routine production methods: one consistent control per action
+- Real-browser screenshot comparison
+- Physical iPhone Safari route traversal
+- Android Chrome device test
+- Frame-time/performance profiling
+- Screen-reader test
+- 200% browser zoom test
+- Production GitHub Pages deployment verification
 
-### Hard release blockers
-
-Do not publish a release with any confirmed issue below:
-
-- blank screen or uncaught JavaScript exception
-- inaccessible critical room
-- player, customer, or worker route failure
-- visible wall/collision disagreement
-- auto-craft consuming materials without output
-- save loss or failed migration
-- mobile controls covering a required action
-- stale GitHub Pages assets after deployment
-- first sale requiring an undocumented manual craft action
+The build must not be described as mobile-ready until the physical-device critical journeys pass.
 
 ---
 
-# 3. Exact target repository structure
+## 3. Current critical journeys
 
-Create the following structure incrementally. Do not perform one large rewrite.
+A release is blocked unless all applicable journeys pass.
 
-```text
-/
-├── index.html
-├── style.css
-├── game.js
-├── README.md
-├── DEVELOPMENT_PRIORITY_PLAN.md
-├── CHANGELOG.md                         # new in M0
-├── data/
-│   ├── map_model.json                   # new in M0
-│   ├── map_model.schema.json            # new in M0
-│   └── save_fixtures/
-│       ├── new_game.json                # new in M0
-│       ├── migrated_v01900.json         # new in M0
-│       ├── carried_product.json         # new in M0
-│       └── worker_assigned.json          # new in M0
-├── js/
-│   ├── map-model.js                     # new in M1
-│   ├── navigation.js                    # new in M1
-│   ├── interactions.js                  # new in M2
-│   ├── save-migration.js                # new in M1
-│   └── debug-overlay.js                 # new in M0
-├── tests/
-│   ├── static-checks.mjs                # new in M0
-│   ├── route-matrix.mjs                 # new in M0
-│   ├── interaction-tests.mjs            # new in M2
-│   └── save-migration-tests.mjs         # new in M1
-└── backup_v0.19.00/                     # retained, not modified
-    ├── index.html
-    ├── style.css
-    └── game.js
-```
+### Journey A — Start and move
 
-### Architecture decision
+1. Load a save slot.
+2. Move using touch without scrolling the page.
+3. Enter and exit every unlocked room.
+4. Cross the bridge and reach Forest Gate.
+5. Rotate portrait → landscape → portrait.
+6. Save and reload at a valid walkable point.
 
-The app remains a static browser game. No backend, database, package manager, or remote script dependency is required for M0–M4.
+### Journey B — First Sword
 
-Use native ES modules only after GitHub Pages path testing succeeds. Until then, load the new files using ordered `<script defer>` tags to avoid introducing a bundler migration during the navigation fix.
+1. Gather 2 Iron and 1 Wood.
+2. Enter Forge.
+3. Step on `AUTO CRAFT`.
+4. Produce exactly one Iron Sword.
+5. Collect the output automatically.
+6. Stock Attack Shelf automatically.
+7. Customer purchases the Sword.
+8. Collect checkout coins.
+
+### Journey C — Mobile interface
+
+1. Read cash, day/time and current objective.
+2. Open and close BAG repeatedly.
+3. Open each unlocked navigation panel.
+4. Scroll panels without moving the player.
+5. Close overlays without accidental world input.
+6. Confirm controls remain above iPhone safe areas.
+
+### Journey D — Automation
+
+1. Hire a worker.
+2. Assign a role.
+3. Confirm worker reaches output, shelf, checkout, warehouse and Forest Gate targets.
+4. End the day and reload without losing assignment state.
 
 ---
 
-# 4. Milestone M0 — Baseline protection and diagnostics
+## 4. Milestone status
 
-**Target version:** v0.21.06-dev  
-**Priority:** P0  
-**Release type:** developer-only diagnostic build
+- [x] M0 — Baseline protection and diagnostics
+- [x] M1 — Navigation foundation, 40/40 route matrix
+- [x] M1A — Artwork-first v0.22.10 renderer pass
+- [ ] M2 — Complete and test the automatic Sword loop
+- [ ] M3 — Mobile onboarding and day-system redesign
+- [ ] M4 — Visible shop-growth tiers
+- [ ] M5 — Customer selling decisions
+- [ ] M6 — Greenwood expedition vertical slice
+- [ ] M7 — Dedicated pixel-sprite atlas and final visual polish
 
-## Exact file changes
+---
+
+# 5. Immediate priority — v0.22.11 stabilisation
+
+**Purpose:** verify v0.22.10 artwork did not reduce usability or performance before adding gameplay.
+
+## Required file changes
 
 ### `DEVELOPMENT_PRIORITY_PLAN.md`
 
-- Replace the old plan with this file.
-- Update the plan version and milestone status in every future implementation chat.
-- Record executed and unexecuted tests.
+- Replace the previous plan with this v1.2 plan.
+- Record physical-device findings and any artwork corrections.
 
-### `CHANGELOG.md` — new
+### `MAP_ART_BEFORE_AFTER_REVIEW.md`
 
-Add:
+- Add real-browser captures at identical camera positions.
+- Score route readability, room identity, interaction clarity, visual hierarchy, colour consistency, furniture readability, mobile legibility and collision/art agreement.
 
-```markdown
-# Changelog
-
-## Unreleased
-- Added mobile-first implementation plan.
-- Added map/collision diagnostics plan.
-```
-
-### `data/map_model.schema.json` — new
-
-Define and validate:
-
-```text
-world
-rooms
-walls
-doorways
-water
-blockingFurniture
-interactionZones
-spawnPoints
-navigationTargets
-```
-
-Required field rules:
-
-- all IDs are unique strings
-- all coordinates are finite non-negative numbers
-- width and height are greater than zero
-- doorways reference an existing wall or room
-- navigation targets have an entity type
-- all objects stay within world bounds
-
-### `data/map_model.json` — new
-
-Initially migrate the current v0.21.05 room, wall, doorway, water, furniture, process-pad, spawn, and target coordinates without changing the live map.
-
-This first file is an inventory and test input. M0 must not switch gameplay to the new model yet.
-
-### `js/debug-overlay.js` — new
-
-Implement:
-
-```text
-?debug=collision
-F2 desktop toggle
-```
-
-Overlay colours:
-
-```text
-red     blocked collision
- green  walkable navigation cells
- yellow doorway clearance
- blue   interaction/process zones
- white  selected A* path
- purple spawn and target points
-```
-
-Requirements:
-
-- overlay never captures touch input
-- portrait legend collapses to one badge
-- debug mode defaults to off
-- overlay uses the same camera transform as the game canvas
-
-### `tests/static-checks.mjs` — new
-
-Check:
-
-- `game.js` JavaScript syntax using `node --check`
-- JSON parse for `map_model.json`
-- schema-required top-level keys
-- unique IDs
-- in-bounds rectangles
-- duplicate HTML IDs
-- missing local asset references
-- version consistency across `index.html`, `game.js`, and cache-bust query strings
-
-### `tests/route-matrix.mjs` — new
-
-Create test rows for:
-
-```text
-playerSpawn → every room entrance
-playerSpawn → every station
-customerSpawn → each shelf
-customerSpawn → checkout
-staffSpawn → all worker destinations
-Forest Gate → return destination
-```
-
-M0 may report failures. It must print a complete pass/fail matrix and exit non-zero when a critical row fails.
-
-### `index.html`
-
-Add before `game.js`:
-
-```html
-<script defer src="js/debug-overlay.js?v=0.21.06-dev"></script>
-```
-
-Update all version labels and asset query strings to `0.21.06-dev`.
-
-### `game.js`
-
-Add only safe diagnostic hooks:
-
-- expose camera transform read-only for debug drawing
-- expose current nav path read-only
-- expose collision rectangles read-only
-- do not change `SOLIDS`, `DOOR_CLEARANCES`, `collides()`, or gameplay in M0
-
-### `README.md`
-
-Add exact local-run and test commands:
-
-```bash
-python3 -m http.server 8000
-node --check game.js
-node tests/static-checks.mjs
-node tests/route-matrix.mjs
-```
-
-## M0 acceptance gate
-
-- Trusted v0.21.05 files preserved in a backup or prior Git commit.
-- Debug overlay loads without affecting normal input.
-- Static checks run.
-- Route matrix runs and reports every critical destination.
-- No gameplay or save behaviour intentionally changed.
-
-## M0 rollback
-
-Revert the M0 commit. No save migration is introduced.
-
----
-
-# 5. Milestone M1 — Single-source map, collision, and navigation
-
-**Target version:** v0.22.00  
-**Priority:** P0  
-**Release type:** navigation foundation
-
-## Exact file changes
-
-### `data/map_model.json`
-
-Make this the authoritative source for:
-
-- visible room floors
-- visible wall segments
-- real doorway gaps
-- bridge and water
-- blocking furniture footprints
-- process zones
-- player/customer/staff spawn points
-- interaction and A* targets
-
-Rules:
-
-- open space is the road; do not add broad painted road rectangles
-- a visible wall blocks movement
-- a visible doorway does not block movement
-- furniture collision matches visible furniture
-- bridge overrides water only within bridge bounds
-
-### `js/map-model.js` — new
-
-Responsibilities:
-
-```javascript
-loadMapModel()
-validateMapModel()
-buildWallSegments()
-buildDoorwayClearances()
-buildBlockingRectangles()
-getInteractionZones()
-getNavigationTargets()
-```
-
-Error states:
-
-- loading: show non-blocking loading indicator
-- parse failure: show recoverable map error panel
-- validation failure: list invalid IDs and fields
-- retry: reload the model
-- fallback: do not silently continue using mixed geometry
-
-### `js/navigation.js` — new
-
-Move or wrap the following logic from `game.js`:
-
-```text
-G_CELL, GW, GH
-navGrid
-buildNavGrid()
-nearestWalkableCell()
-findAStarPath()
-navigate()
-```
-
-Inputs must come from generated blocking rectangles and doorway gaps.
+### `docs/map-review/`
 
 Add:
 
-```javascript
-runReachabilityMatrix()
-nearestValidSpawn()
+```text
+before-overview.png
+after-overview.png
+before-forge.png
+after-forge.png
+before-retail.png
+after-retail.png
+before-customer-hall.png
+after-customer-hall.png
+before-mobile-portrait.png
+after-mobile-portrait.png
+collision-overlay-overview.png
 ```
-
-### `js/save-migration.js` — new
-
-Add schema versioning:
-
-```javascript
-save.schemaVersion = 1
-```
-
-Migration rules:
-
-- read v0.21.05 and v0.19.00 save keys
-- preserve old keys until new save writes and reads back successfully
-- validate player coordinates against the generated nav grid
-- move invalid positions to `nearestValidSpawn()`
-- preserve products, materials, employees, progression, contracts, discoveries, equipment, and day stats
 
 ### `game.js`
 
-Replace these current v0.21.05 definitions:
+Only correct confirmed artwork regressions. Do not change geometry or gameplay in v0.22.11.
 
-```text
-SOLIDS
-DOOR_CLEARANCES
-collides()
-buildNavGrid() source geometry
-```
+Potential checks:
 
-with calls to the new map/navigation modules.
+- Decorative props must not obscure interaction targets.
+- Forge pad must remain visible beneath the player.
+- Alchemy pad must remain visible beneath the player.
+- Customer request icon must not cover patience bar.
+- Room-label proximity threshold must not flicker excessively.
+- Wall end posts must not visually close an open doorway.
 
-Keep these gameplay functions materially unchanged:
+### `style.css`
 
-```text
-craft()
-clientTick()
-employeeTick()
-monsterTick()
-endDay()
-product and progression logic
-```
+Only correct confirmed mobile contrast, touch-target or overlap defects.
 
-Replace direct map constants in `drawLayer1And2()` with rendering from `map_model.json`.
+## Acceptance gate
 
-Do not retain a second handwritten collision list.
-
-### `index.html`
-
-Load in this order:
-
-```html
-<script defer src="js/map-model.js?v=0.22.00"></script>
-<script defer src="js/navigation.js?v=0.22.00"></script>
-<script defer src="js/save-migration.js?v=0.22.00"></script>
-<script defer src="js/debug-overlay.js?v=0.22.00"></script>
-<script defer src="game.js?v=0.22.00"></script>
-```
-
-Update stylesheet query string to `0.22.00`.
-
-### `tests/route-matrix.mjs`
-
-Make 100% critical reachability mandatory.
-
-Targets:
-
-- Material Yard
-- Staff House
-- Training Yard
-- Forge process pad
-- Alchemy process pad
-- Contract Warehouse
-- Attack Shelf
-- Defence Shelf
-- Other Shelf
-- checkout
-- Rare Storage
-- both Management entrances
-- Forest Gate
-- Visitor Plaza
-
-### `tests/save-migration-tests.mjs` — new
-
-Test:
-
-- new save
-- v0.19.00 save
-- v0.21.05 save
-- invalid player position
-- carried product
-- worker assignment
-- day-end state
-- malformed data rejection
-
-## M1 acceptance gate
-
-- 100% critical route matrix pass.
-- Zero collision rectangles without a visible blocker.
-- Zero walk-through structural walls outside a doorway.
-- Door clear width at least 78 px; preferred 96–120 px.
-- Main circulation clearance at least 120 px.
-- Player, customer, and staff use the same nav model.
-- Save migration passes and old save keys remain recoverable.
-- Physical iPhone entry/exit test completed for every critical room before calling the release mobile-ready.
-
-## M1 rollback
-
-- Restore v0.21.05 source files.
-- Retain old save keys.
-- Remove new modules and return asset references to v0.21.05.
+- Route matrix remains 40/40.
+- Every critical entrance passes physical iPhone testing.
+- Default portrait zoom clearly shows Forge and Alchemy process pads.
+- No new artwork creates false collision cues.
+- No primary UI control overlaps another control at 390 × 844 CSS px.
+- Map-art review overall average reaches at least 4/5.
+- Route readability and collision/art agreement each score 5/5.
 
 ---
 
-# 6. Milestone M2 — Fully automatic Sword loop
+# 6. M2 — Complete automatic Sword loop
 
-**Target version:** v0.22.10  
+**Target version:** v0.22.20  
 **Priority:** P0  
-**Depends on:** M1
+**Dependency:** v0.22.11 stabilisation
 
-## Exact file changes
+## Confirmed current state
 
-### `js/interactions.js` — new
+- Forge pad automatically calls the existing `craft()` function on entry.
+- Pad entry is locked until the player exits.
+- Output pickup, shelf stocking and checkout coin collection already have proximity automation.
+- The legacy manual crafting minigame and related DOM remain present.
+- Context crafting buttons are removed near Forge and Alchemy.
 
-Implement one interaction controller with explicit states:
+## Exact required changes
+
+### `game.js`
+
+Create a single routine-interaction state controller:
 
 ```text
 idle
@@ -501,358 +248,214 @@ lockedUntilExit
 failed
 ```
 
-Functions:
+Apply the controller consistently to:
 
-```javascript
-getActiveInteractionZone()
-onZoneEnter()
-onZoneExit()
-autoGather()
-autoCraft()
-autoCollectOutput()
-autoStock()
-autoCollectCoins()
-```
+- automatic material gathering
+- Forge crafting
+- Alchemy brewing
+- output pickup
+- shelf stocking
+- checkout coin collection
+- contract loading
 
-### `data/map_model.json`
+Remove or disable the legacy manual crafting overlay from the normal first-sale journey. Preserve quality and rarity calculations inside `craft()`.
 
-Add or finalise zones:
+Improve failure feedback:
 
-```text
-material-gather-iron
-material-gather-wood
-forge-auto-craft
-alchemy-auto-brew
-attack-auto-stock
-defence-auto-stock
-other-auto-stock
-checkout-coin-collection
-contract-auto-load
-```
+- missing materials names the missing materials
+- full output table reports current and maximum capacity
+- wrong shelf preserves carried products
+- full shelf preserves carried products
+- locked Alchemy explains the unlock condition
 
-Each zone requires:
+### `index.html`
+
+If the manual minigame is removed entirely, remove:
 
 ```text
-id
-type
-bounds
-icon
-label
-allowedEntityTypes
-cooldownMode = exit
+#craftGame
+#craftTap
+#craftMarker
 ```
 
-### `game.js`
-
-Move current `processAutoCraftPads()` behaviour into `js/interactions.js`.
-
-Remove manual proximity crafting from `updateContextActions()`.
-
-Preserve advanced recipe selection in the Products panel.
-
-Forge behaviour:
-
-- default recipe: Iron Sword
-- selected unlocked enabled Forge recipe takes priority
-- exactly one craft attempt per entry
-- no material consumption when output is full
-- no material consumption on validation failure
-- existing rarity, quality, defects, discoveries, stats, and objectives remain active
-
-Shelf behaviour:
-
-- correct category stocks carried items automatically
-- wrong category does not remove carried items
-- full shelf explains the failure
-
-### `tests/interaction-tests.mjs` — new
-
-Test:
-
-- sufficient materials → exactly one output
-- insufficient materials → no loss
-- full output → no loss
-- standing still → no repeat
-- leave and re-enter → next attempt
-- output pickup updates carried item
-- correct shelf stocks
-- wrong shelf preserves carried item
-- sale decrements stock
-- coin pickup increments cash once
+If retained for a later optional skill action, keep the elements hidden from the first-sale flow and document the trigger.
 
 ### `style.css`
 
-Add mobile-readable floor-logo states:
+Remove unused crafting-minigame styles only if the DOM feature is removed.
+
+Add clear pad states:
 
 ```text
 ready
 blocked
+active
 success
-locked
 ```
 
-Minimum visible logo footprint: 88 × 72 world px.
+### `tests/interaction-tests.mjs`
 
-Do not add persistent DOM controls for routine crafting.
+Add tests for:
+
+- enough materials → exactly one output
+- insufficient materials → no material loss
+- full output table → no material loss
+- remaining on pad → no repeat
+- leave and re-enter → next attempt
+- output pickup updates carried inventory
+- correct shelf stocks product
+- wrong shelf preserves product
+- full shelf preserves product
+- customer sale decrements stock once
+- coin collection increments cash once
 
 ## M2 acceptance gate
 
-- First Sword crafted without pressing a craft button.
-- First sale completed without opening a panel.
-- First sale under 90 seconds on physical iPhone Safari.
-- No duplicate craft while remaining on the pad.
-- No material loss on any failed craft path.
-
-## M2 rollback
-
-Disable `interactions.js` and restore v0.22.00 interaction behaviour without changing save data.
+- First Sword crafted without a manual button.
+- First sale completes without opening a panel.
+- First sale completes in under 90 seconds on physical iPhone Safari.
+- Routine Sword cycle uses one predictable interaction language.
+- No failed action consumes materials or products.
+- Route matrix remains 40/40.
 
 ---
 
-# 7. Milestone M3 — Mobile onboarding and day model
+# 7. M3 — Mobile onboarding and day-system redesign
 
 **Target version:** v0.23.00  
-**Priority:** P1  
-**Depends on:** M2
+**Priority:** P1
 
-## Exact file changes
-
-### `index.html`
-
-Keep permanent UI to:
-
-- cash
-- day/time
-- one current objective
-- bottom navigation
-
-Ensure icon-only controls have `aria-label`.
-
-### `style.css`
-
-Enforce portrait budgets:
-
-```text
-status row ≤ 30 px
-objective row ≤ 36 px
-bottom navigation ≤ 54 px + safe area
-action row ≤ 40 px when visible
-permanent UI obstruction < 15% viewport height
-```
-
-Reference viewports:
-
-```text
-360 × 800
-390 × 844
-393 × 852
-430 × 932
-```
-
-Requirements:
-
-- primary touch targets at least 44 × 44 CSS px
-- panel internal scrolling
-- no scroll chaining
-- safe-area inset support
-- 200% zoom without losing controls
-- reduced-motion support
-- portrait/landscape recovery
-
-### `game.js`
-
-Replace the 120-second opening-day rule:
+## Day behaviour
 
 ```text
 Day 1: no hard timer; ends after first sale or End Day
-Day 2: no hard timer; teaches first upgrade and Alchemy path
-Day 3+: 240-second active day
+Day 2: no hard timer; teaches first visible upgrade and Alchemy path
+Day 3 onward: 240-second active day
 ```
 
-Pause timer when:
+Pause the timer while:
 
 - full-screen panel is open
-- Day Complete summary is open
-- recoverable error panel is open
+- Day Complete is open
+- recoverable error overlay is open
 
-Add **End Day Early**.
+Always provide `End Day Early`.
 
-### Save migration
+## Progressive disclosure
 
-Add:
+### First-sale phase
 
-```text
-save.dayMode
-save.currentObjective
-save.tutorialFlags
-```
-
-Defaults must preserve existing progression.
-
-### Progressive disclosure
-
-First-sale phase shows only:
+Visible:
 
 - Material Yard
 - Forge
 - Attack Shelf
 - checkout
 
-Hide or disable advanced navigation until unlock conditions are met.
+Hidden or disabled:
 
-### Tests
+- Staff House management
+- Alchemy functionality
+- expeditions
+- wholesale
+- skills
+- Rare Storage functionality
 
-Add responsive and day-state checks:
+### Unlock sequence
 
-- panel timer pause
-- Day 1 no timer expiry
-- Day 3 240-second timer
-- End Day Early pays rewards once
-- rotation with panel open
-- BAG and panel repeated open/close
+```text
+5 sales: Alchemy + Healing Potion + first shelf upgrade
+10 customers: Staff House + first worker + TEAM
+Day 3 + worker: Forest Gate + Greenwood Edge + PARTS
+Reputation milestone: Defence products + contracts + Management
+Advanced shop: Rare display + permanent skills + later expeditions
+```
 
 ## M3 acceptance gate
 
-- No control overlap at all reference viewports.
+- No management panel required before first sale.
+- Current objective indicates one physical action.
+- Timer does not advance under a full-screen panel.
+- No overlap at 360 × 800, 390 × 844, 393 × 852 and 430 × 932.
+- Primary touch targets are at least 44 × 44 CSS px.
 - Centre 60% of portrait viewport remains available for gameplay.
-- New player completes first sale without external instructions.
-- Timer never advances under a full-screen panel.
-- Touch targets meet minimum size.
 
 ---
 
-# 8. Milestone M4 — Visible shop growth
+# 8. M4 — Visible shop growth
 
 **Target version:** v0.24.00  
-**Priority:** P1  
-**Depends on:** M3
+**Priority:** P1
 
-## Exact file changes
+## Required tiers
 
-### `data/map_model.json`
-
-Add visual-tier references for:
+### Attack Shelf
 
 ```text
-attackShelfTier
-forgeTier
-staffHouseTier
-customerHallTier
-exteriorTier
+Tier 1: rough timber, 4 slots
+Tier 2: reinforced shelf, 8 slots
+Tier 3: premium display, 12 slots
 ```
 
-### `game.js`
-
-Render by tier while preserving existing gameplay values.
-
-### `style.css`
-
-Add unlock celebration and upgrade comparison layouts.
-
-### Save migration
-
-Add:
+### Forge
 
 ```text
-save.shopVisualTier
+Tier 1: one production position
+Tier 2: two-job queue
+Tier 3: quality bonus and stronger visual treatment
 ```
 
-### Required tiers
-
-Attack Shelf:
+### Staff House
 
 ```text
-Tier 1 = rough timber, 4 slots
-Tier 2 = reinforced, 8 slots
-Tier 3 = premium rack, 12 slots
+Tier 1: one bed
+Tier 2: three beds and notice board
+Tier 3: five beds, lockers and recovery bonus
 ```
 
-Forge:
+### Customer Hall
 
 ```text
-Tier 1 = one anvil/output
-Tier 2 = second position/two-job queue
-Tier 3 = quality bonus
+Tier 1: plain checkout counter
+Tier 2: queue markers and decoration
+Tier 3: premium counter and higher-value customers
 ```
 
-Staff House:
+## Acceptance gate
 
-```text
-Tier 1 = one bed
-Tier 2 = three beds
-Tier 3 = five beds and recovery bonus
-```
-
-Customer Hall:
-
-```text
-Tier 1 = plain counter
-Tier 2 = queue markings/decor
-Tier 3 = premium counter/high-value customers
-```
-
-## M4 acceptance gate
-
-Shop Level 1 and Shop Level 3 screenshots are visibly different with the HUD hidden.
+A Level 1 and Level 3 shop must be clearly distinguishable with the HUD hidden.
 
 ---
 
-# 9. Milestone M5 — Customer decision vertical slice
+# 9. M5 — Customer selling decisions
 
 **Target version:** v0.25.00  
-**Priority:** P2  
-**Depends on:** M4
+**Priority:** P2
 
-## Exact file changes
-
-### `game.js`
-
-Add an important-customer sale state:
+Add a two-tap-maximum choice for important customers:
 
 ```text
-sell at listed price
-attempt surcharge with shown chance
-recommend a higher-tier item
+SELL at listed price
+SURCHARGE with visible success chance
+RECOMMEND a higher-tier available product
 ```
 
 Routine customers and assigned sales workers remain automatic.
 
-### `index.html`
+## Acceptance gate
 
-Add a semantic two-tap-maximum sale decision overlay.
-
-### `style.css`
-
-Implement portrait-safe sale choice controls.
-
-### Tests
-
-- decision opens only for eligible customers
-- sale value and reputation update once
-- recommendation checks stock
-- failed surcharge cannot duplicate or lose stock incorrectly
-
-## M5 acceptance gate
-
-At least 20% of mid-game sales offer a meaningful choice resolved in fewer than two taps.
+- At least 20% of mid-game sales offer a meaningful choice.
+- Choice resolves in no more than two taps.
+- Sale, stock and reputation update exactly once.
 
 ---
 
-# 10. Milestone M6 — Greenwood expedition vertical slice
+# 10. M6 — Greenwood expedition vertical slice
 
 **Target version:** v0.26.00  
-**Priority:** P2  
-**Depends on:** M5
+**Priority:** P2
 
-## Exact file changes
-
-### `data/map_model.json`
-
-Add Greenwood Edge combat and return targets.
-
-### `game.js`
-
-Limit first expedition release to:
+Limit the first complete expedition area to:
 
 - Slime
 - Wolf
@@ -862,126 +465,180 @@ Limit first expedition release to:
 - recovery cost
 - two material-dependent recipes
 
-### Tests
+## Acceptance gate
 
-- enter/return route
-- worker assignment/reload
-- reward delivery
-- inventory capacity
-- no duplicate expedition completion
-- shop state preserved during expedition
-
-## M6 acceptance gate
-
-Complete expedition and return loop passes without breaking shop state, navigation, or saves.
+The expedition enter, reward and return loop must preserve shop state, navigation, assignments and saves.
 
 ---
 
-# 11. Test and release commands
+# 11. M7 — Dedicated pixel-sprite atlas
 
-Run for every release:
+**Target version:** after gameplay foundation  
+**Priority:** P2
+
+v0.22.10 improves live canvas artwork programmatically, but several props still use emoji. M7 replaces selected emoji and primitive props with dedicated transparent PNG atlases.
+
+## Target assets
+
+```text
+assets/map/grass_clusters.png
+assets/map/walls_woodland.png
+assets/map/door_thresholds.png
+assets/map/bridge.png
+assets/map/forest_gate.png
+assets/rooms/material_yard.png
+assets/rooms/staff_house.png
+assets/rooms/training_yard.png
+assets/rooms/forge_props.png
+assets/rooms/alchemy_props.png
+assets/rooms/warehouse_props.png
+assets/rooms/retail_props.png
+assets/rooms/customer_hall.png
+assets/rooms/rare_storage.png
+assets/rooms/management.png
+assets/fx/process_pad_forge.png
+assets/fx/process_pad_alchemy.png
+assets/fx/process_states.png
+```
+
+Collision remains in `data/map_model.json`; image bounds must not become hidden collision.
+
+---
+
+# 12. Save and migration policy
+
+Current v0.22.10 keys:
+
+```text
+wse_v02210_slot_
+wse_forever_v02210
+```
+
+Migration lookup includes v0.22.00 keys.
+
+For every future schema change:
+
+- keep the older storage key readable
+- write the new record
+- read it back successfully
+- preserve the old record until verification completes
+- validate saved player coordinates against walkable geometry
+- relocate invalid coordinates to the nearest walkable spawn
+- preserve products, materials, workers, contracts, discoveries, equipment and progression
+
+---
+
+# 13. Accessibility, security and performance
+
+## Accessibility
+
+- Semantic buttons and accessible names for icon-only controls
+- Visible keyboard focus
+- 44 × 44 CSS px primary touch targets
+- No information conveyed only by colour
+- `prefers-reduced-motion` support
+- Usable at 200% zoom
+- Safe-area inset support
+- Portrait/landscape recovery
+
+## Security and privacy
+
+- No secrets or tokens in the static package
+- No personal data in saves, fixtures or screenshots
+- Validate imported save and map JSON
+- Escape player-provided names before DOM insertion
+- Avoid inserting untrusted values through `innerHTML`
+- Keep external dependencies absent unless reviewed and pinned
+
+## Performance
+
+Artwork checks must include:
+
+- default portrait frame-time observation
+- no per-frame image creation
+- no unbounded effects or entity arrays
+- debug overlay disabled by default
+- reduced animation under `prefers-reduced-motion`
+- no repeated layout thrashing from HUD updates
+
+---
+
+# 14. Required test commands
 
 ```bash
 node --check game.js
-node tests/static-checks.mjs
+node --check js/debug-overlay.js
 node tests/route-matrix.mjs
-node tests/save-migration-tests.mjs
+```
+
+After M2:
+
+```bash
 node tests/interaction-tests.mjs
 ```
 
-Serve locally:
+Manual local run:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Manual browser checks:
+URLs:
 
 ```text
+http://localhost:8000/?v=02210
 http://localhost:8000/?debug=collision
-http://localhost:8000/?v=<release-version>
 ```
-
-GitHub Pages checks:
-
-- uploaded files are extracted, not a ZIP
-- asset query strings match the release version
-- hard refresh or versioned URL loads new JavaScript and CSS
-- no 404 network requests
-- no uncaught console errors
-- old save migrates and reloads
 
 ---
 
-# 12. Required release report
+# 15. Required release report
 
-Every released ZIP and GitHub Pages update must state:
+Every release must state:
 
 - version
 - trusted baseline
 - exact changed files
-- exact new files
-- removed files
+- exact added and removed files
 - save migration status
-- automated checks executed and results
-- browser checks executed and results
-- physical-device checks executed and results
-- unexecuted tests
+- automated checks and results
+- browser checks and results
+- responsive checks and results
+- accessibility/security/performance checks performed
+- physical-device status
+- deployment status
 - known limitations
 - rollback steps
 - ZIP size
 - SHA-256 checksum
 
-Never describe a build as mobile-ready until the physical iPhone Safari critical journeys pass.
-
 ---
-
-# 13. Milestone status board
-
-- [x] M0 — Baseline and diagnostics
-- [x] M1 — Single-source navigation foundation
-- [ ] M2 — Automatic Sword loop
-- [ ] M3 — Mobile onboarding and day model
-- [ ] M4 — Visible shop growth
-- [ ] M5 — Customer decision vertical slice
-- [ ] M6 — Greenwood expedition vertical slice
 
 ## Current next action
 
-Run physical iPhone Safari room-entry checks for v0.22.00. If those pass, implement **M2 — Automatic Sword loop** only.
+Perform the remaining real-browser and physical iPhone checks for v0.22.11. If no release blockers are found, implement **M2, the complete automatic Sword loop**.
 
 ---
 
 # Change log
 
-## Plan 1.1 — 20 October 2026
+## Plan 1.2 — v0.22.10
 
-- Added exact current repository inventory and implementation anchors.
-- Added target GitHub file structure.
-- Added exact per-file changes for M0–M6.
-- Added version targets, dependencies, acceptance gates, rollback steps, migration changes, and release commands.
-- Confirmed M0 diagnostics as the next implementation scope.
-
-
-## M0 execution record — 20 October 2026
-
-- Static checks: passed.
-- Debug overlay script syntax: passed.
-- Map inventory generated: passed.
-- Route matrix executed: see `route-matrix-results.txt`; failures are release blockers for M1.
-- Real-browser and physical-device checks: not executed.
-- Gameplay, map geometry, and saves: not intentionally changed.
+- Established v0.22.10 as the trusted baseline.
+- Recorded the artwork-first changes and 40/40 route result.
+- Added v0.22.11 artwork stabilisation as the immediate release gate.
+- Clarified that M2 is not complete while the legacy manual crafting overlay and untested interaction paths remain.
+- Added M7 for dedicated sprite-atlas replacement after the gameplay foundation.
+- Recorded unexecuted browser, device, accessibility and performance checks explicitly.
 
 
-## M1 execution record — 20 October 2026
+## v0.22.11 execution record — 20 October 2026
 
-- Baseline route matrix: 24 passed, 16 failed.
-- v0.22.00 expanded route matrix: 40 passed, 0 failed.
-- Map art rebuilt without broad painted roads.
-- Structural geometry and runtime constants generated together from the corrected model during packaging.
-- JavaScript and static checks: passed.
-- Real-browser and physical iPhone checks: not executed in the build environment.
-
-## Map-art review requirement — added 20 October 2026
-
-Every future map-art release must include `MAP_ART_BEFORE_AFTER_REVIEW.md` and paired screenshots under `docs/map-review/`. The review must compare equivalent camera positions, score route readability, room identity, interaction clarity, visual hierarchy, colour consistency, furniture readability, mobile-scale legibility, and collision/art agreement. Route readability and collision/art agreement require a score of 5/5. The automated route matrix must remain 40/40.
+- Room-label flicker stabilisation: implemented.
+- Process-pad upper-layer visibility ring: implemented.
+- Customer icon/patience-bar separation: implemented.
+- Alchemy process-zone visual competition: reduced.
+- Recoverable renderer error state: implemented.
+- 44 × 44 CSS px mobile utility targets: implemented.
+- Route matrix and source checks: executed in release package.
+- Real-browser screenshots and physical-device tests: not executed.

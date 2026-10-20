@@ -204,3 +204,11 @@ canvas{background:#244b2e}
 .card{background:linear-gradient(145deg,#211b18,#151313);border-color:#6f5035}
 .toast{background:#211914f8;border-color:#d1a34a;color:#ffe3a0;box-shadow:0 7px 18px #000a}
 @media(max-width:700px) and (orientation:portrait){.topHud>*{border-color:#8e683f!important}.journeyHud{border-color:#c4974d!important}.menuButtons button span{filter:drop-shadow(0 2px 2px #000)}}
+/* v0.22.11 stabilisation */
+button:focus-visible{outline:3px solid #ffe18a;outline-offset:2px}
+@media(max-width:700px) and (orientation:portrait){
+  .bagToggle,.cameraButtons #overview{min-width:44px!important;min-height:44px!important}
+  .cameraButtons{right:5px!important}.bagToggle{right:5px!important;top:52px!important}
+  .tutorial{top:101px!important}.bagPanel{top:101px!important}
+}
+@media(prefers-reduced-motion:reduce){canvas{scroll-behavior:auto}.actionBar button{animation:none!important}}

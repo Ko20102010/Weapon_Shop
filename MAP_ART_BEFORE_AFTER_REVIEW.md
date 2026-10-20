@@ -33,3 +33,12 @@
 - Replace selected emoji props with dedicated pixel sprites in a later asset-atlas pass.
 - Capture real-browser paired screenshots at identical camera positions.
 - Tune lighting and contrast using physical-phone screenshots.
+
+## v0.22.11 stabilisation findings
+
+- Room labels now use 330 px enter and 410 px leave thresholds, reducing boundary flicker.
+- Forge and Alchemy pads receive a thin status ring in the upper visual layer.
+- Distant customer icons no longer overlap the patience bar.
+- Alchemy cauldron art occupies less of the process zone.
+- Mobile Overview and BAG controls meet the 44 × 44 CSS px primary target.
+- Real-browser screenshot evidence and physical iPhone validation remain unexecuted.

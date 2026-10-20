@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.10';
+const VERSION='v0.22.11';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02210_slot_',OLD_PREFIXES=['wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02210',OLD_FOREVER_KEYS=['wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02211_slot_',OLD_PREFIXES=['wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02211',OLD_FOREVER_KEYS=['wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -1254,7 +1254,7 @@ function drawWorldArtProps(){
   pxRect(315,790,75,55,'#47717a');pxRect(322,798,61,38,'#5ca7b1');
   for(let i=0;i<5;i++){pxRect(280+i*34,750,5,35,'#d0b27a');text(['🔨','⚒','⛏','🔧','🗡️'][i],282+i*34,769,13,'#fff')}
   // Alchemy focal cauldron and bottle shelves.
-  g.save();g.globalAlpha=.22+.06*Math.sin(animClock*4);g.fillStyle='#58c77a';g.beginPath();g.arc(867,930,55,0,7);g.fill();g.restore();pxRect(818,908,98,42,'#303338');g.fillStyle='#58c77a';g.beginPath();g.ellipse(867,910,44,14,0,0,7);g.fill();
+  g.save();g.globalAlpha=.22+.06*Math.sin(animClock*4);g.fillStyle='#58c77a';g.beginPath();g.arc(867,924,46,0,7);g.fill();g.restore();pxRect(823,904,88,38,'#303338');g.fillStyle='#58c77a';g.beginPath();g.ellipse(867,906,39,12,0,0,7);g.fill();
   pxRect(1040,770,150,95,'#4f3426');for(let row=0;row<2;row++)for(let i=0;i<5;i++){const cols=['#ef6671','#57b5e5','#e3c052','#8d65c7','#65c77a'];pxRect(1052+i*27,786+row*34,14,22,cols[(i+row)%cols.length]);pxRect(1056+i*27,781+row*34,6,6,'#d7cab2')}
   // Warehouse perimeter crates, central bay remains open.
   for(const [x,y] of [[1320,710],[1372,710],[1740,710],[1686,710],[1738,1050],[1686,1050],[1320,1050]])artCrate(x,y);
@@ -1469,6 +1469,21 @@ function drawLayer3(){
 }
 
 // LAYER 4, 5 & 6: Upper Tree Canopies, Animated Fire/Bubbles, Request Bubbles & Room Signboards
+const roomLabelVisible={};
+function roomLabelNear(id,cx,cy){
+  const d=Math.hypot(player.x-cx,player.y-cy),was=!!roomLabelVisible[id];
+  roomLabelVisible[id]=was?d<410:d<330;
+  return roomLabelVisible[id];
+}
+function drawProcessPadOverlay(){
+  // Draw only a thin top-layer status ring so the logo remains legible under entities.
+  for(const pad of Object.values(PROCESS_PADS)){
+    const key=selectedAutoRecipe(pad.station),ready=key&&canCraft(key),active=pointInRect(player.x,player.y,pad);
+    const col=active?'#ffffff':ready?(pad.station==='forge'?'#ffd166':'#bffb9a'):'#8c8174';
+    g.save();g.globalAlpha=active?.95:ready?.68:.34;g.strokeStyle=col;g.lineWidth=active?6:3;
+    g.strokeRect(pad.x+8,pad.y+8,pad.w-16,pad.h-16);g.restore();
+  }
+}
 function drawLayer4To6(){
   {
     // Layer 4: Forest Trees & Perimeter Canopies
@@ -1487,11 +1502,12 @@ function drawLayer4To6(){
 
     // Room Header Signboards
     for(const rm of Object.values(R)){
-      const cx=rm.x+rm.w/2,cy=rm.y+rm.h/2,near=Math.hypot(player.x-cx,player.y-cy)<360;
+      const cx=rm.x+rm.w/2,cy=rm.y+rm.h/2,near=roomLabelNear(rm.title,cx,cy);
       if(rm.title&&near)labelBadge(rm.title,rm.x+rm.w/2,rm.y+18,'#ffe9b5','#241a14e6',Math.min(210,rm.w-20));
     }
   }
 
+  drawProcessPadOverlay();
   // Layer 5: Animated Forge Sparks, Alchemy Bubbles & Combat Slash Effects
   const flicker=Math.sin(animClock*10)*4;
   pxRect(180,812+flicker,10,10,'#fff3a1');
@@ -1510,7 +1526,7 @@ function drawLayer4To6(){
     if(x.state==='toShelf'||x.state==='waitShelf'){
       let r=recipes[x.want];
       let label=`${r.icon} ${r.name}`+(x.minStat?`\n${r.statName} ${x.minStat}+`:'')+(x.minRarity!=='Any'?` • ${x.minRarity}+`:'');
-      if(dist(player,x)<300)drawRequest(x,label);else labelBadge(r.icon,x.x,x.y-72,'#352619','#fff0c9ee',42);
+      if(dist(player,x)<300)drawRequest(x,label);else labelBadge(r.icon,x.x,x.y-86,'#352619','#fff0c9ee',42);
       pxRect(x.x-30,x.y-64,60,6,'#332a30');
       pxRect(x.x-30,x.y-64,60*Math.max(0,x.pat/x.max),6,x.pat/x.max>.4?'#5ed177':'#ed6256');
     }
@@ -1562,16 +1578,19 @@ window.__WSE_DEBUG__=Object.freeze({
   getDoorClearances:()=>DOOR_CLEARANCES.map(a=>({...a}))
 });
 
+let renderFault='';
 function draw(){
   g.save();
-  g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-  g.clearRect(0,0,vw,vh);
-  g.scale(zoom,zoom);
-  g.translate(-cam.x,-cam.y);
-  drawLayer1And2();
-  drawLayer3();
-  drawLayer4To6();
-  g.restore();
+  try{
+    g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    g.clearRect(0,0,vw,vh);
+    g.scale(zoom,zoom);g.translate(-cam.x,-cam.y);
+    drawLayer1And2();drawLayer3();drawLayer4To6();renderFault='';
+  }catch(err){
+    renderFault=String(err?.message||err);console.error('Render failure',err);
+    g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);g.fillStyle='#171310';g.fillRect(0,0,vw,vh);
+    g.fillStyle='#f5e4bc';g.font='bold 16px Arial';g.textAlign='center';g.fillText('Map rendering error — reload this page',vw/2,vh/2);
+  }finally{g.restore()}
 }
 
 // ============================================================================

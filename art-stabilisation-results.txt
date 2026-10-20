@@ -1,0 +1,8 @@
+PASS version
+PASS room label hysteresis
+PASS process pad top ring
+PASS request separation
+PASS render recovery
+PASS accessible controls
+PASS mobile utility target
+PASS focus visible
