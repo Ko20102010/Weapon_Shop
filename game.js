@@ -1,11 +1,11 @@
-// Weapon Shop Empire v0.21.04
+// Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.21.04';
+const VERSION='v0.21.05';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02104_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02104',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02105_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02105',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -240,40 +240,20 @@ function featureUnlocked(name){
  return true;
 }
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-// v0.21.04: guaranteed walkable corridors. These rectangles are the road/door source of truth.
-const WALKABLE_ROUTES=[
-  // Continuous north/south public spine, bridge and entrance.
-  {id:'spine',x:600,y:245,w:300,h:2115},
-  {id:'bridge',x:620,y:2320,w:255,h:275},
-  {id:'south-entry',x:590,y:2560,w:310,h:300},
-
-  // Upper rooms. Branches overlap both the central spine and room interior.
-  {id:'material',x:240,y:600,w:420,h:150},
-  {id:'staff',x:825,y:600,w:210,h:150},
-  {id:'training',x:850,y:565,w:455,h:155},
-  {id:'forge',x:225,y:1070,w:435,h:155},
-  {id:'alchemy',x:830,y:1070,w:455,h:155},
-  {id:'contract',x:850,y:810,w:475,h:205},
-
-  // Retail/customer circulation and lower rooms.
-  {id:'retail-cross',x:45,y:1125,w:1270,h:120},
-  {id:'rare',x:150,y:1585,w:505,h:145},
-  {id:'checkout',x:390,y:1585,w:895,h:120},
-  {id:'management-upper',x:850,y:1515,w:475,h:205},
-  {id:'management-lower',x:850,y:1795,w:475,h:205},
-  {id:'south-wall-gate',x:590,y:1980,w:335,h:130},
-  {id:'visitor',x:250,y:2070,w:440,h:120},
-
-  // Interior room lanes keep stations and destinations approachable.
-  {id:'material-inside',x:80,y:590,w:520,h:110},
-  {id:'staff-inside',x:680,y:590,w:530,h:110},
-  {id:'training-inside',x:1280,y:560,w:245,h:120},
-  {id:'forge-inside',x:80,y:1030,w:535,h:130},
-  {id:'alchemy-inside',x:680,y:1030,w:555,h:130},
-  {id:'contract-inside',x:1285,y:825,w:500,h:165},
-  {id:'rare-inside',x:85,y:1585,w:285,h:130},
-  {id:'management-inside-a',x:1285,y:1515,w:400,h:205},
-  {id:'management-inside-b',x:1285,y:1795,w:400,h:205}
+// v0.21.05: guaranteed walkable corridors. These rectangles are the road/door source of truth.
+const DOOR_CLEARANCES=[
+  // Only openings through visible walls. Open floor outside rooms is already naturally walkable.
+  {id:'material-south',x:270,y:640,w:145,h:70},
+  {id:'staff-south',x:845,y:650,w:150,h:70},
+  {id:'training-south',x:1310,y:640,w:190,h:70},
+  {id:'forge-south',x:275,y:1130,w:160,h:75},
+  {id:'alchemy-south',x:885,y:1130,w:155,h:75},
+  {id:'contract-west',x:1255,y:830,w:80,h:155},
+  {id:'rare-north',x:170,y:1610,w:145,h:75},
+  {id:'main-south',x:625,y:2010,w:245,h:85},
+  {id:'management-west-upper',x:1255,y:1560,w:80,h:145},
+  {id:'management-west-lower',x:1255,y:1830,w:80,h:140},
+  {id:'bridge',x:635,y:2325,w:225,h:255}
 ];
 const PROCESS_PADS={
   forge:{x:250,y:1000,w:190,h:105,label:'⚒ AUTO CRAFT',station:'forge'},
@@ -281,16 +261,14 @@ const PROCESS_PADS={
 };
 let processPadLast='';
 function pointInRect(x,y,a,pad=0){return x>=a.x-pad&&x<=a.x+a.w+pad&&y>=a.y-pad&&y<=a.y+a.h+pad}
-function onWalkableRoute(x,y,r=0){return WALKABLE_ROUTES.some(a=>pointInRect(x,y,a,-Math.max(0,r-4)))}
+function inDoorClearance(x,y,r=0){return DOOR_CLEARANCES.some(a=>pointInRect(x,y,a,-Math.max(0,r-3)))}
 function collides(x,y,r=16){
-  // World edge is always solid.
   if(x-r<24||x+r>WORLD.w-24||y-r<24||y+r>WORLD.h-24)return true;
-  // A marked route/entrance is guaranteed walkable. This is the release invariant.
-  if(onWalkableRoute(x,y,r))return false;
+  // Door clearances remove collision only where a visible doorway exists.
+  if(inDoorClearance(x,y,r))return false;
   return SOLIDS.some(a=>{
     const hit=x+r>a.x&&x-r<a.x+a.w&&y+r>a.y&&y-r<a.y+a.h;
     if(!hit)return false;
-    // Outer bounds already handled above.
     if(a.x===0||a.y===0||a.x+a.w>=WORLD.w||a.y+a.h>=WORLD.h)return false;
     return true;
   });
@@ -1450,11 +1428,16 @@ function drawLayer1And2(){
     if(wall.x===495&&wall.y===1905)continue;
     drawWallAssetSegment(wall);
   }
-  // Repaint guaranteed route corridors above wall art so visible roads exactly match walkability.
-  for(const r of WALKABLE_ROUTES){
-    if(r.id==='bridge')continue;
-    pxRect(r.x,r.y,r.w,r.h,'#d3ad70');
-    g.save();g.globalAlpha=.32;g.strokeStyle='#6d4c2d';g.lineWidth=3;g.strokeRect(r.x,r.y,r.w,r.h);g.restore();
+  // Roads are open space, not painted corridors. Only doorway thresholds are highlighted.
+  for(const d of DOOR_CLEARANCES){
+    if(d.id==='bridge')continue;
+    const horizontal=d.w>=d.h;
+    const mx=horizontal?d.x:d.x+Math.floor(d.w/2)-12;
+    const my=horizontal?d.y+Math.floor(d.h/2)-12:d.y;
+    const mw=horizontal?d.w:24;
+    const mh=horizontal?24:d.h;
+    pxRect(mx,my,mw,mh,'#d9bf84');
+    g.save();g.globalAlpha=.55;g.strokeStyle='#755536';g.lineWidth=2;g.strokeRect(mx,my,mw,mh);g.restore();
   }
   drawProcessPads();
   drawMapObjects('lowProps');
@@ -1853,7 +1836,7 @@ function openPage(p){
     </div>`;
   }
   if(p==='visual'){
-    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.21.04)</h2>
+    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.21.05)</h2>
     <div class="visualNote">
       <b>Live Modular Rendering Only:</b> Ground, walls, shelves, workstations, dynamic stock, and characters render in separate layers. Concept artwork is not available as a playable map background.
     </div>
