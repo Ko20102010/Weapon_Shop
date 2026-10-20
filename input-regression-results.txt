@@ -1,0 +1,11 @@
+PASS version
+PASS removed DOM dereference
+PASS removed manual functions
+PASS pointer down non-passive
+PASS pointer move non-passive
+PASS pointer capture loss
+PASS visibility reset
+PASS blur reset
+PASS panel reset
+PASS safe joystick DOM
+PASS canvas touch action

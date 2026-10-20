@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.20';
+const VERSION='v0.22.21';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02220_slot_',OLD_PREFIXES=['wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02220',OLD_FOREVER_KEYS=['wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02221_slot_',OLD_PREFIXES=['wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02221',OLD_FOREVER_KEYS=['wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -505,36 +505,47 @@ function screenPoint(ev){
   const r=c.getBoundingClientRect();
   return {x:(ev.clientX-r.left)*vw/r.width,y:(ev.clientY-r.top)*vh/r.height};
 }
+function inputBlocked(){
+  return !playing||$('panel')?.classList.contains('show')||$('daySummary')?.classList.contains('show')||$('slotScreen')?.classList.contains('show');
+}
+function resetDragMovement(){
+  dragMove.active=false;dragMove.id=null;dragMove.dx=dragMove.dy=0;
+  const stick=$('dragStick');
+  if(stick){stick.classList.remove('show');if(stick.firstElementChild)stick.firstElementChild.style.transform='translate(0,0)'}
+}
 function dragStart(ev){
-  if($('panel').classList.contains('show')||$('craftGame').classList.contains('show')||ev.pointerType==='mouse'&&ev.button!==0)return;
+  if(inputBlocked()||(ev.pointerType==='mouse'&&ev.button!==0)||ev.isPrimary===false)return;
+  ev.preventDefault();
   const p=screenPoint(ev);
   dragMove={active:true,id:ev.pointerId,sx:p.x,sy:p.y,dx:0,dy:0};
-  c.setPointerCapture?.(ev.pointerId);
-  $('dragStick').style.left=p.x+'px';
-  $('dragStick').style.top=p.y+'px';
-  $('dragStick').classList.add('show');
+  try{c.setPointerCapture?.(ev.pointerId)}catch{}
+  const stick=$('dragStick');
+  if(stick){stick.style.left=p.x+'px';stick.style.top=p.y+'px';stick.classList.add('show')}
   target=null;player.navPath=null;
 }
 function dragUpdate(ev){
   if(!dragMove.active||ev.pointerId!==dragMove.id)return;
+  ev.preventDefault();
   const p=screenPoint(ev),dx=p.x-dragMove.sx,dy=p.y-dragMove.sy,d=Math.hypot(dx,dy),max=40;
   dragMove.dx=d?dx/d*Math.min(1,d/max):0;
   dragMove.dy=d?dy/d*Math.min(1,d/max):0;
-  $('dragStick').firstElementChild.style.transform=`translate(${Math.max(-26,Math.min(26,dx))}px,${Math.max(-26,Math.min(26,dy))}px)`;
-  ev.preventDefault();
+  const knob=$('dragStick')?.firstElementChild;
+  if(knob)knob.style.transform=`translate(${Math.max(-26,Math.min(26,dx))}px,${Math.max(-26,Math.min(26,dy))}px)`;
 }
 function dragEnd(ev){
   if(!dragMove.active||ev.pointerId!==dragMove.id)return;
+  const cancelled=ev.type==='pointercancel'||ev.type==='lostpointercapture';
   const p=screenPoint(ev),d=Math.hypot(p.x-dragMove.sx,p.y-dragMove.sy);
-  if(d<10)target={x:p.x/zoom+cam.x,y:p.y/zoom+cam.y};
-  dragMove.active=false;dragMove.dx=dragMove.dy=0;
-  $('dragStick').classList.remove('show');
-  $('dragStick').firstElementChild.style.transform='translate(0,0)';
+  if(!cancelled&&d<10)target={x:p.x/zoom+cam.x,y:p.y/zoom+cam.y};
+  resetDragMovement();
 }
-c.addEventListener('pointerdown',dragStart);
-c.addEventListener('pointermove',dragUpdate);
+c.addEventListener('pointerdown',dragStart,{passive:false});
+c.addEventListener('pointermove',dragUpdate,{passive:false});
 c.addEventListener('pointerup',dragEnd);
 c.addEventListener('pointercancel',dragEnd);
+c.addEventListener('lostpointercapture',dragEnd);
+addEventListener('blur',resetDragMovement);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)resetDragMovement()});
 c.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoom+(e.deltaY<0?.08:-.08))},{passive:false});
 c.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchStart=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
 c.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchStart){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);setZoom(zoom+(d-pinchStart)/500);pinchStart=d;e.preventDefault()}},{passive:false});
@@ -959,7 +970,6 @@ function updateContextActions(){
   if(bar.innerHTML!==html)bar.innerHTML=html;
 }
 
-window.triggerCraft=(k,slime)=>startCraftGame(k,slime);
 window.triggerGather=id=>{const n=yardNodes.find(x=>x.id===id);if(n)gatherYardNode(n)};
 window.triggerAttack=()=>attack();
 window.triggerContractDrop=()=>deliverToContract();
@@ -1655,6 +1665,7 @@ function start(n){
 function card(title,body){return `<div class="card"><h3>${title}</h3>${body}</div>`}
 
 function openPage(p){
+  resetDragMovement();
   if(['employees','wholesale','skills','expedition'].includes(p)&&!featureUnlocked(p)){toast('This function unlocks later in shop progression');return}
   $('panel').classList.add('show');
   let h='';
@@ -1922,36 +1933,8 @@ function advanceTutorial(){
 }
 
 let craftUseSlime=false;
-function startCraftGame(k,useSlime=false){
-  if($('craftGame').classList.contains('show'))return;
-  if(outputGroupCount(k)>=S.outputCap)return toast(recipes[k].name+' shared output table is full!');
-  if(!canCraft(k))return toast('Missing raw materials • Visit the Material Yard!');
-  craftKey=k;craftUseSlime=useSlime;craftAnim=0;
-  $('craftTitle').textContent='CRAFTING • '+(useSlime?'SLIME EDGE':recipes[k].name.toUpperCase());
-  $('craftGame').classList.add('show');
-  playing=false;
-  let start=performance.now();
-  function anim(t){
-    if(!$('craftGame').classList.contains('show'))return;
-    craftAnim=(Math.sin((t-start)/460)+1)/2;
-    $('craftMarker').style.left=(craftAnim*96)+'%';
-    requestAnimationFrame(anim);
-  }
-  requestAnimationFrame(anim);
-}
-function finishCraft(){
-  let perfect=craftAnim>.42&&craftAnim<.58;
-  S.nextCraftBonus=perfect?.22:.04;
-  $('craftGame').classList.remove('show');
-  playing=true;
-  if(craft(craftKey,null,craftUseSlime)){
-    goalProgress('craft',1);
-    if(perfect)toast('PERFECT HAMMER! Quality boosted!');
-    if(S.tutorialStep===1)advanceTutorial();
-  }
-}
-
 function exitSlots(){
+  resetDragMovement();
   playing=false;
   $('app').classList.add('hidden');
   $('panel').classList.remove('show');
@@ -1974,7 +1957,6 @@ $('summaryNext').onclick=()=>{
   createDayContent();playing=true;
   save('Day '+S.day+' started');
 };
-if($('craftTap'))$('craftTap').onclick=finishCraft;
 function handleMenuPage(ev){
   const b=ev.target.closest?.('[data-page]');
   if(!b)return;
@@ -1983,7 +1965,7 @@ function handleMenuPage(ev){
 }
 $('mainMenu').addEventListener('click',handleMenuPage);
 $('bagToggle').onclick=toggleBag;
-$('closePanel').onclick=()=>$('panel').classList.remove('show');
+$('closePanel').onclick=()=>{resetDragMovement();$('panel').classList.remove('show')};
 
 function refreshMenus(){
  const rules={employees:featureUnlocked('employees'),wholesale:featureUnlocked('wholesale'),skills:featureUnlocked('skills'),expedition:featureUnlocked('expedition')};

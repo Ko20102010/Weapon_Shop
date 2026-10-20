@@ -1,25 +1,33 @@
-# Weapon Shop Empire v0.22.20 Automatic Loop Build
+# Weapon Shop Empire v0.22.21 Input Hotfix
 
-## Crafting behaviour
-
-1. Step onto `STAY TO AUTO CRAFT` or `STAY TO AUTO BREW`.
-2. The first item is attempted immediately.
-3. Another item is attempted every 1.15 seconds while the player remains on the logo.
-4. Crafting stops when materials run out, the shared output table is full, the recipe is unavailable, or the player leaves.
-5. Leave the pad to collect and stock output, then return to continue.
+This build supersedes v0.22.20, where drag-to-move was broken by a stale reference to the removed manual crafting overlay.
 
 ## Deploy
 
-Upload the extracted contents to the GitHub repository root, preserving `data/`, `js/`, `tests/` and `docs/`.
+Replace the repository-root contents with this package while preserving the included folder structure.
 
-## Checks
+## Test locally
+
+```bash
+python3 -m http.server 8000
+```
+
+Open:
+
+```text
+http://localhost:8000/?v=02221
+```
+
+## Automated checks
 
 ```bash
 node --check game.js
 node --check js/debug-overlay.js
+node tests/project-audit.mjs
+node tests/input-regression.mjs
 node tests/route-matrix.mjs
 node tests/art-stabilisation.mjs
 node tests/interaction-tests.mjs
 ```
 
-Physical-device and real-browser interaction testing were unavailable in the build environment.
+Real-browser and physical-device tests were unavailable in the build environment.

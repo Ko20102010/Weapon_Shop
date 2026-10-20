@@ -1,0 +1,11 @@
+HTML IDs 32; DOM references 39; unexplained missing 0
+PASS DOM reference audit
+PASS required #game
+PASS required #panel
+PASS required #dragStick
+PASS required #daySummary
+PASS required #slotScreen
+PASS required #mainMenu
+PASS required #bagToggle
+PASS required #toast
+PASS no stale manual craft trigger

@@ -2,7 +2,7 @@
 
 **Plan version:** 1.2  
 **Updated:** 20 October 2026  
-**Trusted baseline:** v0.22.20 Continuous Auto-Craft Build  
+**Trusted baseline:** v0.22.21 Input Hotfix Build  
 **Previous executable baseline:** v0.22.00  
 **Deployment model:** static HTML, CSS and JavaScript on GitHub Pages  
 **Primary target:** iPhone Safari portrait  
@@ -616,7 +616,7 @@ Every release must state:
 
 ## Current next action
 
-Perform physical iPhone first-sale and continuous-crafting checks for v0.22.20. If no blockers are found, begin **M3, mobile onboarding and day-system redesign**.
+Deploy v0.22.21 and verify drag movement plus the first Sword loop on physical iPhone Safari. Do not begin M3 until these critical journeys pass.
 
 ---
 
@@ -653,3 +653,13 @@ Perform physical iPhone first-sale and continuous-crafting checks for v0.22.20. 
 - Legacy manual crafting overlay: removed from HTML.
 - Route, artwork stabilisation and interaction source checks: executed.
 - Physical iPhone first-sale time and browser runtime interaction: not executed.
+
+
+## v0.22.21 input regression record — 20 October 2026
+
+- Root cause: `dragStart()` dereferenced removed `#craftGame`, throwing on every canvas pointer down.
+- Stale reference and dead manual-craft code: removed.
+- Pointer cancellation and lost-capture recovery: implemented.
+- Static DOM-reference audit: added.
+- Route/art/interaction regression checks: retained.
+- Real-browser and physical-device execution: not available.
