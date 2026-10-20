@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.11';
+const VERSION='v0.22.20';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02211_slot_',OLD_PREFIXES=['wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02211',OLD_FOREVER_KEYS=['wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02220_slot_',OLD_PREFIXES=['wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02220',OLD_FOREVER_KEYS=['wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -216,7 +216,8 @@ const PROCESS_PADS={
   forge:{x:250,y:1000,w:190,h:105,label:'⚒ AUTO CRAFT',station:'forge'},
   alchemy:{x:865,y:1000,w:190,h:105,label:'🧪 AUTO BREW',station:'alchemy'}
 };
-let processPadLast='';
+const AUTO_CRAFT_INTERVAL=1.15;
+let autoCraftState={padId:'',elapsed:0,crafted:0,blockedReason:''};
 function pointInRect(x,y,a,pad=0){return x>=a.x-pad&&x<=a.x+a.w+pad&&y>=a.y-pad&&y<=a.y+a.h+pad}
 function inDoorClearance(x,y,r=0){return DOOR_CLEARANCES.some(a=>pointInRect(x,y,a,-Math.max(0,r-3)))}
 function collides(x,y,r=16){
@@ -229,20 +230,39 @@ function selectedAutoRecipe(station){
   if(S.products[preferred]?.unlocked&&S.products[preferred]?.on)return preferred;
   return Object.keys(recipes).find(k=>recipes[k].station===station&&S.products[k]?.unlocked&&S.products[k]?.on)||null;
 }
-function processAutoCraftPads(){
-  const id=Object.keys(PROCESS_PADS).find(k=>pointInRect(player.x,player.y,PROCESS_PADS[k]));
-  if(!id){processPadLast='';return}
-  if(id===processPadLast)return;
-  processPadLast=id;
+function autoCraftBlockReason(key){
+  if(!key)return 'No unlocked recipe';
+  const r=recipes[key];
+  if(outputGroupCount(key)>=S.outputCap)return `Output table full (${S.outputCap}/${S.outputCap})`;
+  const missing=[];
+  for(const mat of ['iron','wood','herb']){const need=r[mat]||0,have=S[mat]||0;if(have<need)missing.push(`${need-have} more ${mat[0].toUpperCase()+mat.slice(1)}`)}
+  return missing.length?`Need ${missing.join(', ')}`:'';
+}
+function attemptPadCraft(id,announce=true){
   const pad=PROCESS_PADS[id],key=selectedAutoRecipe(pad.station);
-  if(!key){toast(pad.station==='forge'?'AUTO CRAFT: no unlocked forge recipe':'AUTO BREW: Alchemy is locked');return}
+  if(!key){const reason=pad.station==='forge'?'No unlocked Forge recipe':'Alchemy is locked';if(announce)toast(`${pad.label}: ${reason}`);autoCraftState.blockedReason=reason;return false}
   craftKey=key;
-  if(craft(key,null,false)){
-    goalProgress('craft',1);
-    toast(`${pad.label}: ${recipes[key].name} completed`);
-  }else{
-    toast(`${pad.label}: need materials or clear the output table`);
+  const reason=autoCraftBlockReason(key);
+  if(reason){if(announce&&reason!==autoCraftState.blockedReason)toast(`${pad.label}: ${reason}`);autoCraftState.blockedReason=reason;return false}
+  if(!craft(key,null,false)){if(announce)toast(`${pad.label}: unable to craft`);return false}
+  autoCraftState.blockedReason='';autoCraftState.crafted++;
+  goalProgress('craft',1);
+  addFloat(pad.x+pad.w/2,pad.y-10,`+1 ${recipes[key].icon}`,'#ffe18a');
+  toast(`${pad.label}: ${recipes[key].name} #${autoCraftState.crafted}`);
+  return true;
+}
+function processAutoCraftPads(dt=0){
+  const id=Object.keys(PROCESS_PADS).find(k=>pointInRect(player.x,player.y,PROCESS_PADS[k]));
+  if(!id){autoCraftState={padId:'',elapsed:0,crafted:0,blockedReason:''};return}
+  if(autoCraftState.padId!==id){
+    autoCraftState={padId:id,elapsed:0,crafted:0,blockedReason:''};
+    attemptPadCraft(id,true);
+    return;
   }
+  autoCraftState.elapsed+=dt;
+  if(autoCraftState.elapsed<AUTO_CRAFT_INTERVAL)return;
+  autoCraftState.elapsed%=AUTO_CRAFT_INTERVAL;
+  attemptPadCraft(id,true);
 }
 function drawProcessPads(){
   for(const pad of Object.values(PROCESS_PADS)){
@@ -257,7 +277,7 @@ function drawProcessPads(){
     g.strokeStyle=edge;g.lineWidth=insideNow?7:4;g.strokeRect(pad.x,pad.y,pad.w,pad.h);
     if(ready){g.save();g.globalAlpha=.18+.08*Math.sin(animClock*3);g.fillStyle=edge;g.fillRect(pad.x-5,pad.y-5,pad.w+10,pad.h+10);g.restore()}
     text(forge?'⚒':'🧪',pad.x+pad.w/2,pad.y+43,27,'#fff7dd');
-    text(forge?'AUTO CRAFT':'AUTO BREW',pad.x+pad.w/2,pad.y+76,12,ready?'#fff2bd':'#cabfac');
+    text(forge?'STAY TO AUTO CRAFT':'STAY TO AUTO BREW',pad.x+pad.w/2,pad.y+76,10.5,ready?'#fff2bd':'#cabfac');
     if(!ready)text('NEED MATERIALS',pad.x+pad.w/2,pad.y+94,7.5,'#e8b0a3');
   }
 }
@@ -1000,7 +1020,7 @@ function playerTick(dt){
   }
   player.x=Math.max(40,Math.min(WORLD.w-40,player.x));
   player.y=Math.max(50,Math.min(WORLD.h-50,player.y));
-  processAutoCraftPads();
+  processAutoCraftPads(dt);
 
   for(const n of yardNodes){
     if(!n.ready){
@@ -1481,7 +1501,7 @@ function drawProcessPadOverlay(){
     const key=selectedAutoRecipe(pad.station),ready=key&&canCraft(key),active=pointInRect(player.x,player.y,pad);
     const col=active?'#ffffff':ready?(pad.station==='forge'?'#ffd166':'#bffb9a'):'#8c8174';
     g.save();g.globalAlpha=active?.95:ready?.68:.34;g.strokeStyle=col;g.lineWidth=active?6:3;
-    g.strokeRect(pad.x+8,pad.y+8,pad.w-16,pad.h-16);g.restore();
+    g.strokeRect(pad.x+8,pad.y+8,pad.w-16,pad.h-16);if(active&&ready){g.fillStyle=col;g.globalAlpha=.2;g.fillRect(pad.x+8,pad.y+pad.h-14,(pad.w-16)*Math.min(1,autoCraftState.elapsed/AUTO_CRAFT_INTERVAL),6)}g.restore();
   }
 }
 function drawLayer4To6(){
@@ -1887,7 +1907,7 @@ function showTutorial(){
   if(st>=5){$('tutorial').classList.remove('show');return}
   const steps=[
     ['1/5 • Drag to Move','Hold & slide your finger anywhere like a joystick to walk around the Modular Forest Outpost. Tap 💡 Next Task anytime to auto-walk!'],
-    ['2/5 • Craft at the Forge','Walk into the FORGE and step onto the glowing AUTO CRAFT floor logo. Crafting starts automatically.'],
+    ['2/5 • Craft at the Forge','Walk into the FORGE and step onto the glowing AUTO CRAFT floor logo. Crafting starts automatically and continues while you remain on the logo.'],
     ['3/5 • Pick Up & Stock Shelf','Walk over the Sword at ⚔️ OUT, then carry it to the 12-slot ATTACK shelf.'],
     ['4/5 • Customer & Checkout Coins','Watch a customer walk in from the South Bridge, inspect your shelf, and leave coins at CHECKOUT. Walk over the coins!'],
     ['5/5 • Grow the Shop','Sell 5 Swords to unlock Alchemy. Employees, expeditions and contracts unlock later.']
@@ -1954,7 +1974,7 @@ $('summaryNext').onclick=()=>{
   createDayContent();playing=true;
   save('Day '+S.day+' started');
 };
-$('craftTap').onclick=finishCraft;
+if($('craftTap'))$('craftTap').onclick=finishCraft;
 function handleMenuPage(ev){
   const b=ev.target.closest?.('[data-page]');
   if(!b)return;

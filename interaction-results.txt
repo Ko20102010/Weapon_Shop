@@ -1,0 +1,11 @@
+PASS version
+PASS continuous interval
+PASS immediate first craft
+PASS repeat while inside
+PASS reset on exit
+PASS dt passed from player tick
+PASS full output guard
+PASS missing material detail
+PASS progress ring
+PASS manual overlay removed
+PASS auto tutorial

@@ -212,3 +212,5 @@ button:focus-visible{outline:3px solid #ffe18a;outline-offset:2px}
   .tutorial{top:101px!important}.bagPanel{top:101px!important}
 }
 @media(prefers-reduced-motion:reduce){canvas{scroll-behavior:auto}.actionBar button{animation:none!important}}
+/* v0.22.20 continuous automatic crafting */
+.craftGame{display:none!important}

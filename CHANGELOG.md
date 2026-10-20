@@ -1,13 +1,13 @@
 # Changelog
 
-## v0.22.11 — Artwork Stabilisation
+## v0.22.20 — Continuous Automatic Crafting
 
-- Added room-label hysteresis to remove repeated label flicker at the proximity boundary.
-- Added a thin top-layer process-pad ring so Forge and Alchemy status remains readable when entities cover the floor logo.
-- Moved distant customer request icons above patience bars.
-- Reduced the Alchemy cauldron footprint so it does not visually compete with the AUTO BREW pad.
-- Added a recoverable renderer error state instead of an uncaught blank-canvas failure.
-- Added accessible labels to Overview, panel Close and tutorial Skip controls.
-- Increased portrait utility controls to 44 × 44 CSS px and separated the BAG stack from the tutorial area.
-- Added keyboard focus styling and maintained reduced-motion support.
-- Preserved v0.22.10 map geometry, gameplay and saves; added v0.22.10 keys to migration lookup.
+- Changed Forge and Alchemy process pads from one craft per entry to continuous crafting while the player remains on the floor logo.
+- The first craft attempt occurs immediately on entry; additional attempts occur every 1.15 seconds.
+- Crafting stops safely when materials run out, the output table is full, the recipe is unavailable, or the player leaves the pad.
+- Added precise failure feedback such as missing material quantity and output capacity.
+- Added a process-progress bar inside the pad status ring.
+- Updated floor labels to `STAY TO AUTO CRAFT` and `STAY TO AUTO BREW`.
+- Removed the legacy manual crafting overlay from HTML.
+- Preserved product quality, rarity, defects, discoveries, objectives and output-table behaviour.
+- Preserved v0.22.11 geometry and added v0.22.11 save keys to migration lookup.

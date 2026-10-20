@@ -2,7 +2,7 @@
 
 **Plan version:** 1.2  
 **Updated:** 20 October 2026  
-**Trusted baseline:** v0.22.11 Stabilisation Build  
+**Trusted baseline:** v0.22.20 Continuous Auto-Craft Build  
 **Previous executable baseline:** v0.22.00  
 **Deployment model:** static HTML, CSS and JavaScript on GitHub Pages  
 **Primary target:** iPhone Safari portrait  
@@ -147,7 +147,7 @@ A release is blocked unless all applicable journeys pass.
 - [x] M0 — Baseline protection and diagnostics
 - [x] M1 — Navigation foundation, 40/40 route matrix
 - [x] M1A — Artwork-first v0.22.10 renderer pass
-- [ ] M2 — Complete and test the automatic Sword loop
+- [x] M2 — Continuous automatic Forge/Alchemy loop implemented; physical first-sale timing remains unverified
 - [ ] M3 — Mobile onboarding and day-system redesign
 - [ ] M4 — Visible shop-growth tiers
 - [ ] M5 — Customer selling decisions
@@ -616,7 +616,7 @@ Every release must state:
 
 ## Current next action
 
-Perform the remaining real-browser and physical iPhone checks for v0.22.11. If no release blockers are found, implement **M2, the complete automatic Sword loop**.
+Perform physical iPhone first-sale and continuous-crafting checks for v0.22.20. If no blockers are found, begin **M3, mobile onboarding and day-system redesign**.
 
 ---
 
@@ -642,3 +642,14 @@ Perform the remaining real-browser and physical iPhone checks for v0.22.11. If n
 - 44 × 44 CSS px mobile utility targets: implemented.
 - Route matrix and source checks: executed in release package.
 - Real-browser screenshots and physical-device tests: not executed.
+
+
+## v0.22.20 execution record — 20 October 2026
+
+- Continuous pad crafting: implemented.
+- Immediate entry craft: implemented.
+- Repeat interval: 1.15 seconds while standing on the pad.
+- Stop conditions: player exit, missing materials, full output, unavailable recipe.
+- Legacy manual crafting overlay: removed from HTML.
+- Route, artwork stabilisation and interaction source checks: executed.
+- Physical iPhone first-sale time and browser runtime interaction: not executed.
