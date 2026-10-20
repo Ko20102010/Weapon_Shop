@@ -9,3 +9,7 @@
 - Reworked map art with a unified woodland palette, quieter room floors, small threshold mats, matching furniture, cleaner water and bridge treatment.
 - Generated runtime wall and doorway constants from `data/map_model.json` during the build.
 - Preserved automatic Forge/Alchemy pads and existing gameplay systems.
+
+## Documentation update
+
+- Added `MAP_ART_BEFORE_AFTER_REVIEW.md` with the v0.21.05 versus v0.22.00 review, area-by-area findings, visual-system rules, screenshot requirements, scoring, and v0.22.10 release gates.

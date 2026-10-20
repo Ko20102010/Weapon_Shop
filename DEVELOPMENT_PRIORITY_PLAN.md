@@ -981,3 +981,7 @@ Run physical iPhone Safari room-entry checks for v0.22.00. If those pass, implem
 - Structural geometry and runtime constants generated together from the corrected model during packaging.
 - JavaScript and static checks: passed.
 - Real-browser and physical iPhone checks: not executed in the build environment.
+
+## Map-art review requirement — added 20 October 2026
+
+Every future map-art release must include `MAP_ART_BEFORE_AFTER_REVIEW.md` and paired screenshots under `docs/map-review/`. The review must compare equivalent camera positions, score route readability, room identity, interaction clarity, visual hierarchy, colour consistency, furniture readability, mobile-scale legibility, and collision/art agreement. Route readability and collision/art agreement require a score of 5/5. The automated route matrix must remain 40/40.
