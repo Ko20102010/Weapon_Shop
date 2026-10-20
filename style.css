@@ -91,4 +91,19 @@ canvas{display:block;width:100%;height:100%;touch-action:none;background:#265c29
 
 .lockedFeature{display:none!important}.bagToggle{position:fixed;right:8px;top:158px;z-index:9;border:2px solid #d6aa55;border-radius:9px;background:#241d1bee;color:#ffe7a0;padding:7px 10px;font-weight:bold}.bagPanel{display:none;position:fixed;right:8px;top:198px;z-index:9;width:190px;background:#201b1eef;border:2px solid #8c653d;border-radius:12px;padding:9px;box-shadow:0 8px 24px #000a}.bagPanel.show{display:block}.bagTabs{display:grid;grid-template-columns:1fr 1fr;gap:5px}.bagTabs button{background:#3a2c25;color:#ffe5ad;border:1px solid #8c653d;border-radius:7px;padding:5px}.bagBody{line-height:1.7;font-size:12px;margin-top:7px}.bagBody b{float:right;color:#ffd064}
 
-/* v0.19.04 map relocation and floor-process markers; existing UI preserved. */
+/* v0.20.00 responsive UI and art polish */
+:root{--panel:#171719eF;--edge:#8f6a42;--gold:#ffd064;--ink:#f7ebce}
+body{background:#17351f}
+.hudWrap{right:64px;gap:4px}.topHud>*{background:var(--panel);border-color:#72583c;padding:6px 9px;box-shadow:0 3px 9px #0008}.subHud{max-width:min(620px,calc(100vw - 80px))}#carryHud{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#15171aee}
+.cameraButtons button{background:#211d1cef;border-color:#76583a}.cameraButtons{gap:4px}
+.menuButtons{left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));gap:6px}.menuButtons button{background:#211d1cf2;border-color:#76583a;min-height:44px;font-size:10.5px}.menuButtons button:active,.cameraButtons button:active,.taskBtn:active{transform:translateY(1px);filter:brightness(1.18)}
+.bagToggle{top:144px;background:#211d1cf2;border-color:#8f6a42;font-size:11px;padding:8px 10px}.bagPanel{top:188px;background:#171719f4;backdrop-filter:blur(8px)}
+.tutorial{top:112px;left:10px;width:min(330px,calc(100% - 78px))}.tutorialCard{background:#171719f2;border-width:1px;padding:9px 11px}.tutorialCard p{font-size:11px}.tutHead{gap:8px}
+.actionBar{bottom:calc(66px + env(safe-area-inset-bottom))}.actionBar button{background:#251e19f2;border-color:#e0ad50;animation:none;box-shadow:0 5px 14px #0009}
+.panel{background:linear-gradient(145deg,#29231f,#151518);border-color:#8f6a42}.card{background:#171719;border-color:#554536}.toast{background:#171719f7}
+@media(max-width:560px){
+ .hudWrap{top:6px;left:6px;right:54px}.topHud{gap:3px}.topHud>*{font-size:10px;padding:5px 7px;border-radius:8px}#heroHud{display:none}.subHud{width:100%}#carryHud{font-size:10px;padding:5px 7px}.taskBtn{font-size:10px;padding:5px 7px}
+ .cameraButtons{right:6px;top:6px}.cameraButtons button{width:38px;height:34px}.bagToggle{right:6px;top:116px}.bagPanel{right:6px;top:158px;width:174px}
+ .tutorial{top:91px;width:calc(100% - 76px)}.menuButtons{grid-template-columns:repeat(6,minmax(58px,1fr));overflow-x:auto}.menuButtons button{font-size:9px;padding:7px 2px}
+ .version{display:none}.panel{inset:3% 2.5% calc(70px + env(safe-area-inset-bottom))}
+}
