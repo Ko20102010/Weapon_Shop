@@ -2,7 +2,7 @@
 
 **Plan version:** 1.2  
 **Updated:** 20 October 2026  
-**Trusted baseline:** v0.22.22 Mobile Input Fix Build  
+**Trusted baseline:** v0.22.23 Input Capture Hotfix  
 **Previous executable baseline:** v0.22.00  
 **Deployment model:** static HTML, CSS and JavaScript on GitHub Pages  
 **Primary target:** iPhone Safari portrait  
@@ -670,3 +670,11 @@ Deploy v0.22.22 and verify drag, tap, pinch recovery, orientation recovery and t
 - Multi-touch-safe pointer controller, dead zone, progressive strength, capture recovery and keyboard fallback: implemented.
 - Static input, DOM, mobile UX, route, artwork and interaction checks: executed.
 - Real-browser and physical-phone input execution: not available.
+
+
+## v0.22.23 capture-layer finding — 20 October 2026
+
+- Reported symptom: no joystick appeared, indicating pointer-down never reached the canvas handler.
+- Fix: document capture-phase listeners with playable-surface filtering.
+- Interactive UI regions remain excluded.
+- Physical iPhone verification remains the release gate.

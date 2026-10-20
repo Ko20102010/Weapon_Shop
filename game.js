@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.22';
+const VERSION='v0.22.23';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02222_slot_',OLD_PREFIXES=['wse_v02221_slot_','wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02222',OLD_FOREVER_KEYS=['wse_forever_v02221','wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02223_slot_',OLD_PREFIXES=['wse_v02222_slot_','wse_v02221_slot_','wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02223',OLD_FOREVER_KEYS=['wse_forever_v02222','wse_forever_v02221','wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -523,7 +523,16 @@ function setJoystickVector(dx,dy){
   const strength=Math.min(1,(distance-INPUT_DEADZONE)/(INPUT_RADIUS-INPUT_DEADZONE));
   dragMove.dx=dx/distance*strength;dragMove.dy=dy/distance*strength;
 }
+function isInteractiveInputTarget(target){
+  if(!(target instanceof Element))return false;
+  return !!target.closest('button,a,input,select,textarea,.panel,.bagPanel,.menuButtons,.cameraButtons,.actionBar,.tutorialCard,.daySummary,.slotScreen');
+}
+function isGameSurfaceEvent(ev){
+  const app=$('app');
+  return !!app&&!app.classList.contains('hidden')&&app.contains(ev.target)&&!isInteractiveInputTarget(ev.target);
+}
 function dragStart(ev){
+  if(!isGameSurfaceEvent(ev))return;
   if(ev.pointerType==='touch')touchPointers.add(ev.pointerId);
   if(inputBlocked()||(ev.pointerType==='mouse'&&ev.button!==0)||ev.isPrimary===false||touchPointers.size>1){if(touchPointers.size>1)resetDragMovement();return}
   ev.preventDefault();
@@ -553,9 +562,11 @@ function setKeyboardKey(ev,value){
   const map={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'},key=map[ev.code];if(!key)return;
   keyboardMove[key]=value;ev.preventDefault();if(value){target=null;if(player)player.navPath=null}
 }
-c.addEventListener('pointerdown',dragStart,{passive:false});
-c.addEventListener('pointermove',dragUpdate,{passive:false});
-c.addEventListener('pointerup',dragEnd);c.addEventListener('pointercancel',dragEnd);c.addEventListener('lostpointercapture',dragEnd);
+document.addEventListener('pointerdown',dragStart,{passive:false,capture:true});
+document.addEventListener('pointermove',dragUpdate,{passive:false,capture:true});
+document.addEventListener('pointerup',dragEnd,{capture:true});
+document.addEventListener('pointercancel',dragEnd,{capture:true});
+c.addEventListener('lostpointercapture',dragEnd);
 addEventListener('keydown',ev=>setKeyboardKey(ev,true),{passive:false});addEventListener('keyup',ev=>setKeyboardKey(ev,false),{passive:false});
 addEventListener('blur',()=>{touchPointers.clear();resetDragMovement();for(const k in keyboardMove)keyboardMove[k]=false});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){touchPointers.clear();resetDragMovement();for(const k in keyboardMove)keyboardMove[k]=false}});

@@ -1,11 +1,9 @@
 # Changelog
 
-## v0.22.22 — Mobile Input Regression Fix
+## v0.22.23 — Input Capture Hotfix
 
-- Rebuilt drag-to-move with multi-touch protection, pointer-capture recovery and non-passive pointer handling.
-- Added a 7 px dead zone and progressive joystick response up to a 46 px radius.
-- Preserved tap-to-move and pinch zoom without allowing a second touch to hijack movement.
-- Added WASD and arrow-key fallback for desktop verification.
-- Reset movement on panel opening, save start, next day, browser blur and hidden-tab state.
-- Added overscroll prevention and larger coarse-pointer joystick presentation.
-- Preserved continuous automatic crafting, artwork, routes, saves and progression.
+- Moved world pointer listeners to document capture phase so transparent HUD wrappers cannot prevent drag start.
+- Accepts movement from non-interactive surfaces inside `#app`.
+- Explicitly excludes buttons, panels, menus, camera controls, action controls, tutorial cards, day summary and save-slot overlay.
+- Retains canvas pointer capture, multi-touch protection, dead zone, tap-to-move, pinch zoom and continuous automatic crafting.
+- Preserves map geometry, routes, saves, artwork and progression.
