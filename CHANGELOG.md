@@ -1,11 +1,11 @@
 # Changelog
 
-## v0.22.21 — Input Hotfix and Project Review
+## v0.22.22 — Mobile Input Regression Fix
 
-- Fixed drag-to-move failure caused by a stale `#craftGame` dereference after the manual crafting overlay was removed.
-- Removed dead manual-crafting functions and the unused global craft trigger.
-- Added robust pointer cancellation, lost-capture, browser-blur and visibility-change handling.
-- Reset drag state when opening panels or returning to save slots.
-- Added input regression and static DOM-reference audits.
-- Preserved continuous automatic crafting, artwork, map geometry, routes, saves and progression.
-- Added v0.22.20 save keys to migration lookup.
+- Rebuilt drag-to-move with multi-touch protection, pointer-capture recovery and non-passive pointer handling.
+- Added a 7 px dead zone and progressive joystick response up to a 46 px radius.
+- Preserved tap-to-move and pinch zoom without allowing a second touch to hijack movement.
+- Added WASD and arrow-key fallback for desktop verification.
+- Reset movement on panel opening, save start, next day, browser blur and hidden-tab state.
+- Added overscroll prevention and larger coarse-pointer joystick presentation.
+- Preserved continuous automatic crafting, artwork, routes, saves and progression.

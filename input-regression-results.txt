@@ -1,11 +1,12 @@
 PASS version
-PASS removed DOM dereference
-PASS removed manual functions
-PASS pointer down non-passive
-PASS pointer move non-passive
-PASS pointer capture loss
-PASS visibility reset
-PASS blur reset
-PASS panel reset
-PASS safe joystick DOM
-PASS canvas touch action
+PASS no craft DOM regression
+PASS DOM-safe blocking
+PASS non-passive pointer start
+PASS non-passive pointer move
+PASS multi-touch guard
+PASS deadzone
+PASS capture recovery
+PASS visibility recovery
+PASS keyboard fallback
+PASS touch action
+PASS overscroll

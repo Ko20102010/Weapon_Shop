@@ -2,7 +2,7 @@
 
 **Plan version:** 1.2  
 **Updated:** 20 October 2026  
-**Trusted baseline:** v0.22.21 Input Hotfix Build  
+**Trusted baseline:** v0.22.22 Mobile Input Fix Build  
 **Previous executable baseline:** v0.22.00  
 **Deployment model:** static HTML, CSS and JavaScript on GitHub Pages  
 **Primary target:** iPhone Safari portrait  
@@ -616,7 +616,7 @@ Every release must state:
 
 ## Current next action
 
-Deploy v0.22.21 and verify drag movement plus the first Sword loop on physical iPhone Safari. Do not begin M3 until these critical journeys pass.
+Deploy v0.22.22 and verify drag, tap, pinch recovery, orientation recovery and the first Sword loop on physical iPhone Safari. Do not begin M3 until these phone critical journeys pass.
 
 ---
 
@@ -663,3 +663,10 @@ Deploy v0.22.21 and verify drag movement plus the first Sword loop on physical i
 - Static DOM-reference audit: added.
 - Route/art/interaction regression checks: retained.
 - Real-browser and physical-device execution: not available.
+
+
+## v0.22.22 mobile input record — 20 October 2026
+
+- Multi-touch-safe pointer controller, dead zone, progressive strength, capture recovery and keyboard fallback: implemented.
+- Static input, DOM, mobile UX, route, artwork and interaction checks: executed.
+- Real-browser and physical-phone input execution: not available.

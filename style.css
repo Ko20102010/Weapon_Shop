@@ -214,3 +214,8 @@ button:focus-visible{outline:3px solid #ffe18a;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){canvas{scroll-behavior:auto}.actionBar button{animation:none!important}}
 /* v0.22.20 continuous automatic crafting */
 .craftGame{display:none!important}
+/* v0.22.22 phone input reliability */
+html,body,#app,#game{overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+#game{touch-action:none;-webkit-touch-callout:none;cursor:crosshair}
+.dragStick{will-change:left,top,opacity}.dragStick i{will-change:transform}
+@media(pointer:coarse){#game{cursor:default}.dragStick{width:58px;height:58px;margin-left:-29px;margin-top:-29px}.dragStick i{width:28px;height:28px;left:15px;top:15px}}

@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.21';
+const VERSION='v0.22.22';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02221_slot_',OLD_PREFIXES=['wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02221',OLD_FOREVER_KEYS=['wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02222_slot_',OLD_PREFIXES=['wse_v02221_slot_','wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02222',OLD_FOREVER_KEYS=['wse_forever_v02221','wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -501,51 +501,64 @@ function addFloat(x,y,text,col='#ffed75'){
 // ============================================================================
 // INPUT & FLOATING JOYSTICK MOVEMENT
 // ============================================================================
+const INPUT_DEADZONE=7;
+const INPUT_RADIUS=46;
+const keyboardMove={up:false,down:false,left:false,right:false};
+const touchPointers=new Set();
 function screenPoint(ev){
   const r=c.getBoundingClientRect();
   return {x:(ev.clientX-r.left)*vw/r.width,y:(ev.clientY-r.top)*vh/r.height};
 }
 function inputBlocked(){
-  return !playing||$('panel')?.classList.contains('show')||$('daySummary')?.classList.contains('show')||$('slotScreen')?.classList.contains('show');
+  return !playing||!player||$('panel')?.classList.contains('show')||$('daySummary')?.classList.contains('show')||$('slotScreen')?.classList.contains('show');
 }
 function resetDragMovement(){
   dragMove.active=false;dragMove.id=null;dragMove.dx=dragMove.dy=0;
   const stick=$('dragStick');
-  if(stick){stick.classList.remove('show');if(stick.firstElementChild)stick.firstElementChild.style.transform='translate(0,0)'}
+  if(stick){stick.classList.remove('show');if(stick.firstElementChild)stick.firstElementChild.style.transform='translate3d(0,0,0)'}
+}
+function setJoystickVector(dx,dy){
+  const distance=Math.hypot(dx,dy);
+  if(distance<INPUT_DEADZONE){dragMove.dx=dragMove.dy=0;return}
+  const strength=Math.min(1,(distance-INPUT_DEADZONE)/(INPUT_RADIUS-INPUT_DEADZONE));
+  dragMove.dx=dx/distance*strength;dragMove.dy=dy/distance*strength;
 }
 function dragStart(ev){
-  if(inputBlocked()||(ev.pointerType==='mouse'&&ev.button!==0)||ev.isPrimary===false)return;
+  if(ev.pointerType==='touch')touchPointers.add(ev.pointerId);
+  if(inputBlocked()||(ev.pointerType==='mouse'&&ev.button!==0)||ev.isPrimary===false||touchPointers.size>1){if(touchPointers.size>1)resetDragMovement();return}
   ev.preventDefault();
-  const p=screenPoint(ev);
-  dragMove={active:true,id:ev.pointerId,sx:p.x,sy:p.y,dx:0,dy:0};
+  const p=screenPoint(ev);dragMove={active:true,id:ev.pointerId,sx:p.x,sy:p.y,dx:0,dy:0};
   try{c.setPointerCapture?.(ev.pointerId)}catch{}
-  const stick=$('dragStick');
-  if(stick){stick.style.left=p.x+'px';stick.style.top=p.y+'px';stick.classList.add('show')}
+  const stick=$('dragStick');if(stick){stick.style.left=p.x+'px';stick.style.top=p.y+'px';stick.classList.add('show')}
   target=null;player.navPath=null;
 }
 function dragUpdate(ev){
-  if(!dragMove.active||ev.pointerId!==dragMove.id)return;
+  if(!dragMove.active||ev.pointerId!==dragMove.id||touchPointers.size>1)return;
   ev.preventDefault();
-  const p=screenPoint(ev),dx=p.x-dragMove.sx,dy=p.y-dragMove.sy,d=Math.hypot(dx,dy),max=40;
-  dragMove.dx=d?dx/d*Math.min(1,d/max):0;
-  dragMove.dy=d?dy/d*Math.min(1,d/max):0;
-  const knob=$('dragStick')?.firstElementChild;
-  if(knob)knob.style.transform=`translate(${Math.max(-26,Math.min(26,dx))}px,${Math.max(-26,Math.min(26,dy))}px)`;
+  const p=screenPoint(ev),dx=p.x-dragMove.sx,dy=p.y-dragMove.sy;setJoystickVector(dx,dy);
+  const distance=Math.hypot(dx,dy),scale=distance?Math.min(26,distance)/distance:0;
+  const knob=$('dragStick')?.firstElementChild;if(knob)knob.style.transform=`translate3d(${dx*scale}px,${dy*scale}px,0)`;
 }
 function dragEnd(ev){
+  if(ev.pointerType==='touch')touchPointers.delete(ev.pointerId);
   if(!dragMove.active||ev.pointerId!==dragMove.id)return;
-  const cancelled=ev.type==='pointercancel'||ev.type==='lostpointercapture';
-  const p=screenPoint(ev),d=Math.hypot(p.x-dragMove.sx,p.y-dragMove.sy);
-  if(!cancelled&&d<10)target={x:p.x/zoom+cam.x,y:p.y/zoom+cam.y};
+  const cancelled=ev.type==='pointercancel'||ev.type==='lostpointercapture';const p=screenPoint(ev),distance=Math.hypot(p.x-dragMove.sx,p.y-dragMove.sy);
+  if(!cancelled&&distance<INPUT_DEADZONE)target={x:p.x/zoom+cam.x,y:p.y/zoom+cam.y};
+  try{if(c.hasPointerCapture?.(ev.pointerId))c.releasePointerCapture(ev.pointerId)}catch{}
   resetDragMovement();
+}
+function keyboardVector(){const x=(keyboardMove.right?1:0)-(keyboardMove.left?1:0),y=(keyboardMove.down?1:0)-(keyboardMove.up?1:0);if(!x&&!y)return null;const n=Math.hypot(x,y);return{x:x/n,y:y/n}}
+function setKeyboardKey(ev,value){
+  if(['INPUT','TEXTAREA','SELECT','BUTTON'].includes(ev.target?.tagName))return;
+  const map={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'},key=map[ev.code];if(!key)return;
+  keyboardMove[key]=value;ev.preventDefault();if(value){target=null;if(player)player.navPath=null}
 }
 c.addEventListener('pointerdown',dragStart,{passive:false});
 c.addEventListener('pointermove',dragUpdate,{passive:false});
-c.addEventListener('pointerup',dragEnd);
-c.addEventListener('pointercancel',dragEnd);
-c.addEventListener('lostpointercapture',dragEnd);
-addEventListener('blur',resetDragMovement);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)resetDragMovement()});
+c.addEventListener('pointerup',dragEnd);c.addEventListener('pointercancel',dragEnd);c.addEventListener('lostpointercapture',dragEnd);
+addEventListener('keydown',ev=>setKeyboardKey(ev,true),{passive:false});addEventListener('keyup',ev=>setKeyboardKey(ev,false),{passive:false});
+addEventListener('blur',()=>{touchPointers.clear();resetDragMovement();for(const k in keyboardMove)keyboardMove[k]=false});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){touchPointers.clear();resetDragMovement();for(const k in keyboardMove)keyboardMove[k]=false}});
 c.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoom+(e.deltaY<0?.08:-.08))},{passive:false});
 c.addEventListener('touchstart',e=>{if(e.touches.length===2)pinchStart=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});
 c.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinchStart){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);setZoom(zoom+(d-pinchStart)/500);pinchStart=d;e.preventDefault()}},{passive:false});
@@ -1011,7 +1024,8 @@ function hireEmployeeAtPad(){
 }
 
 function playerTick(dt){
-  let dx=dragMove.active?dragMove.dx:0,dy=dragMove.active?dragMove.dy:0;
+  const keys=keyboardVector();
+  let dx=keys?keys.x:(dragMove.active?dragMove.dx:0),dy=keys?keys.y:(dragMove.active?dragMove.dy:0);
   if(keys.w||keys.arrowup)dy--;
   if(keys.s||keys.arrowdown)dy++;
   if(keys.a||keys.arrowleft)dx--;
@@ -1645,6 +1659,7 @@ function renderSlots(){
 }
 
 function start(n){
+  resetDragMovement();touchPointers.clear();
   slot=n;
   let existing=load(n);
   S=norm(existing);
@@ -1953,6 +1968,7 @@ $('suggest').onclick=()=>{
 };
 $('tutorialSkip').onclick=()=>{S.tutorialStep=5;$('tutorial').classList.remove('show')};
 $('summaryNext').onclick=()=>{
+  resetDragMovement();
   $('daySummary').classList.remove('show');
   createDayContent();playing=true;
   save('Day '+S.day+' started');

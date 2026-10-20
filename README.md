@@ -1,33 +1,28 @@
-# Weapon Shop Empire v0.22.21 Input Hotfix
+# Weapon Shop Empire v0.22.22 Mobile Input Fix
 
-This build supersedes v0.22.20, where drag-to-move was broken by a stale reference to the removed manual crafting overlay.
+This build supersedes v0.22.20 and v0.22.21.
 
 ## Deploy
 
-Replace the repository-root contents with this package while preserving the included folder structure.
+Upload the extracted contents to the GitHub repository root, preserving all folders.
 
-## Test locally
+## Local run
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Open:
+Open `http://localhost:8000/?v=02222`.
 
-```text
-http://localhost:8000/?v=02221
-```
-
-## Automated checks
+## Checks
 
 ```bash
 node --check game.js
 node --check js/debug-overlay.js
 node tests/project-audit.mjs
 node tests/input-regression.mjs
+node tests/mobile-ux-audit.mjs
 node tests/route-matrix.mjs
 node tests/art-stabilisation.mjs
 node tests/interaction-tests.mjs
 ```
-
-Real-browser and physical-device tests were unavailable in the build environment.

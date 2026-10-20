@@ -2,7 +2,7 @@ import fs from 'fs';
 const game=fs.readFileSync(new URL('../game.js',import.meta.url),'utf8');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const checks=[
- ['version',game.includes("const VERSION='v0.22.21'")&&html.includes('v0.22.21')],
+ ['version',game.includes("const VERSION='v0.22.22'")&&html.includes('v0.22.22')],
  ['continuous interval',game.includes('const AUTO_CRAFT_INTERVAL=1.15')&&game.includes('autoCraftState.elapsed+=dt')],
  ['immediate first craft',game.includes('attemptPadCraft(id,true);\n    return;')],
  ['repeat while inside',game.includes('autoCraftState.elapsed%=AUTO_CRAFT_INTERVAL')],
