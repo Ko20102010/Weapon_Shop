@@ -1,11 +1,11 @@
-// Weapon Shop Empire v0.21.01
+// Weapon Shop Empire v0.21.04
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.21.01';
+const VERSION='v0.21.04';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02101_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02101',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02104_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02104',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -240,7 +240,93 @@ function featureUnlocked(name){
  return true;
 }
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function collides(x,y,r=16){return SOLIDS.some(a=>x+r>a.x&&x-r<a.x+a.w&&y+r>a.y&&y-r<a.y+a.h)}
+// v0.21.04: guaranteed walkable corridors. These rectangles are the road/door source of truth.
+const WALKABLE_ROUTES=[
+  // Continuous north/south public spine, bridge and entrance.
+  {id:'spine',x:600,y:245,w:300,h:2115},
+  {id:'bridge',x:620,y:2320,w:255,h:275},
+  {id:'south-entry',x:590,y:2560,w:310,h:300},
+
+  // Upper rooms. Branches overlap both the central spine and room interior.
+  {id:'material',x:240,y:600,w:420,h:150},
+  {id:'staff',x:825,y:600,w:210,h:150},
+  {id:'training',x:850,y:565,w:455,h:155},
+  {id:'forge',x:225,y:1070,w:435,h:155},
+  {id:'alchemy',x:830,y:1070,w:455,h:155},
+  {id:'contract',x:850,y:810,w:475,h:205},
+
+  // Retail/customer circulation and lower rooms.
+  {id:'retail-cross',x:45,y:1125,w:1270,h:120},
+  {id:'rare',x:150,y:1585,w:505,h:145},
+  {id:'checkout',x:390,y:1585,w:895,h:120},
+  {id:'management-upper',x:850,y:1515,w:475,h:205},
+  {id:'management-lower',x:850,y:1795,w:475,h:205},
+  {id:'south-wall-gate',x:590,y:1980,w:335,h:130},
+  {id:'visitor',x:250,y:2070,w:440,h:120},
+
+  // Interior room lanes keep stations and destinations approachable.
+  {id:'material-inside',x:80,y:590,w:520,h:110},
+  {id:'staff-inside',x:680,y:590,w:530,h:110},
+  {id:'training-inside',x:1280,y:560,w:245,h:120},
+  {id:'forge-inside',x:80,y:1030,w:535,h:130},
+  {id:'alchemy-inside',x:680,y:1030,w:555,h:130},
+  {id:'contract-inside',x:1285,y:825,w:500,h:165},
+  {id:'rare-inside',x:85,y:1585,w:285,h:130},
+  {id:'management-inside-a',x:1285,y:1515,w:400,h:205},
+  {id:'management-inside-b',x:1285,y:1795,w:400,h:205}
+];
+const PROCESS_PADS={
+  forge:{x:250,y:1000,w:190,h:105,label:'⚒ AUTO CRAFT',station:'forge'},
+  alchemy:{x:865,y:1000,w:190,h:105,label:'🧪 AUTO BREW',station:'alchemy'}
+};
+let processPadLast='';
+function pointInRect(x,y,a,pad=0){return x>=a.x-pad&&x<=a.x+a.w+pad&&y>=a.y-pad&&y<=a.y+a.h+pad}
+function onWalkableRoute(x,y,r=0){return WALKABLE_ROUTES.some(a=>pointInRect(x,y,a,-Math.max(0,r-4)))}
+function collides(x,y,r=16){
+  // World edge is always solid.
+  if(x-r<24||x+r>WORLD.w-24||y-r<24||y+r>WORLD.h-24)return true;
+  // A marked route/entrance is guaranteed walkable. This is the release invariant.
+  if(onWalkableRoute(x,y,r))return false;
+  return SOLIDS.some(a=>{
+    const hit=x+r>a.x&&x-r<a.x+a.w&&y+r>a.y&&y-r<a.y+a.h;
+    if(!hit)return false;
+    // Outer bounds already handled above.
+    if(a.x===0||a.y===0||a.x+a.w>=WORLD.w||a.y+a.h>=WORLD.h)return false;
+    return true;
+  });
+}
+function selectedAutoRecipe(station){
+  const selected=recipes[craftKey];
+  if(selected&&selected.station===station&&S.products[craftKey]?.unlocked&&S.products[craftKey]?.on)return craftKey;
+  const preferred=station==='forge'?'sword':'potion';
+  if(S.products[preferred]?.unlocked&&S.products[preferred]?.on)return preferred;
+  return Object.keys(recipes).find(k=>recipes[k].station===station&&S.products[k]?.unlocked&&S.products[k]?.on)||null;
+}
+function processAutoCraftPads(){
+  const id=Object.keys(PROCESS_PADS).find(k=>pointInRect(player.x,player.y,PROCESS_PADS[k]));
+  if(!id){processPadLast='';return}
+  if(id===processPadLast)return;
+  processPadLast=id;
+  const pad=PROCESS_PADS[id],key=selectedAutoRecipe(pad.station);
+  if(!key){toast(pad.station==='forge'?'AUTO CRAFT: no unlocked forge recipe':'AUTO BREW: Alchemy is locked');return}
+  craftKey=key;
+  if(craft(key,null,false)){
+    goalProgress('craft',1);
+    toast(`${pad.label}: ${recipes[key].name} completed`);
+  }else{
+    toast(`${pad.label}: need materials or clear the output table`);
+  }
+}
+function drawProcessPads(){
+  for(const pad of Object.values(PROCESS_PADS)){
+    pxRect(pad.x,pad.y,pad.w,pad.h,pad.station==='forge'?'#71452c':'#53406f');
+    g.strokeStyle=pad.station==='forge'?'#ffc55f':'#d3a0ff';g.lineWidth=5;g.strokeRect(pad.x,pad.y,pad.w,pad.h);
+    // High-contrast floor emblem remains readable under characters.
+    text(pad.station==='forge'?'⚒':'🧪',pad.x+pad.w/2,pad.y+45,28,'#fff');
+    text(pad.station==='forge'?'AUTO CRAFT':'AUTO BREW',pad.x+pad.w/2,pad.y+76,12,'#fff6cf');
+  }
+}
+
 function moveEntity(o,nx,ny,r=16){
   if(!collides(nx,o.y,r))o.x=nx;
   if(!collides(o.x,ny,r))o.y=ny;
@@ -890,21 +976,7 @@ function deliverToContract(){
 function updateContextActions(){
   const bar=$('actionBar');
   let btns=[];
-  if(inside(player,R.forge,35)){
-    btns.push(`<button onclick="window.triggerCraft('sword',false)">🔨 Sword (${S.iron}/2🪨 ${S.wood}/1🪵)</button>`);
-    if(S.products.axe.unlocked)btns.push(`<button onclick="window.triggerCraft('axe',false)">🪓 Axe (${S.iron}/3🪨 ${S.wood}/2🪵)</button>`);
-    if(S.products.shield.unlocked)btns.push(`<button onclick="window.triggerCraft('shield',false)">🛡️ Shield (${S.iron}/1🪨 ${S.wood}/3🪵)</button>`);
-    if(S.products.helmet.unlocked)btns.push(`<button onclick="window.triggerCraft('helmet',false)">🪖 Helmet (${S.iron}/3🪨 ${S.wood}/1🪵)</button>`);
-    if(S.gel>0||S.discoveries.includes('Slime Edge')){
-      btns.push(`<button onclick="window.triggerCraft('sword',true)">🗡️ Slime Edge (${S.gel}/1💧)</button>`);
-    }
-  }
-  if(inside(player,R.alchemy,35)){
-    btns.push(`<button onclick="window.triggerCraft('potion',false)">⚗️ Potion (${S.herb}/2🌿)</button>`);
-    if(S.products.repair.unlocked){
-      btns.push(`<button onclick="window.triggerCraft('repair',false)">🔧 Repair Kit (${S.iron}/1🪨 ${S.wood}/1🪵 ${S.herb}/1🌿)</button>`);
-    }
-  }
+  // Crafting is automatic on the marked forge/alchemy floor pads.
   let nearNode=yardNodes.find(n=>n.ready&&dist(player,n)<78);
   if(nearNode){
     btns.push(`<button onclick="window.triggerGather('${nearNode.id}')">${nearNode.icon} Gather ${nearNode.name}</button>`);
@@ -993,6 +1065,7 @@ function playerTick(dt){
   }
   player.x=Math.max(40,Math.min(WORLD.w-40,player.x));
   player.y=Math.max(50,Math.min(WORLD.h-50,player.y));
+  processAutoCraftPads();
 
   for(const n of yardNodes){
     if(!n.ready){
@@ -1377,6 +1450,13 @@ function drawLayer1And2(){
     if(wall.x===495&&wall.y===1905)continue;
     drawWallAssetSegment(wall);
   }
+  // Repaint guaranteed route corridors above wall art so visible roads exactly match walkability.
+  for(const r of WALKABLE_ROUTES){
+    if(r.id==='bridge')continue;
+    pxRect(r.x,r.y,r.w,r.h,'#d3ad70');
+    g.save();g.globalAlpha=.32;g.strokeStyle='#6d4c2d';g.lineWidth=3;g.strokeRect(r.x,r.y,r.w,r.h);g.restore();
+  }
+  drawProcessPads();
   drawMapObjects('lowProps');
 }
 
@@ -1773,7 +1853,7 @@ function openPage(p){
     </div>`;
   }
   if(p==='visual'){
-    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.21.01)</h2>
+    h=`<h2>PROGRESSIVE PIXEL WORLD PREVIEW (v0.21.04)</h2>
     <div class="visualNote">
       <b>Live Modular Rendering Only:</b> Ground, walls, shelves, workstations, dynamic stock, and characters render in separate layers. Concept artwork is not available as a playable map background.
     </div>

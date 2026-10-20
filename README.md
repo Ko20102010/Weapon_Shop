@@ -1,12 +1,13 @@
-# Weapon Shop Empire v0.21.01
+# Weapon Shop Empire v0.21.04
 
-Mobile layout refinement based on v0.21.00.
+Critical entrance, road and automatic-crafting release.
 
-- Portrait bottom navigation uses three columns and automatically collapses locked features.
-- Landscape uses one six-button row.
-- Action buttons stay above the navigation dock.
-- Only Overview remains in the mobile camera rail; pinch zoom remains available.
-- BAG is a compact top-right button.
-- HUD and current-goal card are smaller and respect safe-area insets.
-- Panels fill the usable mobile viewport without covering the bottom navigation.
-- Gameplay and map logic are unchanged.
+- Every named room has a wide corridor overlapping the central road and the room interior.
+- Marked roads and entrances always override structural wall collision.
+- Bridge and south entrance are guaranteed walkable.
+- A* navigation is rebuilt from the same corrected collision function.
+- Forge and Alchemy have high-contrast floor logos.
+- Stepping on a logo crafts once automatically; leave and re-enter to craft again.
+- Forge defaults to Iron Sword; Alchemy defaults to Healing Potion when unlocked.
+- Manual local craft buttons remain removed.
+- Other gameplay systems are unchanged.
