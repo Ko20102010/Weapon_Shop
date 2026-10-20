@@ -1,15 +1,12 @@
 # Changelog
 
-## v0.22.00
+## v0.22.10 — Artwork First
 
-- Fixed all 16 route failures reported by v0.21.06-dev; expanded matrix now passes 40/40.
-- Rebuilt structural walls with wide explicit openings and added aligned north/south links through the upper workshop cluster.
-- Kept retail departments and the customer hall as open display areas; visible furniture supplies their physical structure.
-- Removed broad painted roads. Open grass and room floor clearances provide circulation.
-- Reworked map art with a unified woodland palette, quieter room floors, small threshold mats, matching furniture, cleaner water and bridge treatment.
-- Generated runtime wall and doorway constants from `data/map_model.json` during the build.
-- Preserved automatic Forge/Alchemy pads and existing gameplay systems.
-
-## Documentation update
-
-- Added `MAP_ART_BEFORE_AFTER_REVIEW.md` with the v0.21.05 versus v0.22.00 review, area-by-area findings, visual-system rules, screenshot requirements, scoring, and v0.22.10 release gates.
+- Reworked the live canvas renderer with a modern woodland workshop palette.
+- Added richer timber walls, visible end posts, wall shadows, improved floor materials, river shimmer, detailed bridge planks and a stronger Forest Gate silhouette.
+- Added room-specific props for the Material Yard, Staff House, Training Yard, Forge, Alchemy Lab, Contract Warehouse, retail areas, checkout, Rare Storage, Management and Visitor Plaza.
+- Added stateful AUTO CRAFT and AUTO BREW pads: inactive, ready, blocked and active-player states.
+- Reduced map-label obstruction by showing room labels only near the player.
+- Collapsed distant customer request bubbles to compact item icons.
+- Corrected the tutorial to describe automatic floor-logo crafting.
+- Preserved room coordinates, collision, doorways, navigation targets and save content.

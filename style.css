@@ -191,3 +191,16 @@ canvas{display:block;width:100%;height:100%;touch-action:none;background:#265c29
   .journeyHud{height:31px!important;min-height:31px!important}.questCopy b{font-size:8.5px!important}
   .tutorial{top:69px!important}.bagPanel{top:69px!important}.menuButtons button{flex-basis:48px!important;min-width:48px!important}
 }
+/* v0.22.10 artwork polish */
+html,body{background:#171310;color:#f5e4bc}
+canvas{background:#244b2e}
+.topHud>*{background:linear-gradient(180deg,#2b231eea,#171513f2);border-color:#b68143;box-shadow:0 3px 0 #0c0b0a99,0 7px 18px #0007}
+.journeyHud{background:linear-gradient(100deg,#201916f5,#32261df2);border-color:#d1a34a;box-shadow:0 4px 0 #0f0c0a88,0 10px 24px #0008}
+.menuButtons{background:linear-gradient(180deg,#191512ef,#0d0c0cef);border-color:#7e5938;box-shadow:0 5px 0 #080707,0 12px 28px #000c}
+.menuButtons button{color:#f5e4bc!important;text-shadow:0 2px #000;background:linear-gradient(180deg,#2b231e,#171513)!important;border:1px solid #59412f!important}
+.menuButtons button:active{transform:translateY(2px);filter:brightness(1.2)}
+.bagToggle,.cameraButtons button{background:linear-gradient(180deg,#3b2d23,#1a1614)!important;border-color:#d1a34a!important;color:#f5e4bc!important;box-shadow:0 4px 0 #0b0908,0 8px 15px #0008}
+.panel,.summaryBox,.craftBox{background:linear-gradient(145deg,#352820,#171513);border-color:#d1a34a;box-shadow:0 24px 80px #000e}
+.card{background:linear-gradient(145deg,#211b18,#151313);border-color:#6f5035}
+.toast{background:#211914f8;border-color:#d1a34a;color:#ffe3a0;box-shadow:0 7px 18px #000a}
+@media(max-width:700px) and (orientation:portrait){.topHud>*{border-color:#8e683f!important}.journeyHud{border-color:#c4974d!important}.menuButtons button span{filter:drop-shadow(0 2px 2px #000)}}

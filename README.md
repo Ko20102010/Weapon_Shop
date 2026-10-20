@@ -1,10 +1,10 @@
-# Weapon Shop Empire v0.22.00
+# Weapon Shop Empire v0.22.10 Artwork Build
 
-GitHub-ready navigation and map-art build based on v0.21.06-dev.
+GitHub-ready static browser-game update based on the user-supplied v0.22.00 source.
 
 ## Deploy
 
-Upload the extracted contents of this package to the repository root. Do not upload the ZIP itself.
+Upload the extracted contents to the GitHub repository root. Preserve the `data/` and `js/` folders.
 
 ## Run locally
 
@@ -12,15 +12,14 @@ Upload the extracted contents of this package to the repository root. Do not upl
 python3 -m http.server 8000
 ```
 
-- Normal game: `http://localhost:8000/`
-- Collision debug: `http://localhost:8000/?debug=collision`
+- Game: `http://localhost:8000/?v=02210`
+- Collision overlay: `http://localhost:8000/?debug=collision`
 
-## Checks
+## Validation commands
 
 ```bash
 node --check game.js
-node tests/static-checks.mjs
 node tests/route-matrix.mjs
 ```
 
-Automated route matrix: 40 passed, 0 failed. Physical iPhone Safari testing was not available in the build environment.
+The artwork pass does not change map geometry. Physical iPhone Safari testing was not available in the build environment.

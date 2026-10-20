@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.00';
+const VERSION='v0.22.10';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02200_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02200',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02210_slot_',OLD_PREFIXES=['wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02210',OLD_FOREVER_KEYS=['wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -68,26 +68,25 @@ if(typeof fetch==='function'){fetch('data/world_map.json?v=0.19.00').then(r=>r.o
 function ensureMapAsset(path){const key='map:'+path;if(!SPRITES[key]){const img=new Image();img.src=path+'?v=0.19.00';SPRITES[key]=img}return SPRITES[key]}
 function drawMapObjects(layer){if(!MAP_DATA?.objects)return;for(const o of MAP_DATA.objects){if(o.layer!==layer)continue;const img=ensureMapAsset(o.asset);if(img.complete&&img.naturalWidth){const ax=o.anchor?.[0]??.5,ay=o.anchor?.[1]??1;g.drawImage(img,o.x-o.w*ax,o.y-o.h*ay,o.w,o.h)}}}
 function drawWallAssetSegment(seg){
-  const horizontal=seg.w>=seg.h,img=SPRITES.wallStraight;
-  // A continuous backing strip removes visible gaps between repeated wall sprites.
-  pxRect(seg.x-3,seg.y-3,seg.w+6,seg.h+6,'#5f4432');
-  pxRect(seg.x-1,seg.y-1,seg.w+2,Math.min(7,seg.h+2),'#9a7658');
-  if(!(img&&img.complete&&img.naturalWidth))return;
-  g.save();
-  const step=horizontal?64:46,overlap=8;
+  const horizontal=seg.w>=seg.h;
+  // Deep shadow and stone footing give walls weight at mobile zoom.
+  pxRect(seg.x+5,seg.y+7,seg.w,seg.h,'#241b18aa');
+  pxRect(seg.x-3,seg.y-3,seg.w+6,seg.h+6,'#3a281f');
+  pxRect(seg.x,seg.y,seg.w,seg.h,'#6a4630');
   if(horizontal){
-    for(let x=seg.x-overlap;x<seg.x+seg.w;x+=step-overlap){
-      const dw=Math.min(step+overlap,seg.x+seg.w+overlap-x);
-      g.drawImage(img,x,seg.y-20,dw,48);
-    }
+    pxRect(seg.x,seg.y,seg.w,4,'#b47a49');
+    pxRect(seg.x,seg.y+seg.h-5,seg.w,5,'#3a281f');
+    for(let x=seg.x+6;x<seg.x+seg.w-4;x+=34){pxRect(x,seg.y+4,4,Math.max(5,seg.h-9),'#4b3125');pxRect(x+4,seg.y+4,2,Math.max(5,seg.h-9),'#8b5a38')}
   }else{
-    for(let y=seg.y-overlap;y<seg.y+seg.h;y+=step-overlap){
-      const dh=Math.min(step+overlap,seg.y+seg.h+overlap-y);
-      g.drawImage(img,seg.x-18,y,54,dh);
-    }
+    pxRect(seg.x,seg.y,4,seg.h,'#b47a49');
+    pxRect(seg.x+seg.w-5,seg.y,5,seg.h,'#3a281f');
+    for(let y=seg.y+6;y<seg.y+seg.h-4;y+=32){pxRect(seg.x+4,y,Math.max(5,seg.w-9),4,'#4b3125');pxRect(seg.x+4,y+4,Math.max(5,seg.w-9),2,'#8b5a38')}
   }
-  g.restore();
-}function sprReady(k){const i=SPRITES[k];return i&&i.complete&&i.naturalWidth>0}
+  // End posts make openings read as intentional doorways.
+  const post=(x,y)=>{pxRect(x-4,y-6,12,seg.h+12,'#2d201b');pxRect(x-1,y-4,7,seg.h+8,'#8a5b38');pxRect(x-1,y-4,7,3,'#d49a5b')};
+  if(horizontal){post(seg.x,seg.y);post(seg.x+seg.w-7,seg.y)}
+}
+function sprReady(k){const i=SPRITES[k];return i&&i.complete&&i.naturalWidth>0}
 
 const base={
   cash:250,rep:20,day:1,legacy:0,
@@ -247,11 +246,19 @@ function processAutoCraftPads(){
 }
 function drawProcessPads(){
   for(const pad of Object.values(PROCESS_PADS)){
-    pxRect(pad.x,pad.y,pad.w,pad.h,pad.station==='forge'?'#71452c':'#53406f');
-    g.strokeStyle=pad.station==='forge'?'#ffc55f':'#d3a0ff';g.lineWidth=5;g.strokeRect(pad.x,pad.y,pad.w,pad.h);
-    // High-contrast floor emblem remains readable under characters.
-    text(pad.station==='forge'?'⚒':'🧪',pad.x+pad.w/2,pad.y+45,28,'#fff');
-    text(pad.station==='forge'?'AUTO CRAFT':'AUTO BREW',pad.x+pad.w/2,pad.y+76,12,'#fff6cf');
+    const key=selectedAutoRecipe(pad.station),ready=key&&canCraft(key),insideNow=pointInRect(player.x,player.y,pad);
+    const forge=pad.station==='forge';
+    const base=ready?(forge?'#8b4d29':'#62477d'):(forge?'#4d382b':'#41394b');
+    const edge=ready?(forge?'#ffd166':'#bffb9a'):'#827568';
+    pxRect(pad.x+5,pad.y+7,pad.w,pad.h,'#18121199');
+    pxRect(pad.x,pad.y,pad.w,pad.h,base);
+    // Inset tile pattern, not a room-filling coloured slab.
+    for(let y=pad.y+8;y<pad.y+pad.h-7;y+=22)for(let x=pad.x+8;x<pad.x+pad.w-7;x+=22){g.globalAlpha=.16;pxRect(x,y,14,14,'#fff');g.globalAlpha=1}
+    g.strokeStyle=edge;g.lineWidth=insideNow?7:4;g.strokeRect(pad.x,pad.y,pad.w,pad.h);
+    if(ready){g.save();g.globalAlpha=.18+.08*Math.sin(animClock*3);g.fillStyle=edge;g.fillRect(pad.x-5,pad.y-5,pad.w+10,pad.h+10);g.restore()}
+    text(forge?'⚒':'🧪',pad.x+pad.w/2,pad.y+43,27,'#fff7dd');
+    text(forge?'AUTO CRAFT':'AUTO BREW',pad.x+pad.w/2,pad.y+76,12,ready?'#fff2bd':'#cabfac');
+    if(!ready)text('NEED MATERIALS',pad.x+pad.w/2,pad.y+94,7.5,'#e8b0a3');
   }
 }
 
@@ -1211,23 +1218,65 @@ function labelBadge(t,x,y,col='#fff1c2',bg='#1d1616e6',w=152){
 }
 
 function drawTiledRoomFloor(x,y,w,h,baseCol,lineCol,sprKey){
-  // Calm base first. A sparse, translucent texture keeps rooms readable without visual noise.
   pxRect(x,y,w,h,baseCol);
-  if(sprReady(sprKey)){
-    g.save();g.globalAlpha=.20;
-    const tile=128;
-    for(let yy=y;yy<y+h;yy+=tile){
-      for(let xx=x;xx<x+w;xx+=tile){
-        g.drawImage(SPRITES[sprKey],xx,yy,Math.min(tile,x+w-xx),Math.min(tile,y+h-yy));
-      }
-    }
-    g.restore();
+  // Hand-built floor rhythm: readable planks/stone without noisy image tiling.
+  const work=sprKey==='floorWork';
+  g.save();g.globalAlpha=.22;g.strokeStyle=lineCol;g.lineWidth=2;
+  if(work){
+    const size=42;for(let yy=y+8;yy<y+h;yy+=size)for(let xx=x+8;xx<x+w;xx+=size){g.strokeRect(xx,yy,Math.min(size-4,x+w-xx-4),Math.min(size-4,y+h-yy-4))}
+  }else{
+    for(let yy=y+12,row=0;yy<y+h;yy+=30,row++){g.beginPath();g.moveTo(x+8,yy);g.lineTo(x+w-8,yy);g.stroke();for(let xx=x+18+(row%2)*30;xx<x+w-8;xx+=60){g.beginPath();g.moveTo(xx,yy-28);g.lineTo(xx,yy);g.stroke()}}
   }
-  g.save();g.globalAlpha=.18;g.strokeStyle=lineCol;g.lineWidth=2;
-  for(let yy=y+96;yy<y+h;yy+=128){g.beginPath();g.moveTo(x+10,yy);g.lineTo(x+w-10,yy);g.stroke()}
   g.restore();
+  // Inner edge lighting and exterior shadow.
+  pxRect(x+7,y+7,w-14,5,lineCol);pxRect(x+7,y+h-12,w-14,5,'#241b1838');
 }
-
+function artShadow(x,y,w,h,r=10){g.save();g.globalAlpha=.28;g.fillStyle='#16110f';g.beginPath();g.ellipse(x+w/2,y+h,w*.48,r,0,0,Math.PI*2);g.fill();g.restore()}
+function artRug(x,y,w,h,col,icon){pxRect(x+5,y+7,w,h,'#1b151455');pxRect(x,y,w,h,col);pxRect(x+7,y+7,w-14,h-14,'#2a211c55');g.strokeStyle='#e3c27a';g.lineWidth=3;g.strokeRect(x+5,y+5,w-10,h-10);text(icon,x+w/2,y+h/2+10,28,'#f8df9a')}
+function artLamp(x,y){pxRect(x-4,y-12,8,24,'#3a281f');g.save();g.globalAlpha=.18+.05*Math.sin(animClock*4+x);g.fillStyle='#ffb84d';g.beginPath();g.arc(x,y-18,24,0,Math.PI*2);g.fill();g.restore();pxRect(x-9,y-26,18,17,'#d49a42');pxRect(x-5,y-22,10,9,'#ffd66b')}
+function artCrate(x,y,w=48,h=38){artShadow(x,y,w,h,6);pxRect(x,y,w,h,'#70482c');pxRect(x+4,y+4,w-8,h-8,'#9b6638');pxRect(x+7,y+7,w-14,4,'#d29a55');g.strokeStyle='#4a2f23';g.lineWidth=3;g.strokeRect(x,y,w,h);g.beginPath();g.moveTo(x+3,y+3);g.lineTo(x+w-3,y+h-3);g.moveTo(x+w-3,y+3);g.lineTo(x+3,y+h-3);g.stroke()}
+function artBed(x,y,col){artShadow(x,y,74,48,6);pxRect(x,y,74,48,'#4a3024');pxRect(x+5,y+5,64,38,col);pxRect(x+7,y+7,20,13,'#efe2c8');pxRect(x+5,y+38,64,5,'#2c211d')}
+function artPlant(x,y){pxRect(x-10,y,20,16,'#6d442a');pxRect(x-7,y+3,14,10,'#a56d3d');for(const [dx,dy,c] of [[-8,-12,'#4f9b50'],[2,-17,'#67b65c'],[10,-9,'#3c8145'],[-1,-7,'#78c869']]){g.fillStyle=c;g.beginPath();g.arc(x+dx,y+dy,8,0,7);g.fill()}}
+function drawWorldArtProps(){
+  // Material Yard: stacks, carts and planters identify the function without labels.
+  for(let i=0;i<5;i++){pxRect(90+i*33,390,29,20,'#6f4328');g.fillStyle='#b47b43';g.beginPath();g.arc(104+i*33,400,9,0,7);g.fill();pxRect(90+i*33,398,29,5,'#412a20')}
+  artCrate(300,392,56,46);artCrate(360,405,50,38);artPlant(505,438);artPlant(550,455);
+  // Staff House.
+  artBed(705,385,'#497caf');artBed(825,385,'#ae5c52');artBed(945,385,'#619465');
+  pxRect(1090,382,85,116,'#4f3426');for(let i=0;i<3;i++){pxRect(1098,392+i*34,69,25,'#7b5131');pxRect(1130,402+i*34,5,5,'#deb15b')}
+  pxRect(875,510,96,55,'#745038');pxRect(883,518,80,39,'#a87649');text('STAFF',923,544,10,'#f7e2ae');
+  // Training Yard props and worn earth.
+  g.save();g.globalAlpha=.28;g.fillStyle='#c69a5b';g.beginPath();g.ellipse(1395,535,100,82,0,0,7);g.fill();g.restore();
+  for(const x of [1345,1445]){pxRect(x-6,470,12,55,'#6e472b');pxRect(x-25,484,50,8,'#9b683f');pxRect(x-14,452,28,28,'#d9be93');pxRect(x-18,520,36,8,'#4c3325')}
+  // Forge furnace, anvil, trough and tool wall.
+  pxRect(105,760,155,105,'#342c2b');pxRect(116,770,133,85,'#565c61');g.fillStyle='#161616';g.beginPath();g.arc(182,835,47,Math.PI,0);g.fill();g.fillStyle='#f36b2b';g.beginPath();g.arc(182,835,36,Math.PI,0);g.fill();g.fillStyle='#ffd05a';g.beginPath();g.arc(182,835+Math.sin(animClock*8)*3,22,Math.PI,0);g.fill();
+  pxRect(445,790,98,56,'#495057');pxRect(430,804,128,20,'#67727a');pxRect(506,824,18,39,'#34393d');
+  pxRect(315,790,75,55,'#47717a');pxRect(322,798,61,38,'#5ca7b1');
+  for(let i=0;i<5;i++){pxRect(280+i*34,750,5,35,'#d0b27a');text(['🔨','⚒','⛏','🔧','🗡️'][i],282+i*34,769,13,'#fff')}
+  // Alchemy focal cauldron and bottle shelves.
+  g.save();g.globalAlpha=.22+.06*Math.sin(animClock*4);g.fillStyle='#58c77a';g.beginPath();g.arc(867,930,55,0,7);g.fill();g.restore();pxRect(818,908,98,42,'#303338');g.fillStyle='#58c77a';g.beginPath();g.ellipse(867,910,44,14,0,0,7);g.fill();
+  pxRect(1040,770,150,95,'#4f3426');for(let row=0;row<2;row++)for(let i=0;i<5;i++){const cols=['#ef6671','#57b5e5','#e3c052','#8d65c7','#65c77a'];pxRect(1052+i*27,786+row*34,14,22,cols[(i+row)%cols.length]);pxRect(1056+i*27,781+row*34,6,6,'#d7cab2')}
+  // Warehouse perimeter crates, central bay remains open.
+  for(const [x,y] of [[1320,710],[1372,710],[1740,710],[1686,710],[1738,1050],[1686,1050],[1320,1050]])artCrate(x,y);
+  pxRect(1535,705,130,48,'#eee0bf');g.strokeStyle='#62452f';g.lineWidth=3;g.strokeRect(1535,705,130,48);text('MANIFEST',1600,735,11,'#433020');
+  // Retail local rugs and category banners.
+  artRug(190,1400,190,120,'#8f3d35','⚔');artRug(640,1400,190,120,'#3f668e','🛡');artRug(1010,1400,190,120,'#5b7c45','🧪');
+  // Checkout premium counter surround and queue studs.
+  pxRect(475,1888,505,82,'#3a281f');pxRect(486,1897,483,58,'#7b4e2f');pxRect(493,1903,469,12,'#d1a34a');pxRect(510,1921,435,28,'#9b673c');
+  for(let y=1740;y<1880;y+=40)for(const x of [700,790]){g.fillStyle='#d1a34a';g.beginPath();g.arc(x,y,5,0,7);g.fill()}
+  // Rare cases and lighting.
+  for(const x of [120,220,320]){pxRect(x-32,1730,64,98,'#231b2b');g.strokeStyle='#9168c6';g.lineWidth=3;g.strokeRect(x-32,1730,64,98);pxRect(x-24,1742,48,62,'#4b3560');g.save();g.globalAlpha=.15;g.fillStyle='#ba8cff';g.fillRect(x-24,1742,48,62);g.restore()}
+  // Management desk differentiation.
+  pxRect(1390,1515,205,96,'#493429');pxRect(1400,1525,185,70,'#8b5a38');pxRect(1415,1537,55,37,'#efe0b7');text('📜',1442,1563,20,'#fff');artLamp(1560,1546);
+  pxRect(1390,1795,205,105,'#35424a');pxRect(1400,1805,185,78,'#698aa3');pxRect(1420,1822,120,48,'#d7e4eb');text('📐',1480,1855,22,'#fff');artLamp(1560,1828);
+  // Visitor garden and exterior accents.
+  artPlant(170,2230);artPlant(465,2290);artLamp(130,2180);artLamp(500,2180);
+  // Bridge rails and plank joints, inside existing walkable geometry.
+  for(let y=2342;y<2565;y+=28){pxRect(650,y,190,20,(Math.floor(y/28)%2)?'#8b5c37':'#9d6a3e');pxRect(650,y+18,190,3,'#4a3024')}
+  pxRect(638,2334,12,240,'#3a281f');pxRect(840,2334,12,240,'#3a281f');for(let y=2340;y<2570;y+=42){pxRect(630,y,25,8,'#7a5134');pxRect(836,y,25,8,'#7a5134')}
+  // Strong gate silhouette.
+  pxRect(815,185,260,75,'#3a281f');pxRect(830,198,230,50,'#6a4630');pxRect(835,205,220,10,'#d1a34a');pxRect(805,160,30,110,'#4a3024');pxRect(1055,160,30,110,'#4a3024');text('⚔',945,235,27,'#f5e4bc');
+}
 function drawTwelveSlotRack(x,y,items,title,bannerCol,icon){
   // Solid upright 3-tier shelf object, initially 4 slots and upgradeable to 8/12.
   const cap=(S.shopLevel||1)>=4?12:(S.shopLevel||1)>=2?8:4;
@@ -1273,29 +1322,23 @@ function drawTreeCanopy(x,y,kind=0){
 
 // LAYER 1 & 2: Modular Ground, Rooms, Walls, Empty Shelves & Workstations
 function drawLayer1And2(){
-  // v0.22.00 clean woodland shop: open space is circulation; no painted-road overlays.
-  pxRect(0,0,WORLD.w,WORLD.h,'#3d7a3d');
-  for(let y=36;y<WORLD.h;y+=78)for(let x=36;x<WORLD.w;x+=78){const n=(x*11+y*7)%31;if(n<6)pxRect(x,y,6,4,n<3?'#78ad59':'#559348')}
-  // River and bridge.
-  pxRect(350,2340,295,230,'#237f9e');pxRect(850,2340,996,230,'#237f9e');
-  for(let x=370;x<1830;x+=64)pxRect(x,2380+(x%4)*30,30,4,'#65cbd8');
-  drawTiledRoomFloor(645,2335,205,235,'#956a3d','#5d3d24','bridge');
-  // Room floors, quiet colour families and restrained department strips.
-  const palette={material:['#7c694b','#b69a62'],staff:['#aa9570','#d2bc8c'],training:['#837454','#b59a66'],forge:['#75584b','#c07146'],alchemy:['#675d52','#8b73ba'],contract:['#725c42','#a27c48'],attack:['#b59a70','#bd6255'],defense:['#b59a70','#557cac'],other:['#b59a70','#8060a8'],rare:['#51405b','#9369b4'],counter:['#baa078','#d4ad60'],management:['#957b5b','#698aa3'],visitor:['#88775b','#b49b6b'],gate:['#557344','#82a667'],forest:['#2f6833','#4c8d4b']};
-  for(const [id,r] of Object.entries(R)){const p=palette[id]||[r.floor,'#9b8057'];drawTiledRoomFloor(r.x,r.y,r.w,r.h,p[0],p[1],id==='forge'||id==='alchemy'?'floorWork':'floorWood');pxRect(r.x+8,r.y+8,Math.max(16,r.w-16),7,p[1])}
-  // Visible furniture exactly matches furniture collision rectangles.
-  const furniture=SOLIDS.slice(-11,-2);
-  for(const f of furniture){pxRect(f.x,f.y,f.w,f.h,'#67452e');pxRect(f.x,f.y,f.w,Math.min(10,f.h),'#bd8248');g.strokeStyle='#38251c';g.lineWidth=3;g.strokeRect(f.x,f.y,f.w,f.h)}
-  // Structural walls come directly from authoritative collision geometry.
-  for(const w of SOLIDS){
-    const isRiver=w.y>=2340&&w.h>=180;
-    const isFurniture=furniture.includes(w);
-    if(isRiver||isFurniture)continue;
-    drawWallAssetSegment(w);
-  }
-  // Door thresholds are small orientation cues only.
-  for(const d of DOOR_CLEARANCES){if(d.id==='bridge')continue;const horizontal=d.w>=d.h;const x=horizontal?d.x:d.x+d.w/2-10,y=horizontal?d.y+d.h/2-10:d.y,w=horizontal?d.w:20,h=horizontal?20:d.h;pxRect(x,y,w,h,'#dfc589');g.strokeStyle='#7a5938';g.lineWidth=2;g.strokeRect(x,y,w,h)}
-  // Production pads remain high contrast and readable.
+  // Artwork v0.22.10: woodland workshop, preserving v0.22.00 geometry.
+  pxRect(0,0,WORLD.w,WORLD.h,'#244b2e');
+  // Irregular hand-authored grass clusters; never collision-bearing.
+  const grassCols=['#356b3a','#4f8747','#5b9450','#2d5d36'];
+  for(let y=34,row=0;y<WORLD.h;y+=72,row++)for(let x=34+(row%2)*28;x<WORLD.w;x+=92){const n=(x*13+y*7)%19;if(n<10){pxRect(x,y,5,12,grassCols[n%4]);pxRect(x-5,y+7,5,7,grassCols[(n+1)%4]);if(n%3===0){pxRect(x+9,y+9,4,4,n%2?'#d7d06a':'#bf82a8')}}}
+  // Water with bank shadows and controlled shimmer.
+  pxRect(350,2330,295,250,'#163f55');pxRect(850,2330,996,250,'#163f55');pxRect(350,2340,295,230,'#185e78');pxRect(850,2340,996,230,'#185e78');
+  for(let x=370;x<1830;x+=74){const yy=2380+((x/74)%3)*48;pxRect(x,yy,34,4,'#4fafc5');pxRect(x+12,yy+13,23,3,'#2f879d')}
+  // Rooms: earthy bases with local accents, no floor-wide department flooding.
+  const palette={material:['#6f5b3e','#9d7647'],staff:['#8a6d4a','#bd9461'],training:['#705b3e','#9b764a'],forge:['#45494d','#7a5440'],alchemy:['#4f4945','#715f86'],contract:['#654b34','#987048'],attack:['#8f7653','#b28c5c'],defense:['#8f7653','#7790a6'],other:['#8f7653','#798965'],rare:['#392f42','#6a4f7f'],counter:['#9c7c50','#d1a34a'],management:['#755c43','#698aa3'],visitor:['#75654a','#a78a58'],gate:['#39583a','#79945b'],forest:['#214f2c','#3f7d3c']};
+  for(const [id,r] of Object.entries(R)){const p=palette[id]||[r.floor,'#8a6947'];drawTiledRoomFloor(r.x,r.y,r.w,r.h,p[0],p[1],id==='forge'||id==='alchemy'?'floorWork':'floorWood')}
+  // Structural walls use a single premium renderer and remain collision-faithful.
+  const furniture=new Set(['495,1905,465,50','195,1300,180,92','645,1300,180,92','1015,1300,180,92','130,770,110,88','380,770,110,88','807,900,76,62','1037,900,76,62','1420,1540,140,64','1420,1820,140,64']);
+  for(const w of SOLIDS){const k=`${w.x},${w.y},${w.w},${w.h}`;if(w.y>=2340&&w.h>=180||furniture.has(k))continue;drawWallAssetSegment(w)}
+  // Small thresholds communicate openings without becoming roads.
+  for(const d of DOOR_CLEARANCES){if(d.id==='bridge')continue;const horizontal=d.w>=d.h,x=horizontal?d.x:d.x+d.w/2-9,y=horizontal?d.y+d.h/2-9:d.y,w=horizontal?d.w:18,h=horizontal?18:d.h;pxRect(x+3,y+4,w,h,'#2c201a66');pxRect(x,y,w,h,'#a87342');for(let q=4;q<(horizontal?w:h);q+=24)horizontal?pxRect(x+q,y,3,h,'#5a3b2b'):pxRect(x,y+q,w,3,'#5a3b2b')}
+  drawWorldArtProps();
   drawProcessPads();
   drawMapObjects('lowProps');
 }
@@ -1444,7 +1487,8 @@ function drawLayer4To6(){
 
     // Room Header Signboards
     for(const rm of Object.values(R)){
-      if(rm.title)labelBadge(rm.title,rm.x+rm.w/2,rm.y+18,'#ffe9b5','#241a14e6',Math.min(210,rm.w-20));
+      const cx=rm.x+rm.w/2,cy=rm.y+rm.h/2,near=Math.hypot(player.x-cx,player.y-cy)<360;
+      if(rm.title&&near)labelBadge(rm.title,rm.x+rm.w/2,rm.y+18,'#ffe9b5','#241a14e6',Math.min(210,rm.w-20));
     }
   }
 
@@ -1466,7 +1510,7 @@ function drawLayer4To6(){
     if(x.state==='toShelf'||x.state==='waitShelf'){
       let r=recipes[x.want];
       let label=`${r.icon} ${r.name}`+(x.minStat?`\n${r.statName} ${x.minStat}+`:'')+(x.minRarity!=='Any'?` • ${x.minRarity}+`:'');
-      drawRequest(x,label);
+      if(dist(player,x)<300)drawRequest(x,label);else labelBadge(r.icon,x.x,x.y-72,'#352619','#fff0c9ee',42);
       pxRect(x.x-30,x.y-64,60,6,'#332a30');
       pxRect(x.x-30,x.y-64,60*Math.max(0,x.pat/x.max),6,x.pat/x.max>.4?'#5ed177':'#ed6256');
     }
@@ -1824,7 +1868,7 @@ function showTutorial(){
   if(st>=5){$('tutorial').classList.remove('show');return}
   const steps=[
     ['1/5 • Drag to Move','Hold & slide your finger anywhere like a joystick to walk around the Modular Forest Outpost. Tap 💡 Next Task anytime to auto-walk!'],
-    ['2/5 • Craft at the Forge','Walk into the FORGE (left workshop) and tap 🔨 Sword on the bottom action bar.'],
+    ['2/5 • Craft at the Forge','Walk into the FORGE and step onto the glowing AUTO CRAFT floor logo. Crafting starts automatically.'],
     ['3/5 • Pick Up & Stock Shelf','Walk over the Sword at ⚔️ OUT, then carry it to the 12-slot ATTACK shelf.'],
     ['4/5 • Customer & Checkout Coins','Watch a customer walk in from the South Bridge, inspect your shelf, and leave coins at CHECKOUT. Walk over the coins!'],
     ['5/5 • Grow the Shop','Sell 5 Swords to unlock Alchemy. Employees, expeditions and contracts unlock later.']
