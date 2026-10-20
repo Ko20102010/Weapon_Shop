@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.21.05';
+const VERSION='v0.21.06-dev';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02105_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02105',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02106dev_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02106dev',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -1653,6 +1653,13 @@ function drawRequest(o,label){
   g.strokeStyle='#6d4931';g.lineWidth=3;g.strokeRect(x,y,w,h);
   for(let i=0;i<lines.length;i++)text(lines[i],o.x,y+15+i*14,10,'#352619');
 }
+
+window.__WSE_DEBUG__=Object.freeze({
+  getView:()=>({cam:{x:cam.x,y:cam.y},zoom,vw,vh}),
+  getPlayerPath:()=>player?.navPath?player.navPath.map(p=>({x:p.x,y:p.y})):[],
+  getCollisionRects:()=>SOLIDS.map(a=>({...a})),
+  getDoorClearances:()=>DOOR_CLEARANCES.map(a=>({...a}))
+});
 
 function draw(){
   g.save();

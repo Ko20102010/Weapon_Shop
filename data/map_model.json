@@ -1,0 +1,1403 @@
+{
+  "version": "0.21.06-dev-inventory",
+  "world": {
+    "width": 1870,
+    "height": 2870,
+    "units": "px"
+  },
+  "rooms": [
+    {
+      "id": "material",
+      "x": 60,
+      "y": 310,
+      "w": 555,
+      "h": 365,
+      "title": "MATERIAL YARD",
+      "floor": "#7d6748"
+    },
+    {
+      "id": "staff",
+      "x": 660,
+      "y": 310,
+      "w": 565,
+      "h": 370,
+      "title": "STAFF HOUSE",
+      "floor": "#b59b74"
+    },
+    {
+      "id": "training",
+      "x": 1265,
+      "y": 325,
+      "w": 270,
+      "h": 345,
+      "title": "TRAINING YARD",
+      "floor": "#8b7654"
+    },
+    {
+      "id": "forge",
+      "x": 55,
+      "y": 730,
+      "w": 580,
+      "h": 435,
+      "title": "FORGE (WEAPONS)",
+      "floor": "#876b52"
+    },
+    {
+      "id": "alchemy",
+      "x": 660,
+      "y": 730,
+      "w": 595,
+      "h": 435,
+      "title": "ALCHEMY LAB",
+      "floor": "#7e6c54"
+    },
+    {
+      "id": "contract",
+      "x": 1285,
+      "y": 660,
+      "w": 535,
+      "h": 505,
+      "title": "CONTRACT WAREHOUSE",
+      "floor": "#7b6546"
+    },
+    {
+      "id": "attack",
+      "x": 80,
+      "y": 1190,
+      "w": 460,
+      "h": 430,
+      "title": "ATTACK PRODUCTS",
+      "floor": "#c8ad7f"
+    },
+    {
+      "id": "defense",
+      "x": 550,
+      "y": 1190,
+      "w": 390,
+      "h": 430,
+      "title": "DEFENSE PRODUCTS",
+      "floor": "#c8ad7f"
+    },
+    {
+      "id": "other",
+      "x": 950,
+      "y": 1190,
+      "w": 315,
+      "h": 430,
+      "title": "OTHER PRODUCTS",
+      "floor": "#c8ad7f"
+    },
+    {
+      "id": "rare",
+      "x": 70,
+      "y": 1645,
+      "w": 315,
+      "h": 400,
+      "title": "RARE STORAGE",
+      "floor": "#594563"
+    },
+    {
+      "id": "counter",
+      "x": 400,
+      "y": 1640,
+      "w": 865,
+      "h": 400,
+      "title": "CUSTOMER HALL & CHECKOUT",
+      "floor": "#ccb285"
+    },
+    {
+      "id": "management",
+      "x": 1285,
+      "y": 1350,
+      "w": 425,
+      "h": 690,
+      "title": "MANAGEMENT & UPGRADES",
+      "floor": "#a88d67"
+    },
+    {
+      "id": "visitor",
+      "x": 110,
+      "y": 2150,
+      "w": 410,
+      "h": 360,
+      "title": "SPECIAL VISITOR PLAZA",
+      "floor": "#968463"
+    },
+    {
+      "id": "gate",
+      "x": 770,
+      "y": 105,
+      "w": 350,
+      "h": 195,
+      "title": "FOREST ADVENTURE GATE",
+      "floor": "#5e7844"
+    },
+    {
+      "id": "forest",
+      "x": 120,
+      "y": 60,
+      "w": 1620,
+      "h": 235,
+      "title": "SLIME WOODS & RUINS",
+      "floor": "#2d6830"
+    }
+  ],
+  "walls": [
+    {
+      "id": "solid-1",
+      "x": 0,
+      "y": 0,
+      "w": 1870,
+      "h": 24,
+      "kind": "boundary"
+    },
+    {
+      "id": "solid-2",
+      "x": 0,
+      "y": 2846,
+      "w": 1870,
+      "h": 24,
+      "kind": "boundary"
+    },
+    {
+      "id": "solid-3",
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 2870,
+      "kind": "boundary"
+    },
+    {
+      "id": "solid-4",
+      "x": 1846,
+      "y": 0,
+      "w": 24,
+      "h": 2870,
+      "kind": "boundary"
+    },
+    {
+      "id": "solid-5",
+      "x": 45,
+      "y": 305,
+      "w": 580,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-6",
+      "x": 45,
+      "y": 305,
+      "w": 22,
+      "h": 380,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-7",
+      "x": 603,
+      "y": 305,
+      "w": 22,
+      "h": 380,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-8",
+      "x": 45,
+      "y": 665,
+      "w": 235,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-9",
+      "x": 405,
+      "y": 665,
+      "w": 220,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-10",
+      "x": 655,
+      "y": 305,
+      "w": 580,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-11",
+      "x": 655,
+      "y": 305,
+      "w": 22,
+      "h": 390,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-12",
+      "x": 1213,
+      "y": 305,
+      "w": 22,
+      "h": 390,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-13",
+      "x": 655,
+      "y": 675,
+      "w": 200,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-14",
+      "x": 985,
+      "y": 675,
+      "w": 250,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-15",
+      "x": 1255,
+      "y": 315,
+      "w": 290,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-16",
+      "x": 1255,
+      "y": 315,
+      "w": 22,
+      "h": 355,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-17",
+      "x": 1523,
+      "y": 315,
+      "w": 22,
+      "h": 355,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-18",
+      "x": 45,
+      "y": 720,
+      "w": 595,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-19",
+      "x": 45,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-20",
+      "x": 618,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-21",
+      "x": 45,
+      "y": 1155,
+      "w": 240,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-22",
+      "x": 425,
+      "y": 1155,
+      "w": 215,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-23",
+      "x": 660,
+      "y": 720,
+      "w": 600,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-24",
+      "x": 660,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-25",
+      "x": 1238,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-26",
+      "x": 660,
+      "y": 1155,
+      "w": 235,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-27",
+      "x": 1030,
+      "y": 1155,
+      "w": 230,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-28",
+      "x": 1280,
+      "y": 650,
+      "w": 550,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-29",
+      "x": 1280,
+      "y": 650,
+      "w": 22,
+      "h": 190,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-30",
+      "x": 1280,
+      "y": 975,
+      "w": 22,
+      "h": 205,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-31",
+      "x": 1808,
+      "y": 650,
+      "w": 22,
+      "h": 530,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-32",
+      "x": 1280,
+      "y": 1158,
+      "w": 550,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-33",
+      "x": 495,
+      "y": 1905,
+      "w": 465,
+      "h": 50,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-34",
+      "x": 60,
+      "y": 1640,
+      "w": 120,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-35",
+      "x": 305,
+      "y": 1640,
+      "w": 85,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-36",
+      "x": 60,
+      "y": 1640,
+      "w": 22,
+      "h": 420,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-37",
+      "x": 368,
+      "y": 1640,
+      "w": 22,
+      "h": 420,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-38",
+      "x": 60,
+      "y": 2038,
+      "w": 330,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-39",
+      "x": 390,
+      "y": 2038,
+      "w": 245,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-40",
+      "x": 860,
+      "y": 2038,
+      "w": 420,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-41",
+      "x": 1280,
+      "y": 1340,
+      "w": 440,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-42",
+      "x": 1280,
+      "y": 1340,
+      "w": 22,
+      "h": 230,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-43",
+      "x": 1280,
+      "y": 1695,
+      "w": 22,
+      "h": 145,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-44",
+      "x": 1280,
+      "y": 1960,
+      "w": 22,
+      "h": 90,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-45",
+      "x": 1698,
+      "y": 1340,
+      "w": 22,
+      "h": 710,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-46",
+      "x": 1280,
+      "y": 2038,
+      "w": 440,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-47",
+      "x": 350,
+      "y": 2340,
+      "w": 295,
+      "h": 230,
+      "kind": "water"
+    },
+    {
+      "id": "solid-48",
+      "x": 850,
+      "y": 2340,
+      "w": 996,
+      "h": 230,
+      "kind": "water"
+    },
+    {
+      "id": "solid-49",
+      "x": 195,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-50",
+      "x": 645,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-51",
+      "x": 1015,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-52",
+      "x": 98,
+      "y": 145,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-53",
+      "x": 228,
+      "y": 125,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-54",
+      "x": 358,
+      "y": 155,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-55",
+      "x": 1468,
+      "y": 135,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-56",
+      "x": 1608,
+      "y": 155,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-57",
+      "x": 1728,
+      "y": 135,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-58",
+      "x": 128,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-59",
+      "x": 478,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-60",
+      "x": 928,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-61",
+      "x": 1108,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-62",
+      "x": 1338,
+      "y": 2245,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    }
+  ],
+  "doorways": [
+    {
+      "id": "material-south",
+      "x": 270,
+      "y": 640,
+      "w": 145,
+      "h": 70,
+      "roomId": "material"
+    },
+    {
+      "id": "staff-south",
+      "x": 845,
+      "y": 650,
+      "w": 150,
+      "h": 70,
+      "roomId": "staff"
+    },
+    {
+      "id": "training-south",
+      "x": 1310,
+      "y": 640,
+      "w": 190,
+      "h": 70,
+      "roomId": "training"
+    },
+    {
+      "id": "forge-south",
+      "x": 275,
+      "y": 1130,
+      "w": 160,
+      "h": 75,
+      "roomId": "forge"
+    },
+    {
+      "id": "alchemy-south",
+      "x": 885,
+      "y": 1130,
+      "w": 155,
+      "h": 75,
+      "roomId": "alchemy"
+    },
+    {
+      "id": "contract-west",
+      "x": 1255,
+      "y": 830,
+      "w": 80,
+      "h": 155,
+      "roomId": "contract"
+    },
+    {
+      "id": "rare-north",
+      "x": 170,
+      "y": 1610,
+      "w": 145,
+      "h": 75,
+      "roomId": "rare"
+    },
+    {
+      "id": "main-south",
+      "x": 625,
+      "y": 2010,
+      "w": 245,
+      "h": 85,
+      "roomId": "main"
+    },
+    {
+      "id": "management-west-upper",
+      "x": 1255,
+      "y": 1560,
+      "w": 80,
+      "h": 145,
+      "roomId": "management"
+    },
+    {
+      "id": "management-west-lower",
+      "x": 1255,
+      "y": 1830,
+      "w": 80,
+      "h": 140,
+      "roomId": "management"
+    },
+    {
+      "id": "bridge",
+      "x": 635,
+      "y": 2325,
+      "w": 225,
+      "h": 255,
+      "roomId": "bridge"
+    }
+  ],
+  "water": [
+    {
+      "id": "solid-47",
+      "x": 350,
+      "y": 2340,
+      "w": 295,
+      "h": 230,
+      "kind": "water"
+    },
+    {
+      "id": "solid-48",
+      "x": 850,
+      "y": 2340,
+      "w": 996,
+      "h": 230,
+      "kind": "water"
+    }
+  ],
+  "blockingFurniture": [
+    {
+      "id": "solid-5",
+      "x": 45,
+      "y": 305,
+      "w": 580,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-6",
+      "x": 45,
+      "y": 305,
+      "w": 22,
+      "h": 380,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-7",
+      "x": 603,
+      "y": 305,
+      "w": 22,
+      "h": 380,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-8",
+      "x": 45,
+      "y": 665,
+      "w": 235,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-9",
+      "x": 405,
+      "y": 665,
+      "w": 220,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-10",
+      "x": 655,
+      "y": 305,
+      "w": 580,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-11",
+      "x": 655,
+      "y": 305,
+      "w": 22,
+      "h": 390,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-12",
+      "x": 1213,
+      "y": 305,
+      "w": 22,
+      "h": 390,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-13",
+      "x": 655,
+      "y": 675,
+      "w": 200,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-14",
+      "x": 985,
+      "y": 675,
+      "w": 250,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-15",
+      "x": 1255,
+      "y": 315,
+      "w": 290,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-16",
+      "x": 1255,
+      "y": 315,
+      "w": 22,
+      "h": 355,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-17",
+      "x": 1523,
+      "y": 315,
+      "w": 22,
+      "h": 355,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-18",
+      "x": 45,
+      "y": 720,
+      "w": 595,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-19",
+      "x": 45,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-20",
+      "x": 618,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-21",
+      "x": 45,
+      "y": 1155,
+      "w": 240,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-22",
+      "x": 425,
+      "y": 1155,
+      "w": 215,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-23",
+      "x": 660,
+      "y": 720,
+      "w": 600,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-24",
+      "x": 660,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-25",
+      "x": 1238,
+      "y": 720,
+      "w": 22,
+      "h": 455,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-26",
+      "x": 660,
+      "y": 1155,
+      "w": 235,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-27",
+      "x": 1030,
+      "y": 1155,
+      "w": 230,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-28",
+      "x": 1280,
+      "y": 650,
+      "w": 550,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-29",
+      "x": 1280,
+      "y": 650,
+      "w": 22,
+      "h": 190,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-30",
+      "x": 1280,
+      "y": 975,
+      "w": 22,
+      "h": 205,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-31",
+      "x": 1808,
+      "y": 650,
+      "w": 22,
+      "h": 530,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-32",
+      "x": 1280,
+      "y": 1158,
+      "w": 550,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-33",
+      "x": 495,
+      "y": 1905,
+      "w": 465,
+      "h": 50,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-34",
+      "x": 60,
+      "y": 1640,
+      "w": 120,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-35",
+      "x": 305,
+      "y": 1640,
+      "w": 85,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-36",
+      "x": 60,
+      "y": 1640,
+      "w": 22,
+      "h": 420,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-37",
+      "x": 368,
+      "y": 1640,
+      "w": 22,
+      "h": 420,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-38",
+      "x": 60,
+      "y": 2038,
+      "w": 330,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-39",
+      "x": 390,
+      "y": 2038,
+      "w": 245,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-40",
+      "x": 860,
+      "y": 2038,
+      "w": 420,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-41",
+      "x": 1280,
+      "y": 1340,
+      "w": 440,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-42",
+      "x": 1280,
+      "y": 1340,
+      "w": 22,
+      "h": 230,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-43",
+      "x": 1280,
+      "y": 1695,
+      "w": 22,
+      "h": 145,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-44",
+      "x": 1280,
+      "y": 1960,
+      "w": 22,
+      "h": 90,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-45",
+      "x": 1698,
+      "y": 1340,
+      "w": 22,
+      "h": 710,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-46",
+      "x": 1280,
+      "y": 2038,
+      "w": 440,
+      "h": 22,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-49",
+      "x": 195,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-50",
+      "x": 645,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-51",
+      "x": 1015,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-52",
+      "x": 98,
+      "y": 145,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-53",
+      "x": 228,
+      "y": 125,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-54",
+      "x": 358,
+      "y": 155,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-55",
+      "x": 1468,
+      "y": 135,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-56",
+      "x": 1608,
+      "y": 155,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-57",
+      "x": 1728,
+      "y": 135,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-58",
+      "x": 128,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-59",
+      "x": 478,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-60",
+      "x": 928,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-61",
+      "x": 1108,
+      "y": 2225,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    },
+    {
+      "id": "solid-62",
+      "x": 1338,
+      "y": 2245,
+      "w": 24,
+      "h": 24,
+      "kind": "blocking"
+    }
+  ],
+  "interactionZones": [
+    {
+      "id": "forge",
+      "x": 250,
+      "y": 1000,
+      "w": 190,
+      "h": 105,
+      "label": "⚒ AUTO CRAFT",
+      "station": "forge",
+      "type": "process",
+      "allowedEntityTypes": [
+        "player"
+      ],
+      "cooldownMode": "exit"
+    },
+    {
+      "id": "alchemy",
+      "x": 865,
+      "y": 1000,
+      "w": 190,
+      "h": 105,
+      "label": "🧪 AUTO BREW",
+      "station": "alchemy",
+      "type": "process",
+      "allowedEntityTypes": [
+        "player"
+      ],
+      "cooldownMode": "exit"
+    }
+  ],
+  "spawnPoints": [
+    {
+      "id": "playerSpawn",
+      "x": 745,
+      "y": 1975,
+      "entityType": "player"
+    },
+    {
+      "id": "customerSpawn",
+      "x": 745,
+      "y": 2815,
+      "entityType": "customer"
+    },
+    {
+      "id": "staffSpawn",
+      "x": 915,
+      "y": 585,
+      "entityType": "staff"
+    }
+  ],
+  "navigationTargets": [
+    {
+      "id": "swordOut",
+      "x": 315,
+      "y": 1195,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "shieldOut",
+      "x": 415,
+      "y": 1195,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "potionOut",
+      "x": 960,
+      "y": 1195,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "attackShelf",
+      "x": 285,
+      "y": 1425,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "defenseShelf",
+      "x": 735,
+      "y": 1425,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "otherShelf",
+      "x": 1105,
+      "y": 1425,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "coinPile",
+      "x": 825,
+      "y": 1875,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "checkoutWait",
+      "x": 745,
+      "y": 1815,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "hire",
+      "x": 915,
+      "y": 585,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "contractDrop",
+      "x": 1385,
+      "y": 910,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "rare",
+      "x": 225,
+      "y": 1845,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "training",
+      "x": 1395,
+      "y": 525,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "office",
+      "x": 1460,
+      "y": 1635,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "visitor",
+      "x": 315,
+      "y": 2335,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    },
+    {
+      "id": "gate",
+      "x": 945,
+      "y": 215,
+      "entityTypes": [
+        "player",
+        "customer",
+        "staff"
+      ]
+    }
+  ]
+}

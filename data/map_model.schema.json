@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://example.invalid/weapon-shop/map_model.schema.json",
+  "title":"Weapon Shop Empire map model inventory",
+  "type":"object",
+  "required":["version","world","rooms","walls","doorways","water","blockingFurniture","interactionZones","spawnPoints","navigationTargets"],
+  "properties":{
+    "version":{"type":"string"},
+    "world":{"type":"object","required":["width","height","units"],"properties":{"width":{"type":"number","exclusiveMinimum":0},"height":{"type":"number","exclusiveMinimum":0},"units":{"type":"string"}}},
+    "rooms":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "walls":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "doorways":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "water":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "blockingFurniture":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "interactionZones":{"type":"array","items":{"$ref":"#/$defs/rect"}},
+    "spawnPoints":{"type":"array","items":{"$ref":"#/$defs/point"}},
+    "navigationTargets":{"type":"array","items":{"$ref":"#/$defs/point"}}
+  },
+  "$defs":{
+    "point":{"type":"object","required":["id","x","y"],"properties":{"id":{"type":"string","minLength":1},"x":{"type":"number","minimum":0},"y":{"type":"number","minimum":0}},"additionalProperties":true},
+    "rect":{"allOf":[{"$ref":"#/$defs/point"},{"type":"object","required":["w","h"],"properties":{"w":{"type":"number","exclusiveMinimum":0},"h":{"type":"number","exclusiveMinimum":0}},"additionalProperties":true}]}
+  }
+}

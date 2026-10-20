@@ -1,13 +1,23 @@
-# Weapon Shop Empire v0.21.04
+# Weapon Shop Empire v0.21.06-dev
 
-Critical entrance, road and automatic-crafting release.
+GitHub-ready M0 diagnostic build based on v0.21.05.
 
-- Every named room has a wide corridor overlapping the central road and the room interior.
-- Marked roads and entrances always override structural wall collision.
-- Bridge and south entrance are guaranteed walkable.
-- A* navigation is rebuilt from the same corrected collision function.
-- Forge and Alchemy have high-contrast floor logos.
-- Stepping on a logo crafts once automatically; leave and re-enter to craft again.
-- Forge defaults to Iron Sword; Alchemy defaults to Healing Potion when unlocked.
-- Manual local craft buttons remain removed.
-- Other gameplay systems are unchanged.
+## Run
+
+```bash
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000/`.
+
+Collision diagnostics: `http://localhost:8000/?debug=collision`
+
+## Checks
+
+```bash
+node --check game.js
+node tests/static-checks.mjs
+node tests/route-matrix.mjs
+```
+
+The route matrix is expected to expose current map defects and exits non-zero when failures remain. This developer build does not claim navigation is fixed or mobile-ready.
