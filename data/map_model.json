@@ -1,5 +1,5 @@
 {
-  "version": "0.21.06-dev-inventory",
+  "version": "0.22.00",
   "world": {
     "width": 1870,
     "height": 2870,
@@ -144,7 +144,7 @@
   ],
   "walls": [
     {
-      "id": "solid-1",
+      "id": "boundary-top",
       "x": 0,
       "y": 0,
       "w": 1870,
@@ -152,7 +152,7 @@
       "kind": "boundary"
     },
     {
-      "id": "solid-2",
+      "id": "boundary-bottom",
       "x": 0,
       "y": 2846,
       "w": 1870,
@@ -160,7 +160,7 @@
       "kind": "boundary"
     },
     {
-      "id": "solid-3",
+      "id": "boundary-left",
       "x": 0,
       "y": 0,
       "w": 24,
@@ -168,7 +168,7 @@
       "kind": "boundary"
     },
     {
-      "id": "solid-4",
+      "id": "boundary-right",
       "x": 1846,
       "y": 0,
       "w": 24,
@@ -176,343 +176,567 @@
       "kind": "boundary"
     },
     {
-      "id": "solid-5",
-      "x": 45,
-      "y": 305,
-      "w": 580,
-      "h": 22,
-      "kind": "blocking"
+      "id": "material-top-0",
+      "x": 60,
+      "y": 301,
+      "w": 190,
+      "h": 18,
+      "kind": "wall"
     },
     {
-      "id": "solid-6",
-      "x": 45,
-      "y": 305,
-      "w": 22,
-      "h": 380,
-      "kind": "blocking"
+      "id": "material-top-1",
+      "x": 430,
+      "y": 301,
+      "w": 185,
+      "h": 18,
+      "kind": "wall"
     },
     {
-      "id": "solid-7",
-      "x": 603,
-      "y": 305,
-      "w": 22,
-      "h": 380,
-      "kind": "blocking"
+      "id": "material-bottom-0",
+      "x": 60,
+      "y": 666,
+      "w": 190,
+      "h": 18,
+      "kind": "wall"
     },
     {
-      "id": "solid-8",
-      "x": 45,
-      "y": 665,
-      "w": 235,
-      "h": 22,
-      "kind": "blocking"
+      "id": "material-bottom-1",
+      "x": 430,
+      "y": 666,
+      "w": 185,
+      "h": 18,
+      "kind": "wall"
     },
     {
-      "id": "solid-9",
-      "x": 405,
-      "y": 665,
-      "w": 220,
-      "h": 22,
-      "kind": "blocking"
+      "id": "material-left-0",
+      "x": 51,
+      "y": 310,
+      "w": 18,
+      "h": 365,
+      "kind": "wall"
     },
     {
-      "id": "solid-10",
-      "x": 655,
-      "y": 305,
-      "w": 580,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-11",
-      "x": 655,
-      "y": 305,
-      "w": 22,
-      "h": 390,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-12",
-      "x": 1213,
-      "y": 305,
-      "w": 22,
-      "h": 390,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-13",
-      "x": 655,
-      "y": 675,
-      "w": 200,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-14",
-      "x": 985,
-      "y": 675,
-      "w": 250,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-15",
-      "x": 1255,
-      "y": 315,
-      "w": 290,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-16",
-      "x": 1255,
-      "y": 315,
-      "w": 22,
-      "h": 355,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-17",
-      "x": 1523,
-      "y": 315,
-      "w": 22,
-      "h": 355,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-18",
-      "x": 45,
-      "y": 720,
-      "w": 595,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-19",
-      "x": 45,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-20",
-      "x": 618,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-21",
-      "x": 45,
-      "y": 1155,
-      "w": 240,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-22",
-      "x": 425,
-      "y": 1155,
-      "w": 215,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-23",
-      "x": 660,
-      "y": 720,
-      "w": 600,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-24",
-      "x": 660,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-25",
-      "x": 1238,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-26",
-      "x": 660,
-      "y": 1155,
-      "w": 235,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-27",
-      "x": 1030,
-      "y": 1155,
-      "w": 230,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-28",
-      "x": 1280,
-      "y": 650,
-      "w": 550,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-29",
-      "x": 1280,
-      "y": 650,
-      "w": 22,
+      "id": "material-right-0",
+      "x": 606,
+      "y": 310,
+      "w": 18,
       "h": 190,
-      "kind": "blocking"
+      "kind": "wall"
     },
     {
-      "id": "solid-30",
-      "x": 1280,
-      "y": 975,
-      "w": 22,
-      "h": 205,
-      "kind": "blocking"
+      "id": "material-right-1",
+      "x": 606,
+      "y": 655,
+      "w": 18,
+      "h": 20,
+      "kind": "wall"
     },
     {
-      "id": "solid-31",
-      "x": 1808,
+      "id": "staff-top-0",
+      "x": 660,
+      "y": 301,
+      "w": 170,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-top-1",
+      "x": 1010,
+      "y": 301,
+      "w": 215,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-bottom-0",
+      "x": 660,
+      "y": 671,
+      "w": 170,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-bottom-1",
+      "x": 1010,
+      "y": 671,
+      "w": 215,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-left-0",
+      "x": 651,
+      "y": 310,
+      "w": 18,
+      "h": 190,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-left-1",
+      "x": 651,
+      "y": 655,
+      "w": 18,
+      "h": 25,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-right-0",
+      "x": 1216,
+      "y": 310,
+      "w": 18,
+      "h": 190,
+      "kind": "wall"
+    },
+    {
+      "id": "staff-right-1",
+      "x": 1216,
+      "y": 655,
+      "w": 18,
+      "h": 25,
+      "kind": "wall"
+    },
+    {
+      "id": "training-top-0",
+      "x": 1265,
+      "y": 316,
+      "w": 45,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "training-top-1",
+      "x": 1510,
+      "y": 316,
+      "w": 25,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "training-bottom-0",
+      "x": 1265,
+      "y": 661,
+      "w": 45,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "training-bottom-1",
+      "x": 1510,
+      "y": 661,
+      "w": 25,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "training-left-0",
+      "x": 1256,
+      "y": 325,
+      "w": 18,
+      "h": 155,
+      "kind": "wall"
+    },
+    {
+      "id": "training-left-1",
+      "x": 1256,
       "y": 650,
-      "w": 22,
-      "h": 530,
-      "kind": "blocking"
+      "w": 18,
+      "h": 20,
+      "kind": "wall"
     },
     {
-      "id": "solid-32",
-      "x": 1280,
-      "y": 1158,
-      "w": 550,
-      "h": 22,
-      "kind": "blocking"
+      "id": "training-right-0",
+      "x": 1526,
+      "y": 325,
+      "w": 18,
+      "h": 345,
+      "kind": "wall"
     },
     {
-      "id": "solid-33",
+      "id": "forge-top-0",
+      "x": 55,
+      "y": 721,
+      "w": 195,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-top-1",
+      "x": 440,
+      "y": 721,
+      "w": 195,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-bottom-0",
+      "x": 55,
+      "y": 1156,
+      "w": 195,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-bottom-1",
+      "x": 440,
+      "y": 1156,
+      "w": 195,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-left-0",
+      "x": 46,
+      "y": 730,
+      "w": 18,
+      "h": 435,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-right-0",
+      "x": 626,
+      "y": 730,
+      "w": 18,
+      "h": 170,
+      "kind": "wall"
+    },
+    {
+      "id": "forge-right-1",
+      "x": 626,
+      "y": 1145,
+      "w": 18,
+      "h": 20,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-top-0",
+      "x": 660,
+      "y": 721,
+      "w": 170,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-top-1",
+      "x": 1010,
+      "y": 721,
+      "w": 245,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-bottom-0",
+      "x": 660,
+      "y": 1156,
+      "w": 200,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-bottom-1",
+      "x": 1050,
+      "y": 1156,
+      "w": 205,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-left-0",
+      "x": 651,
+      "y": 730,
+      "w": 18,
+      "h": 170,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-left-1",
+      "x": 651,
+      "y": 1145,
+      "w": 18,
+      "h": 20,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-right-0",
+      "x": 1246,
+      "y": 730,
+      "w": 18,
+      "h": 90,
+      "kind": "wall"
+    },
+    {
+      "id": "alchemy-right-1",
+      "x": 1246,
+      "y": 1010,
+      "w": 18,
+      "h": 155,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-top-0",
+      "x": 1285,
+      "y": 651,
+      "w": 25,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-top-1",
+      "x": 1510,
+      "y": 651,
+      "w": 310,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-bottom-0",
+      "x": 1285,
+      "y": 1156,
+      "w": 135,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-bottom-1",
+      "x": 1660,
+      "y": 1156,
+      "w": 160,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-left-0",
+      "x": 1276,
+      "y": 660,
+      "w": 18,
+      "h": 160,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-left-1",
+      "x": 1276,
+      "y": 1010,
+      "w": 18,
+      "h": 155,
+      "kind": "wall"
+    },
+    {
+      "id": "contract-right-0",
+      "x": 1811,
+      "y": 660,
+      "w": 18,
+      "h": 505,
+      "kind": "wall"
+    },
+    {
+      "id": "rare-top-0",
+      "x": 70,
+      "y": 1636,
+      "w": 85,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "rare-top-1",
+      "x": 320,
+      "y": 1636,
+      "w": 65,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "rare-bottom-0",
+      "x": 70,
+      "y": 2036,
+      "w": 315,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "rare-left-0",
+      "x": 61,
+      "y": 1645,
+      "w": 18,
+      "h": 400,
+      "kind": "wall"
+    },
+    {
+      "id": "rare-right-0",
+      "x": 376,
+      "y": 1645,
+      "w": 18,
+      "h": 400,
+      "kind": "wall"
+    },
+    {
+      "id": "management-top-0",
+      "x": 1285,
+      "y": 1341,
+      "w": 425,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "management-bottom-0",
+      "x": 1285,
+      "y": 2031,
+      "w": 425,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "management-left-0",
+      "x": 1276,
+      "y": 1350,
+      "w": 18,
+      "h": 180,
+      "kind": "wall"
+    },
+    {
+      "id": "management-left-1",
+      "x": 1276,
+      "y": 1720,
+      "w": 18,
+      "h": 90,
+      "kind": "wall"
+    },
+    {
+      "id": "management-left-2",
+      "x": 1276,
+      "y": 1990,
+      "w": 18,
+      "h": 50,
+      "kind": "wall"
+    },
+    {
+      "id": "management-right-0",
+      "x": 1701,
+      "y": 1350,
+      "w": 18,
+      "h": 690,
+      "kind": "wall"
+    },
+    {
+      "id": "visitor-top-0",
+      "x": 110,
+      "y": 2141,
+      "w": 110,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "visitor-top-1",
+      "x": 420,
+      "y": 2141,
+      "w": 100,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "visitor-bottom-0",
+      "x": 110,
+      "y": 2501,
+      "w": 410,
+      "h": 18,
+      "kind": "wall"
+    },
+    {
+      "id": "visitor-left-0",
+      "x": 101,
+      "y": 2150,
+      "w": 18,
+      "h": 360,
+      "kind": "wall"
+    },
+    {
+      "id": "visitor-right-0",
+      "x": 511,
+      "y": 2150,
+      "w": 18,
+      "h": 360,
+      "kind": "wall"
+    },
+    {
+      "id": "checkout-counter",
       "x": 495,
       "y": 1905,
       "w": 465,
       "h": 50,
-      "kind": "blocking"
+      "kind": "furniture"
     },
     {
-      "id": "solid-34",
-      "x": 60,
-      "y": 1640,
-      "w": 120,
-      "h": 22,
-      "kind": "blocking"
+      "id": "attack-shelf",
+      "x": 195,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "furniture"
     },
     {
-      "id": "solid-35",
-      "x": 305,
-      "y": 1640,
-      "w": 85,
-      "h": 22,
-      "kind": "blocking"
+      "id": "defense-shelf",
+      "x": 645,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "furniture"
     },
     {
-      "id": "solid-36",
-      "x": 60,
-      "y": 1640,
-      "w": 22,
-      "h": 420,
-      "kind": "blocking"
+      "id": "other-shelf",
+      "x": 1015,
+      "y": 1300,
+      "w": 180,
+      "h": 92,
+      "kind": "furniture"
     },
     {
-      "id": "solid-37",
-      "x": 368,
-      "y": 1640,
-      "w": 22,
-      "h": 420,
-      "kind": "blocking"
+      "id": "forge-left",
+      "x": 130,
+      "y": 770,
+      "w": 110,
+      "h": 88,
+      "kind": "furniture"
     },
     {
-      "id": "solid-38",
-      "x": 60,
-      "y": 2038,
-      "w": 330,
-      "h": 22,
-      "kind": "blocking"
+      "id": "forge-right",
+      "x": 380,
+      "y": 770,
+      "w": 110,
+      "h": 88,
+      "kind": "furniture"
     },
     {
-      "id": "solid-39",
-      "x": 390,
-      "y": 2038,
-      "w": 245,
-      "h": 24,
-      "kind": "blocking"
+      "id": "alchemy-left",
+      "x": 807,
+      "y": 900,
+      "w": 76,
+      "h": 62,
+      "kind": "furniture"
     },
     {
-      "id": "solid-40",
-      "x": 860,
-      "y": 2038,
-      "w": 420,
-      "h": 24,
-      "kind": "blocking"
+      "id": "alchemy-right",
+      "x": 1037,
+      "y": 900,
+      "w": 76,
+      "h": 62,
+      "kind": "furniture"
     },
     {
-      "id": "solid-41",
-      "x": 1280,
-      "y": 1340,
-      "w": 440,
-      "h": 22,
-      "kind": "blocking"
+      "id": "management-desk",
+      "x": 1420,
+      "y": 1540,
+      "w": 140,
+      "h": 64,
+      "kind": "furniture"
     },
     {
-      "id": "solid-42",
-      "x": 1280,
-      "y": 1340,
-      "w": 22,
-      "h": 230,
-      "kind": "blocking"
+      "id": "upgrade-table",
+      "x": 1420,
+      "y": 1820,
+      "w": 140,
+      "h": 64,
+      "kind": "furniture"
     },
     {
-      "id": "solid-43",
-      "x": 1280,
-      "y": 1695,
-      "w": 22,
-      "h": 145,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-44",
-      "x": 1280,
-      "y": 1960,
-      "w": 22,
-      "h": 90,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-45",
-      "x": 1698,
-      "y": 1340,
-      "w": 22,
-      "h": 710,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-46",
-      "x": 1280,
-      "y": 2038,
-      "w": 440,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-47",
+      "id": "river-west",
       "x": 350,
       "y": 2340,
       "w": 295,
@@ -520,219 +744,123 @@
       "kind": "water"
     },
     {
-      "id": "solid-48",
+      "id": "river-east",
       "x": 850,
       "y": 2340,
       "w": 996,
       "h": 230,
       "kind": "water"
-    },
-    {
-      "id": "solid-49",
-      "x": 195,
-      "y": 1300,
-      "w": 180,
-      "h": 92,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-50",
-      "x": 645,
-      "y": 1300,
-      "w": 180,
-      "h": 92,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-51",
-      "x": 1015,
-      "y": 1300,
-      "w": 180,
-      "h": 92,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-52",
-      "x": 98,
-      "y": 145,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-53",
-      "x": 228,
-      "y": 125,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-54",
-      "x": 358,
-      "y": 155,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-55",
-      "x": 1468,
-      "y": 135,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-56",
-      "x": 1608,
-      "y": 155,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-57",
-      "x": 1728,
-      "y": 135,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-58",
-      "x": 128,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-59",
-      "x": 478,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-60",
-      "x": 928,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-61",
-      "x": 1108,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-62",
-      "x": 1338,
-      "y": 2245,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
     }
   ],
   "doorways": [
     {
       "id": "material-south",
-      "x": 270,
+      "roomId": "material",
+      "x": 250,
       "y": 640,
-      "w": 145,
-      "h": 70,
-      "roomId": "material"
+      "w": 180,
+      "h": 70
     },
     {
       "id": "staff-south",
-      "x": 845,
+      "roomId": "staff",
+      "x": 830,
       "y": 650,
-      "w": 150,
-      "h": 70,
-      "roomId": "staff"
+      "w": 180,
+      "h": 70
     },
     {
       "id": "training-south",
+      "roomId": "training",
       "x": 1310,
       "y": 640,
-      "w": 190,
-      "h": 70,
-      "roomId": "training"
+      "w": 200,
+      "h": 70
     },
     {
       "id": "forge-south",
-      "x": 275,
+      "roomId": "forge",
+      "x": 250,
       "y": 1130,
-      "w": 160,
-      "h": 75,
-      "roomId": "forge"
+      "w": 190,
+      "h": 75
     },
     {
       "id": "alchemy-south",
-      "x": 885,
+      "roomId": "alchemy",
+      "x": 860,
       "y": 1130,
-      "w": 155,
-      "h": 75,
-      "roomId": "alchemy"
+      "w": 190,
+      "h": 75
     },
     {
       "id": "contract-west",
-      "x": 1255,
-      "y": 830,
-      "w": 80,
-      "h": 155,
-      "roomId": "contract"
+      "roomId": "contract",
+      "x": 1250,
+      "y": 820,
+      "w": 75,
+      "h": 190
     },
     {
       "id": "rare-north",
-      "x": 170,
+      "roomId": "rare",
+      "x": 155,
       "y": 1610,
-      "w": 145,
-      "h": 75,
-      "roomId": "rare"
+      "w": 165,
+      "h": 75
     },
     {
-      "id": "main-south",
-      "x": 625,
+      "id": "counter-north",
+      "roomId": "counter",
+      "x": 620,
+      "y": 1610,
+      "w": 280,
+      "h": 75
+    },
+    {
+      "id": "counter-south",
+      "roomId": "counter",
+      "x": 620,
       "y": 2010,
-      "w": 245,
-      "h": 85,
-      "roomId": "main"
+      "w": 280,
+      "h": 75
     },
     {
-      "id": "management-west-upper",
-      "x": 1255,
-      "y": 1560,
-      "w": 80,
-      "h": 145,
-      "roomId": "management"
+      "id": "management-upper",
+      "roomId": "management",
+      "x": 1250,
+      "y": 1530,
+      "w": 75,
+      "h": 190
     },
     {
-      "id": "management-west-lower",
-      "x": 1255,
-      "y": 1830,
-      "w": 80,
-      "h": 140,
-      "roomId": "management"
+      "id": "management-lower",
+      "roomId": "management",
+      "x": 1250,
+      "y": 1810,
+      "w": 75,
+      "h": 180
+    },
+    {
+      "id": "visitor-north",
+      "roomId": "visitor",
+      "x": 220,
+      "y": 2110,
+      "w": 200,
+      "h": 75
     },
     {
       "id": "bridge",
+      "roomId": "bridge",
       "x": 635,
       "y": 2325,
       "w": 225,
-      "h": 255,
-      "roomId": "bridge"
+      "h": 255
     }
   ],
   "water": [
     {
-      "id": "solid-47",
+      "id": "river-west",
       "x": 350,
       "y": 2340,
       "w": 295,
@@ -740,7 +868,7 @@
       "kind": "water"
     },
     {
-      "id": "solid-48",
+      "id": "river-east",
       "x": 850,
       "y": 2340,
       "w": 996,
@@ -750,452 +878,84 @@
   ],
   "blockingFurniture": [
     {
-      "id": "solid-5",
-      "x": 45,
-      "y": 305,
-      "w": 580,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-6",
-      "x": 45,
-      "y": 305,
-      "w": 22,
-      "h": 380,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-7",
-      "x": 603,
-      "y": 305,
-      "w": 22,
-      "h": 380,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-8",
-      "x": 45,
-      "y": 665,
-      "w": 235,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-9",
-      "x": 405,
-      "y": 665,
-      "w": 220,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-10",
-      "x": 655,
-      "y": 305,
-      "w": 580,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-11",
-      "x": 655,
-      "y": 305,
-      "w": 22,
-      "h": 390,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-12",
-      "x": 1213,
-      "y": 305,
-      "w": 22,
-      "h": 390,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-13",
-      "x": 655,
-      "y": 675,
-      "w": 200,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-14",
-      "x": 985,
-      "y": 675,
-      "w": 250,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-15",
-      "x": 1255,
-      "y": 315,
-      "w": 290,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-16",
-      "x": 1255,
-      "y": 315,
-      "w": 22,
-      "h": 355,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-17",
-      "x": 1523,
-      "y": 315,
-      "w": 22,
-      "h": 355,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-18",
-      "x": 45,
-      "y": 720,
-      "w": 595,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-19",
-      "x": 45,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-20",
-      "x": 618,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-21",
-      "x": 45,
-      "y": 1155,
-      "w": 240,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-22",
-      "x": 425,
-      "y": 1155,
-      "w": 215,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-23",
-      "x": 660,
-      "y": 720,
-      "w": 600,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-24",
-      "x": 660,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-25",
-      "x": 1238,
-      "y": 720,
-      "w": 22,
-      "h": 455,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-26",
-      "x": 660,
-      "y": 1155,
-      "w": 235,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-27",
-      "x": 1030,
-      "y": 1155,
-      "w": 230,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-28",
-      "x": 1280,
-      "y": 650,
-      "w": 550,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-29",
-      "x": 1280,
-      "y": 650,
-      "w": 22,
-      "h": 190,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-30",
-      "x": 1280,
-      "y": 975,
-      "w": 22,
-      "h": 205,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-31",
-      "x": 1808,
-      "y": 650,
-      "w": 22,
-      "h": 530,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-32",
-      "x": 1280,
-      "y": 1158,
-      "w": 550,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-33",
+      "id": "checkout-counter",
       "x": 495,
       "y": 1905,
       "w": 465,
       "h": 50,
-      "kind": "blocking"
+      "kind": "furniture"
     },
     {
-      "id": "solid-34",
-      "x": 60,
-      "y": 1640,
-      "w": 120,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-35",
-      "x": 305,
-      "y": 1640,
-      "w": 85,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-36",
-      "x": 60,
-      "y": 1640,
-      "w": 22,
-      "h": 420,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-37",
-      "x": 368,
-      "y": 1640,
-      "w": 22,
-      "h": 420,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-38",
-      "x": 60,
-      "y": 2038,
-      "w": 330,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-39",
-      "x": 390,
-      "y": 2038,
-      "w": 245,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-40",
-      "x": 860,
-      "y": 2038,
-      "w": 420,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-41",
-      "x": 1280,
-      "y": 1340,
-      "w": 440,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-42",
-      "x": 1280,
-      "y": 1340,
-      "w": 22,
-      "h": 230,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-43",
-      "x": 1280,
-      "y": 1695,
-      "w": 22,
-      "h": 145,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-44",
-      "x": 1280,
-      "y": 1960,
-      "w": 22,
-      "h": 90,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-45",
-      "x": 1698,
-      "y": 1340,
-      "w": 22,
-      "h": 710,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-46",
-      "x": 1280,
-      "y": 2038,
-      "w": 440,
-      "h": 22,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-49",
+      "id": "attack-shelf",
       "x": 195,
       "y": 1300,
       "w": 180,
       "h": 92,
-      "kind": "blocking"
+      "kind": "furniture"
     },
     {
-      "id": "solid-50",
+      "id": "defense-shelf",
       "x": 645,
       "y": 1300,
       "w": 180,
       "h": 92,
-      "kind": "blocking"
+      "kind": "furniture"
     },
     {
-      "id": "solid-51",
+      "id": "other-shelf",
       "x": 1015,
       "y": 1300,
       "w": 180,
       "h": 92,
-      "kind": "blocking"
+      "kind": "furniture"
     },
     {
-      "id": "solid-52",
-      "x": 98,
-      "y": 145,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "forge-left",
+      "x": 130,
+      "y": 770,
+      "w": 110,
+      "h": 88,
+      "kind": "furniture"
     },
     {
-      "id": "solid-53",
-      "x": 228,
-      "y": 125,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "forge-right",
+      "x": 380,
+      "y": 770,
+      "w": 110,
+      "h": 88,
+      "kind": "furniture"
     },
     {
-      "id": "solid-54",
-      "x": 358,
-      "y": 155,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "alchemy-left",
+      "x": 807,
+      "y": 900,
+      "w": 76,
+      "h": 62,
+      "kind": "furniture"
     },
     {
-      "id": "solid-55",
-      "x": 1468,
-      "y": 135,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "alchemy-right",
+      "x": 1037,
+      "y": 900,
+      "w": 76,
+      "h": 62,
+      "kind": "furniture"
     },
     {
-      "id": "solid-56",
-      "x": 1608,
-      "y": 155,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "management-desk",
+      "x": 1420,
+      "y": 1540,
+      "w": 140,
+      "h": 64,
+      "kind": "furniture"
     },
     {
-      "id": "solid-57",
-      "x": 1728,
-      "y": 135,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-58",
-      "x": 128,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-59",
-      "x": 478,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-60",
-      "x": 928,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-61",
-      "x": 1108,
-      "y": 2225,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
-    },
-    {
-      "id": "solid-62",
-      "x": 1338,
-      "y": 2245,
-      "w": 24,
-      "h": 24,
-      "kind": "blocking"
+      "id": "upgrade-table",
+      "x": 1420,
+      "y": 1820,
+      "w": 140,
+      "h": 64,
+      "kind": "furniture"
     }
   ],
   "interactionZones": [
@@ -1205,7 +965,7 @@
       "y": 1000,
       "w": 190,
       "h": 105,
-      "label": "⚒ AUTO CRAFT",
+      "label": "\u2692 AUTO CRAFT",
       "station": "forge",
       "type": "process",
       "allowedEntityTypes": [
@@ -1219,7 +979,7 @@
       "y": 1000,
       "w": 190,
       "h": 105,
-      "label": "🧪 AUTO BREW",
+      "label": "\ud83e\uddea AUTO BREW",
       "station": "alchemy",
       "type": "process",
       "allowedEntityTypes": [

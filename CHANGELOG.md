@@ -1,10 +1,11 @@
 # Changelog
 
-## v0.21.06-dev
+## v0.22.00
 
-- Added the living mobile-first implementation plan.
-- Added a non-invasive collision, doorway, interaction-zone, target, and A* path debug overlay.
-- Added `data/map_model.json` as an inventory of the existing v0.21.05 geometry. Gameplay does not consume this model yet.
-- Added the first map-model schema, non-personal save fixtures, static checks, and route-matrix diagnostics.
-- Exposed read-only debug getters from the existing runtime.
-- No intentional map, collision, crafting, progression, day, customer, employee, or save behaviour change.
+- Fixed all 16 route failures reported by v0.21.06-dev; expanded matrix now passes 40/40.
+- Rebuilt structural walls with wide explicit openings and added aligned north/south links through the upper workshop cluster.
+- Kept retail departments and the customer hall as open display areas; visible furniture supplies their physical structure.
+- Removed broad painted roads. Open grass and room floor clearances provide circulation.
+- Reworked map art with a unified woodland palette, quieter room floors, small threshold mats, matching furniture, cleaner water and bridge treatment.
+- Generated runtime wall and doorway constants from `data/map_model.json` during the build.
+- Preserved automatic Forge/Alchemy pads and existing gameplay systems.

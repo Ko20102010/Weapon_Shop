@@ -1,16 +1,19 @@
-# Weapon Shop Empire v0.21.06-dev
+# Weapon Shop Empire v0.22.00
 
-GitHub-ready M0 diagnostic build based on v0.21.05.
+GitHub-ready navigation and map-art build based on v0.21.06-dev.
 
-## Run
+## Deploy
+
+Upload the extracted contents of this package to the repository root. Do not upload the ZIP itself.
+
+## Run locally
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/`.
-
-Collision diagnostics: `http://localhost:8000/?debug=collision`
+- Normal game: `http://localhost:8000/`
+- Collision debug: `http://localhost:8000/?debug=collision`
 
 ## Checks
 
@@ -20,4 +23,4 @@ node tests/static-checks.mjs
 node tests/route-matrix.mjs
 ```
 
-The route matrix is expected to expose current map defects and exits non-zero when failures remain. This developer build does not claim navigation is fixed or mobile-ready.
+Automated route matrix: 40 passed, 0 failed. Physical iPhone Safari testing was not available in the build environment.

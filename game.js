@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.21.06-dev';
+const VERSION='v0.22.00';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02106dev_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02106dev',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02200_slot_',OLD_PREFIXES=['wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02200',OLD_FOREVER_KEYS=['wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -150,37 +150,7 @@ const R={
 };
 
 // Physical collision boxes (walls, shelves, counters, rivers) with wide, open doorways
-const SOLIDS=[
-  {x:0,y:0,w:1870,h:24},{x:0,y:2846,w:1870,h:24},{x:0,y:0,w:24,h:2870},{x:1846,y:0,w:24,h:2870},
-  // Material Yard (South door x:280..405)
-  {x:45,y:305,w:580,h:22},{x:45,y:305,w:22,h:380},{x:603,y:305,w:22,h:380},{x:45,y:665,w:235,h:22},{x:405,y:665,w:220,h:22},
-  // Staff House (South door x:855..985)
-  {x:655,y:305,w:580,h:22},{x:655,y:305,w:22,h:390},{x:1213,y:305,w:22,h:390},{x:655,y:675,w:200,h:22},{x:985,y:675,w:250,h:22},
-  // Training Yard (South open entrance x:1320..1490)
-  {x:1255,y:315,w:290,h:22},{x:1255,y:315,w:22,h:355},{x:1523,y:315,w:22,h:355},
-  // Forge (South door x:285..425)
-  {x:45,y:720,w:595,h:22},{x:45,y:720,w:22,h:455},{x:618,y:720,w:22,h:455},{x:45,y:1155,w:240,h:22},{x:425,y:1155,w:215,h:22},
-  // Alchemy Lab (South door x:895..1030)
-  {x:660,y:720,w:600,h:22},{x:660,y:720,w:22,h:455},{x:1238,y:720,w:22,h:455},{x:660,y:1155,w:235,h:22},{x:1030,y:1155,w:230,h:22},
-  // Contract Warehouse (West gate x:1280, y:840..975)
-  {x:1280,y:650,w:550,h:22},{x:1280,y:650,w:22,h:190},{x:1280,y:975,w:22,h:205},{x:1808,y:650,w:22,h:530},{x:1280,y:1158,w:550,h:22},
-  // Checkout Counter Bar (walkable around left x<495 and right x>960)
-  {x:495,y:1905,w:465,h:50},
-  // Rare Storage (North door x:180..305, y:1640)
-  {x:60,y:1640,w:120,h:22},{x:305,y:1640,w:85,h:22},{x:60,y:1640,w:22,h:420},{x:368,y:1640,w:22,h:420},{x:60,y:2038,w:330,h:22},
-  // South Main Compound Wall (Main Entrance gap x:635..860, y:2038)
-  {x:390,y:2038,w:245,h:24},{x:860,y:2038,w:420,h:24},
-  // Management Office (West doors y:1570..1695 & y:1840..1960)
-  {x:1280,y:1340,w:440,h:22},{x:1280,y:1340,w:22,h:230},{x:1280,y:1695,w:22,h:145},{x:1280,y:1960,w:22,h:90},{x:1698,y:1340,w:22,h:710},{x:1280,y:2038,w:440,h:22},
-  // Southern River (Stone Bridge open at x:645..850)
-  {x:350,y:2340,w:295,h:230},{x:850,y:2340,w:996,h:230},
-  // Physical retail shelf objects: customers and workers stand at the front.
-  {x:195,y:1300,w:180,h:92},{x:645,y:1300,w:180,h:92},{x:1015,y:1300,w:180,h:92},
-  // Tree trunks only; canopies remain visually overhead and walk-behind.
-  {x:98,y:145,w:24,h:24},{x:228,y:125,w:24,h:24},{x:358,y:155,w:24,h:24},
-  {x:1468,y:135,w:24,h:24},{x:1608,y:155,w:24,h:24},{x:1728,y:135,w:24,h:24},
-  {x:128,y:2225,w:24,h:24},{x:478,y:2225,w:24,h:24},{x:928,y:2225,w:24,h:24},{x:1108,y:2225,w:24,h:24},{x:1338,y:2245,w:24,h:24}
-];
+const SOLIDS=[{"x":0,"y":0,"w":1870,"h":24},{"x":0,"y":2846,"w":1870,"h":24},{"x":0,"y":0,"w":24,"h":2870},{"x":1846,"y":0,"w":24,"h":2870},{"x":60,"y":301,"w":190,"h":18},{"x":430,"y":301,"w":185,"h":18},{"x":60,"y":666,"w":190,"h":18},{"x":430,"y":666,"w":185,"h":18},{"x":51,"y":310,"w":18,"h":365},{"x":606,"y":310,"w":18,"h":190},{"x":606,"y":655,"w":18,"h":20},{"x":660,"y":301,"w":170,"h":18},{"x":1010,"y":301,"w":215,"h":18},{"x":660,"y":671,"w":170,"h":18},{"x":1010,"y":671,"w":215,"h":18},{"x":651,"y":310,"w":18,"h":190},{"x":651,"y":655,"w":18,"h":25},{"x":1216,"y":310,"w":18,"h":190},{"x":1216,"y":655,"w":18,"h":25},{"x":1265,"y":316,"w":45,"h":18},{"x":1510,"y":316,"w":25,"h":18},{"x":1265,"y":661,"w":45,"h":18},{"x":1510,"y":661,"w":25,"h":18},{"x":1256,"y":325,"w":18,"h":155},{"x":1256,"y":650,"w":18,"h":20},{"x":1526,"y":325,"w":18,"h":345},{"x":55,"y":721,"w":195,"h":18},{"x":440,"y":721,"w":195,"h":18},{"x":55,"y":1156,"w":195,"h":18},{"x":440,"y":1156,"w":195,"h":18},{"x":46,"y":730,"w":18,"h":435},{"x":626,"y":730,"w":18,"h":170},{"x":626,"y":1145,"w":18,"h":20},{"x":660,"y":721,"w":170,"h":18},{"x":1010,"y":721,"w":245,"h":18},{"x":660,"y":1156,"w":200,"h":18},{"x":1050,"y":1156,"w":205,"h":18},{"x":651,"y":730,"w":18,"h":170},{"x":651,"y":1145,"w":18,"h":20},{"x":1246,"y":730,"w":18,"h":90},{"x":1246,"y":1010,"w":18,"h":155},{"x":1285,"y":651,"w":25,"h":18},{"x":1510,"y":651,"w":310,"h":18},{"x":1285,"y":1156,"w":135,"h":18},{"x":1660,"y":1156,"w":160,"h":18},{"x":1276,"y":660,"w":18,"h":160},{"x":1276,"y":1010,"w":18,"h":155},{"x":1811,"y":660,"w":18,"h":505},{"x":70,"y":1636,"w":85,"h":18},{"x":320,"y":1636,"w":65,"h":18},{"x":70,"y":2036,"w":315,"h":18},{"x":61,"y":1645,"w":18,"h":400},{"x":376,"y":1645,"w":18,"h":400},{"x":1285,"y":1341,"w":425,"h":18},{"x":1285,"y":2031,"w":425,"h":18},{"x":1276,"y":1350,"w":18,"h":180},{"x":1276,"y":1720,"w":18,"h":90},{"x":1276,"y":1990,"w":18,"h":50},{"x":1701,"y":1350,"w":18,"h":690},{"x":110,"y":2141,"w":110,"h":18},{"x":420,"y":2141,"w":100,"h":18},{"x":110,"y":2501,"w":410,"h":18},{"x":101,"y":2150,"w":18,"h":360},{"x":511,"y":2150,"w":18,"h":360},{"x":495,"y":1905,"w":465,"h":50},{"x":195,"y":1300,"w":180,"h":92},{"x":645,"y":1300,"w":180,"h":92},{"x":1015,"y":1300,"w":180,"h":92},{"x":130,"y":770,"w":110,"h":88},{"x":380,"y":770,"w":110,"h":88},{"x":807,"y":900,"w":76,"h":62},{"x":1037,"y":900,"w":76,"h":62},{"x":1420,"y":1540,"w":140,"h":64},{"x":1420,"y":1820,"w":140,"h":64},{"x":350,"y":2340,"w":295,"h":230},{"x":850,"y":2340,"w":996,"h":230}];
 
 const PTS={
   swordOut:{x:315,y:1195},
@@ -241,20 +211,8 @@ function featureUnlocked(name){
 }
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
 // v0.21.05: guaranteed walkable corridors. These rectangles are the road/door source of truth.
-const DOOR_CLEARANCES=[
-  // Only openings through visible walls. Open floor outside rooms is already naturally walkable.
-  {id:'material-south',x:270,y:640,w:145,h:70},
-  {id:'staff-south',x:845,y:650,w:150,h:70},
-  {id:'training-south',x:1310,y:640,w:190,h:70},
-  {id:'forge-south',x:275,y:1130,w:160,h:75},
-  {id:'alchemy-south',x:885,y:1130,w:155,h:75},
-  {id:'contract-west',x:1255,y:830,w:80,h:155},
-  {id:'rare-north',x:170,y:1610,w:145,h:75},
-  {id:'main-south',x:625,y:2010,w:245,h:85},
-  {id:'management-west-upper',x:1255,y:1560,w:80,h:145},
-  {id:'management-west-lower',x:1255,y:1830,w:80,h:140},
-  {id:'bridge',x:635,y:2325,w:225,h:255}
-];
+const DOOR_CLEARANCES=[{"id":"material-south","x":250,"y":640,"w":180,"h":70},{"id":"staff-south","x":830,"y":650,"w":180,"h":70},{"id":"training-south","x":1310,"y":640,"w":200,"h":70},{"id":"forge-south","x":250,"y":1130,"w":190,"h":75},{"id":"alchemy-south","x":860,"y":1130,"w":190,"h":75},{"id":"contract-west","x":1250,"y":820,"w":75,"h":190},{"id":"rare-north","x":155,"y":1610,"w":165,"h":75},{"id":"counter-north","x":620,"y":1610,"w":280,"h":75},{"id":"counter-south","x":620,"y":2010,"w":280,"h":75},{"id":"management-upper","x":1250,"y":1530,"w":75,"h":190},{"id":"management-lower","x":1250,"y":1810,"w":75,"h":180},{"id":"visitor-north","x":220,"y":2110,"w":200,"h":75},{"id":"bridge","x":635,"y":2325,"w":225,"h":255}];
+
 const PROCESS_PADS={
   forge:{x:250,y:1000,w:190,h:105,label:'⚒ AUTO CRAFT',station:'forge'},
   alchemy:{x:865,y:1000,w:190,h:105,label:'🧪 AUTO BREW',station:'alchemy'}
@@ -263,15 +221,7 @@ let processPadLast='';
 function pointInRect(x,y,a,pad=0){return x>=a.x-pad&&x<=a.x+a.w+pad&&y>=a.y-pad&&y<=a.y+a.h+pad}
 function inDoorClearance(x,y,r=0){return DOOR_CLEARANCES.some(a=>pointInRect(x,y,a,-Math.max(0,r-3)))}
 function collides(x,y,r=16){
-  if(x-r<24||x+r>WORLD.w-24||y-r<24||y+r>WORLD.h-24)return true;
-  // Door clearances remove collision only where a visible doorway exists.
-  if(inDoorClearance(x,y,r))return false;
-  return SOLIDS.some(a=>{
-    const hit=x+r>a.x&&x-r<a.x+a.w&&y+r>a.y&&y-r<a.y+a.h;
-    if(!hit)return false;
-    if(a.x===0||a.y===0||a.x+a.w>=WORLD.w||a.y+a.h>=WORLD.h)return false;
-    return true;
-  });
+  return SOLIDS.some(a=>x+r>a.x&&x-r<a.x+a.w&&y+r>a.y&&y-r<a.y+a.h);
 }
 function selectedAutoRecipe(station){
   const selected=recipes[craftKey];
@@ -1323,122 +1273,29 @@ function drawTreeCanopy(x,y,kind=0){
 
 // LAYER 1 & 2: Modular Ground, Rooms, Walls, Empty Shelves & Workstations
 function drawLayer1And2(){
-  // 1. Base Grass & Meadow Texture
-  pxRect(0,0,WORLD.w,WORLD.h,'#3b7a38');
-  for(let y=0;y<WORLD.h;y+=64){
-    for(let x=0;x<WORLD.w;x+=64){
-      if((x*5+y*9)%13<3)pxRect(x+14,y+18,8,6,'#549949');
-      if((x*11+y*3)%19===0)pxRect(x+32,y+36,6,6,'#7bc768');
-    }
+  // v0.22.00 clean woodland shop: open space is circulation; no painted-road overlays.
+  pxRect(0,0,WORLD.w,WORLD.h,'#3d7a3d');
+  for(let y=36;y<WORLD.h;y+=78)for(let x=36;x<WORLD.w;x+=78){const n=(x*11+y*7)%31;if(n<6)pxRect(x,y,6,4,n<3?'#78ad59':'#559348')}
+  // River and bridge.
+  pxRect(350,2340,295,230,'#237f9e');pxRect(850,2340,996,230,'#237f9e');
+  for(let x=370;x<1830;x+=64)pxRect(x,2380+(x%4)*30,30,4,'#65cbd8');
+  drawTiledRoomFloor(645,2335,205,235,'#956a3d','#5d3d24','bridge');
+  // Room floors, quiet colour families and restrained department strips.
+  const palette={material:['#7c694b','#b69a62'],staff:['#aa9570','#d2bc8c'],training:['#837454','#b59a66'],forge:['#75584b','#c07146'],alchemy:['#675d52','#8b73ba'],contract:['#725c42','#a27c48'],attack:['#b59a70','#bd6255'],defense:['#b59a70','#557cac'],other:['#b59a70','#8060a8'],rare:['#51405b','#9369b4'],counter:['#baa078','#d4ad60'],management:['#957b5b','#698aa3'],visitor:['#88775b','#b49b6b'],gate:['#557344','#82a667'],forest:['#2f6833','#4c8d4b']};
+  for(const [id,r] of Object.entries(R)){const p=palette[id]||[r.floor,'#9b8057'];drawTiledRoomFloor(r.x,r.y,r.w,r.h,p[0],p[1],id==='forge'||id==='alchemy'?'floorWork':'floorWood');pxRect(r.x+8,r.y+8,Math.max(16,r.w-16),7,p[1])}
+  // Visible furniture exactly matches furniture collision rectangles.
+  const furniture=SOLIDS.slice(-11,-2);
+  for(const f of furniture){pxRect(f.x,f.y,f.w,f.h,'#67452e');pxRect(f.x,f.y,f.w,Math.min(10,f.h),'#bd8248');g.strokeStyle='#38251c';g.lineWidth=3;g.strokeRect(f.x,f.y,f.w,f.h)}
+  // Structural walls come directly from authoritative collision geometry.
+  for(const w of SOLIDS){
+    const isRiver=w.y>=2340&&w.h>=180;
+    const isFurniture=furniture.includes(w);
+    if(isRiver||isFurniture)continue;
+    drawWallAssetSegment(w);
   }
-
-  // Outdoor Roads & Corridors
-  drawTiledRoomFloor(585,295,740,425,'#b89d72','#a1865c','pathStone');
-  drawTiledRoomFloor(585,680,740,515,'#b89d72','#a1865c','pathStone');
-  drawTiledRoomFloor(45,1165,1235,880,'#cdb386','#b59a6d','floorWood');
-  drawTiledRoomFloor(615,2040,265,560,'#c2a576','#a6895b','pathStone');
-  drawTiledRoomFloor(1255,660,575,690,'#9d8663','#846e4d','pathMoss');
-  drawTiledRoomFloor(830,110,230,195,'#9c845d','#826b47','pathStone');
-
-  // Wide, quiet navigation spines. These intentionally cover busy floor texture.
-  pxRect(685,300,150,2040,'#bfa679');
-  pxRect(250,1115,1370,130,'#bfa679');
-  pxRect(250,1980,1370,150,'#bfa679');
-  g.save();g.globalAlpha=.22;g.strokeStyle='#8d7652';g.lineWidth=3;
-  g.strokeRect(685,300,150,2040);g.strokeRect(250,1115,1370,130);g.strokeRect(250,1980,1370,150);g.restore();
-  // Clearly marked approach roads into every upper room.
-  pxRect(280,640,125,105,'#d1a05d');pxRect(855,640,130,105,'#d1a05d');pxRect(1320,620,170,125,'#d1a05d');
-  pxRect(285,1115,140,75,'#d1a05d');pxRect(895,1115,135,75,'#d1a05d');pxRect(1280,840,75,135,'#d1a05d');
-
-  // Southern River & Wooden Bridge
-  pxRect(350,2350,1520,200,'#1b7c9c');
-  for(let xx=360;xx<1840;xx+=55)pxRect(xx,2385+(xx%3)*45,28,5,'#5fd1e3');
-  // Central Stone/Wood Bridge (x:645..850)
-  drawTiledRoomFloor(645,2335,205,225,'#8f6339','#694626','bridge');
-  pxRect(645,2335,12,225,'#54381f');pxRect(838,2335,12,225,'#54381f');
-
-  // Functional Rooms Floors
-  for(const [rk,rm] of Object.entries(R)){
-    if(['counter','attack','defense','other','gate','forest'].includes(rk))continue;
-    drawTiledRoomFloor(rm.x,rm.y,rm.w,rm.h,rm.floor,'#5c4731',rk==='forge'||rk==='alchemy'?'floorWork':'floorWood');
-  }
-
-  // Forge Furnaces & Anvils (Inside Forge x:55..635, y:730..1165)
-  for(const fx of [185,435]){
-    pxRect(fx-55,770,110,88,'#4a4c54');
-    pxRect(fx-42,784,84,62,'#2a2a30');
-    pxRect(fx-30,800,60,40,'#ea6227');
-    pxRect(fx-18,808,36,26,'#ffd24c');
-    if(sprReady('anvil'))g.drawImage(SPRITES.anvil,fx-32,915,64,54);
-    else{pxRect(fx-28,925,56,34,'#595d66');pxRect(fx-18,918,36,12,'#828792')}
-  }
-
-  // Alchemy Cauldrons & Herb Shelves (Inside Alchemy x:660..1255, y:730..1165)
-  for(let i=0;i<4;i++){
-    pxRect(720+i*125,765,86,36,'#5c3b23');
-    pxRect(732+i*125,752,16,18,['#f25c5c','#58b0f7','#b56df2','#5ce07c'][i]);
-    pxRect(764+i*125,752,16,18,['#f5d04c','#5ce07c','#f25c5c','#58b0f7'][i]);
-  }
-  for(const cx of [845,1075]){
-    pxRect(cx-38,910,76,62,'#2d2e33');
-    pxRect(cx-30,902,60,18,cx===845?'#4cd964':'#a959f2');
-  }
-
-  // Staff House Beds & Hiring Pad (Inside Staff House x:660..1225, y:310..680)
-  for(let i=0;i<3;i++){
-    const bx=725+i*145,by=385;
-    pxRect(bx,by,76,46,'#5c3a24');
-    pxRect(bx+6,by+6,64,34,['#5985b5','#9c68b2','#549e70'][i]);
-    pxRect(bx+8,by+8,20,14,'#f5ebd6');
-  }
-  pxRect(PTS.hire.x-54,PTS.hire.y-26,108,52,'#2c7a3e');
-  g.strokeStyle='#8effc1';g.lineWidth=2;g.strokeRect(PTS.hire.x-54,PTS.hire.y-26,108,52);
-  text('🤝 HIRE $120',PTS.hire.x,PTS.hire.y+5,11,'#fff');
-
-  // Training Room Dummies (x:1265..1535, y:325..670)
-  for(const dx of [1345,1445]){
-    pxRect(dx-6,470,12,46,'#6e472b');
-    pxRect(dx-22,482,44,8,'#8c5c38');
-    pxRect(dx-13,454,26,26,'#d9be93');
-    text('🎯',dx,472,13,'#fff');
-  }
-
-  // Management Desk & Upgrade Blueprint Table (x:1285..1710, y:1350..2040)
-  pxRect(1420,1540,140,64,'#6e4427');
-  pxRect(1430,1548,120,48,'#9c653b');
-  text('📜 CONTRACTS',1490,1577,11,'#fff2c6');
-  pxRect(1420,1820,140,64,'#3c5670');
-  text('🛠️ UPGRADES',1490,1856,11,'#d4ecff');
-
-  // Special Visitor Plaza Well (x:315, y:2335)
-  if(sprReady('well'))g.drawImage(SPRITES.well,PTS.visitor.x-42,PTS.visitor.y-42,84,84);
-  else{
-    pxRect(PTS.visitor.x-36,PTS.visitor.y-36,72,72,'#6d7882');
-    pxRect(PTS.visitor.x-24,PTS.visitor.y-24,48,48,'#288fb0');
-  }
-
-  // Checkout Counter Bar
-  pxRect(495,1905,465,52,'#694024');
-  pxRect(495,1905,465,12,'#b88038');
-  text('🪙 CHECKOUT COUNTER',725,1938,12,'#ffe9b5');
-
-  // Physical walls now use existing transparent wall PNGs while collision stays independent.
-  for(const wall of SOLIDS){
-    if(wall.y>=2340&&wall.h>=180)continue;
-    if(wall.x===495&&wall.y===1905)continue;
-    drawWallAssetSegment(wall);
-  }
-  // Roads are open space, not painted corridors. Only doorway thresholds are highlighted.
-  for(const d of DOOR_CLEARANCES){
-    if(d.id==='bridge')continue;
-    const horizontal=d.w>=d.h;
-    const mx=horizontal?d.x:d.x+Math.floor(d.w/2)-12;
-    const my=horizontal?d.y+Math.floor(d.h/2)-12:d.y;
-    const mw=horizontal?d.w:24;
-    const mh=horizontal?24:d.h;
-    pxRect(mx,my,mw,mh,'#d9bf84');
-    g.save();g.globalAlpha=.55;g.strokeStyle='#755536';g.lineWidth=2;g.strokeRect(mx,my,mw,mh);g.restore();
-  }
+  // Door thresholds are small orientation cues only.
+  for(const d of DOOR_CLEARANCES){if(d.id==='bridge')continue;const horizontal=d.w>=d.h;const x=horizontal?d.x:d.x+d.w/2-10,y=horizontal?d.y+d.h/2-10:d.y,w=horizontal?d.w:20,h=horizontal?20:d.h;pxRect(x,y,w,h,'#dfc589');g.strokeStyle='#7a5938';g.lineWidth=2;g.strokeRect(x,y,w,h)}
+  // Production pads remain high contrast and readable.
   drawProcessPads();
   drawMapObjects('lowProps');
 }

@@ -2,7 +2,7 @@
 
 **Plan version:** 1.1  
 **Planning date:** 20 October 2026  
-**Trusted baseline:** v0.21.05  
+**Trusted baseline:** v0.22.00  
 **Trusted gameplay lineage:** v0.19.00  
 **Deployment:** GitHub Pages, static HTML/CSS/JavaScript  
 **Primary device:** iPhone Safari portrait  
@@ -939,7 +939,7 @@ Never describe a build as mobile-ready until the physical iPhone Safari critical
 # 13. Milestone status board
 
 - [x] M0 — Baseline and diagnostics
-- [ ] M1 — Single-source navigation foundation
+- [x] M1 — Single-source navigation foundation
 - [ ] M2 — Automatic Sword loop
 - [ ] M3 — Mobile onboarding and day model
 - [ ] M4 — Visible shop growth
@@ -948,7 +948,7 @@ Never describe a build as mobile-ready until the physical iPhone Safari critical
 
 ## Current next action
 
-Review the M0 route-matrix failures, then implement **M1 only**. Do not add content until the single-source map reaches 100% critical-route pass.
+Run physical iPhone Safari room-entry checks for v0.22.00. If those pass, implement **M2 — Automatic Sword loop** only.
 
 ---
 
@@ -971,3 +971,13 @@ Review the M0 route-matrix failures, then implement **M1 only**. Do not add cont
 - Route matrix executed: see `route-matrix-results.txt`; failures are release blockers for M1.
 - Real-browser and physical-device checks: not executed.
 - Gameplay, map geometry, and saves: not intentionally changed.
+
+
+## M1 execution record — 20 October 2026
+
+- Baseline route matrix: 24 passed, 16 failed.
+- v0.22.00 expanded route matrix: 40 passed, 0 failed.
+- Map art rebuilt without broad painted roads.
+- Structural geometry and runtime constants generated together from the corrected model during packaging.
+- JavaScript and static checks: passed.
+- Real-browser and physical iPhone checks: not executed in the build environment.

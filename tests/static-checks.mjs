@@ -7,5 +7,5 @@ const ids=[];for(const k of required.filter(k=>Array.isArray(model[k])))for(cons
 if(new Set(ids).size!==ids.length)throw Error('duplicate scoped IDs');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');const htmlIds=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);if(new Set(htmlIds).size!==htmlIds.length)throw Error('duplicate HTML IDs');
 for(const f of ['style.css','game.js','js/debug-overlay.js','data/map_model.json'])if(!fs.existsSync(path.join(root,f)))throw Error('missing '+f);
-for(const token of ['v0.21.06-dev','style.css?v=0.21.06-dev','game.js?v=0.21.06-dev','debug-overlay.js?v=0.21.06-dev'])if(!html.includes(token)&&token!=='v0.21.06-dev')throw Error('HTML version mismatch '+token);
+for(const token of ['v0.22.00','style.css?v=0.22.00','game.js?v=0.22.00','debug-overlay.js?v=0.22.00'])if(!html.includes(token)&&token!=='v0.22.00')throw Error('HTML version mismatch '+token);
 console.log(`STATIC PASS rooms=${model.rooms.length} walls=${model.walls.length} doors=${model.doorways.length} zones=${model.interactionZones.length}`);
