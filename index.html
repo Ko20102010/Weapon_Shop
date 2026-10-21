@@ -1,17 +1,202 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#1d1715"><title>Weapon Shop Empire v0.22.30</title><link rel="stylesheet" href="style.css?v=0.22.30"></head><body>
-<div id="slotScreen" class="overlay show firstShopLanding"><div class="slotbox"><h1>WEAPON SHOP EMPIRE</h1><p>v0.22.30 • Shopkeeper Journey Edition • Auto-save occurs at day end.</p><div id="saveSlots" class="slots"></div></div></div>
-<div id="app" class="hidden"><canvas id="game" width="1280" height="720"></canvas>
-<div class="hudWrap">
-  <div class="topHud"><b id="cash">$250</b><span id="rep">REP 20</span><span id="day">DAY 1</span><span id="clock">OPEN 120s</span><span id="heroHud">⚔️12 🛡️10</span></div>
-  <div class="journeyHud"><div class="questCopy"><small>CURRENT GOAL</small><b id="questTitle">Open your first shop</b><span id="questDetail">Gather materials and craft an Iron Sword</span></div><button id="suggest" class="taskBtn">GO</button></div><div class="subHud"><span id="carryHud">🤲 Empty (0/3) | 🪙 $0</span></div>
-</div>
-<div class="cameraButtons"><button id="zoomIn" title="Zoom In">＋</button><button id="overview" title="Overview" aria-label="Show map overview">▣</button><button id="zoomOut" title="Zoom Out">−</button></div>
-<div id="actionBar" class="actionBar"></div>
-<button id="bagToggle" class="bagToggle" aria-label="Open inventory">🎒<span>BAG</span></button><div id="bagPanel" class="bagPanel"></div><div id="mainMenu" class="menuButtons"><button data-page="status"><span>🏪</span><b>SHOP</b></button><button data-page="products"><span>⚒️</span><b>MAKE</b></button><button data-page="employees"><span>👥</span><b>TEAM</b></button><button data-page="expedition"><span>🗺️</span><b>EXPLORE</b></button><button data-page="wholesale"><span>📋</span><b>MORE</b></button><button data-page="save"><span>💾</span><b>SAVE</b></button></div>
-<div id="panel" class="panel"><button id="closePanel" class="close" aria-label="Close panel">×</button><div id="panelContent"></div></div>
-<div id="toast" class="toast"></div><div id="dragStick" class="dragStick"><i></i></div>
-<div id="tutorial" class="tutorial"><div class="tutorialCard"><div class="tutHead"><b id="tutorialTitle">Welcome</b><button id="tutorialSkip" aria-label="Skip tutorial">SKIP</button></div><p id="tutorialText"></p></div></div>
-<div id="daySummary" class="daySummary"><div class="summaryBox"><h2>DAY COMPLETE</h2><div id="summaryContent"></div><button id="summaryNext">START NEXT DAY</button></div></div>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f0c1b" />
+  <title>古域魔陣：守護神殿 (Ancient Arcane Bastion) - 古代魔法RPG守城WebApp</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/icon.jpg" />
+  <link rel="stylesheet" href="./css/style.css" />
+  
+</head>
+<body>
 
-<div class="version">Weapon Shop Empire v0.22.30</div>
-</div><script src="game.js?v=0.22.30"></script></body></html>
+<div id="app-root">
+  <!-- Interactive 2.5D Battlefield Canvas -->
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Toast Notification Layer -->
+  <div id="toast-container"></div>
+
+  <!-- Top HUD Bar (Resources, Wave Progress, Tactical Advisor, AI & Zoom Controls) -->
+  <header class="hud-top">
+    <div class="hud-row">
+      <!-- Resource Pills -->
+      <div class="resource-bar">
+        <div class="res-pill gold-pill" title="古域金幣 (踏上魔陣解鎖、選塔與升級)">
+          <span class="res-icon gold-icon">🪙</span>
+          <span id="hud-gold">220</span>
+        </div>
+        <div class="res-pill mana-pill" title="魔力水晶 (啟動高階魔陣與神龕)">
+          <span class="res-icon mana-icon">💎</span>
+          <span id="hud-mana">45</span>
+        </div>
+        <div class="res-pill soul-pill" title="靈魂結晶 (升級永久星盤天賦)">
+          <span class="res-icon soul-icon">🔮</span>
+          <span id="hud-soul">4</span>
+        </div>
+      </div>
+
+      <!-- Top Right Quick Toggles -->
+      <div class="hud-actions">
+        <button id="btn-ai-toggle" class="hud-btn" onclick="window.uiToggleAiMode()">🤖 AI: 手動控制</button>
+        <button id="btn-zoom-toggle" class="hud-btn" onclick="window.uiToggleZoom()">🔍 標準</button>
+        <button id="btn-speed-toggle" class="hud-btn" onclick="window.uiToggleSpeed()">⏩ 1x</button>
+        <button id="btn-audio-toggle" class="hud-btn" onclick="window.uiToggleAudio()">🔊 音效</button>
+        
+      </div>
+    </div>
+
+    <!-- Defense Health & Wave Radar Strip -->
+    <div class="defense-radar-strip">
+      <div class="defense-pill wall-pill" title="城門與城牆耐久度：歸零時城門被破，魔物將突入大本營！">
+        <span class="defense-icon">🏰</span>
+        <div class="defense-info">
+          <div class="defense-label-row">
+            <span>城防耐久</span>
+            <span id="hud-wall-text">850/850</span>
+          </div>
+          <div class="hp-bar-track">
+            <div id="hud-wall-bar" class="hp-bar-fill wall-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="defense-pill hall-pill" title="守護大本營生命：要塞核心！大本營被毀則宣告城池淪陷！">
+        <span class="defense-icon">🏛️</span>
+        <div class="defense-info">
+          <div class="defense-label-row">
+            <span>守護大本營</span>
+            <span id="hud-hall-text">1800/1800</span>
+          </div>
+          <div class="hp-bar-track">
+            <div id="hud-hall-bar" class="hp-bar-fill hall-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="hud-radar-badge" class="radar-pill" title="即時三路魔物軍情雷達">
+        <span id="hud-radar-dot" class="radar-dot pulse-dot"></span>
+        <span id="hud-radar-text">⚔️ 敵軍動態：北路 0 | 中路 0 | 南路 0</span>
+      </div>
+    </div>
+
+    <!-- Second Row: Realm/Wave Indicator, Tactical Advisor & Active Guided Quest -->
+    <div class="wave-quest-strip">
+      <div class="realm-wave-box" onclick="window.uiOpenModal('realms')" style="cursor:pointer;">
+        <img src="./assets/icon.jpg" alt="Crest" style="width:22px;height:22px;border-radius:6px;border:1px solid #fbbf24;" />
+        <div>
+          <div id="hud-realm-name" style="font-weight:800;color:#fde047;line-height:1.1;">第一章：古林魔法紀元</div>
+          <div id="hud-wave-num" style="font-size:0.7rem;color:#cbd5e1;">第 1 / 50 波</div>
+        </div>
+      </div>
+
+      <div class="advisor-banner" onclick="window.uiFollowAdvisor()" title="點擊採納軍師建議並自動導航前往">
+        <span id="hud-advisor-text" style="font-weight:700;color:#e0f2fe;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🧙‍♂️ 軍師建議：踏上建地自選 10 大魔塔與兵營</span>
+        <span style="font-size:0.68rem;color:#38bdf8;font-weight:800;white-space:nowrap;">前往 ▸</span>
+      </div>
+
+      <div class="quest-banner" onclick="window.uiOpenModal('codex')">
+        <span id="hud-quest-text" style="font-weight:700;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">🎯 主線 #1：踏上內城中樞魔陣建造並升級魔法塔</span>
+        <span style="font-size:0.7rem;color:#fde047;font-weight:800;white-space:nowrap;">詳情 ▸</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Bottom HUD: Ground Logo Step-On & Choose 10-Tower Card, Active Spells & 6 RPG Menus -->
+  <footer class="hud-bottom">
+    <div class="combat-controls-row">
+      <!-- Contextual Card when standing on a Ground Logo (Includes 10-Tower Step-On Picker!) -->
+      <div id="pad-context-card" class="pad-context-card hidden">
+        <div id="pad-context-title" style="font-weight:800;font-size:0.84rem;color:#fde047;">🔮 地下魔陣</div>
+        <div id="pad-context-desc" style="font-size:0.72rem;color:#cbd5e1;margin-top:2px;">踏上魔陣自動投入資源升級，或點擊下方切換駐守魔塔/兵營：</div>
+        <div id="pad-tower-picker" class="tower-picker-strip" style="display:none;"></div>
+      </div>
+
+      <!-- 3 Active Hero Spells -->
+      <div class="skills-cluster">
+        <button class="skill-btn" onclick="window.uiCastSkill(0)" title="符文風暴 + 全屏吸金">
+          <span class="skill-emoji">🌪️</span>
+          <span class="skill-lbl">風暴吸金</span>
+          <div id="skill-cd-0" class="skill-cd-overlay" style="display:none;"></div>
+        </button>
+        <button class="skill-btn" onclick="window.uiCastSkill(1)" title="聖光壁壘：修復城牆 + 神像極速">
+          <span class="skill-emoji">🛡️</span>
+          <span class="skill-lbl">聖光壁壘</span>
+          <div id="skill-cd-1" class="skill-cd-overlay" style="display:none;"></div>
+        </button>
+        <button class="skill-btn" onclick="window.uiCastSkill(2)" title="太古天隕：全屏流星火雨">
+          <span class="skill-emoji">☄️</span>
+          <span class="skill-lbl">太古天隕</span>
+          <div id="skill-cd-2" class="skill-cd-overlay" style="display:none;"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 6 RPG System Navigation Buttons -->
+    <nav class="nav-dock">
+      <button class="dock-btn" onclick="window.uiOpenModal('pads')">
+        <span class="dock-icon">🏰</span>
+        <span>10塔建地</span>
+      </button>
+      <button class="dock-btn" onclick="window.uiOpenModal('townhall')">
+        <span class="dock-icon">🏛️</span>
+        <span>大本營</span>
+      </button>
+      <button class="dock-btn" onclick="window.uiOpenModal('hero')">
+        <span class="dock-icon">⚔️</span>
+        <span>英雄聖物</span>
+      </button>
+      <button class="dock-btn" onclick="window.uiOpenModal('talents')">
+        <span id="dot-talent" class="badge-dot"></span>
+        <span class="dock-icon">🌟</span>
+        <span>星盤天賦</span>
+      </button>
+      <button class="dock-btn" onclick="window.uiOpenModal('realms')">
+        <span class="dock-icon">🗺️</span>
+        <span>古域轉生</span>
+      </button>
+      <button class="dock-btn" onclick="window.uiOpenModal('codex')">
+        <span class="dock-icon">📖</span>
+        <span>任務圖鑑</span>
+      </button>
+    </nav>
+  </footer>
+
+  <!-- Universal RPG Modal Drawer -->
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div id="modal-title" class="modal-title">🔮 古域魔陣</div>
+        <button class="modal-close" onclick="window.uiCloseModal()">✕</button>
+      </div>
+      <!-- Banner Strip inside Modal -->
+      <div style="position:relative;height:78px;overflow:hidden;border-bottom:1px solid rgba(251,191,36,0.3);flex-shrink:0;">
+        <img src="./assets/banner.jpg" alt="Ancient Arcane Bastion Banner" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(0.75);" />
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,13,34,0.88) 0%,transparent 50%,rgba(17,13,34,0.88) 100%);display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
+          <div>
+            <div style="font-weight:900;font-size:0.92rem;color:#fde047;text-shadow:0 2px 6px #000;">《古域魔陣：守護神殿》Ancient Arcane Bastion v1.4</div>
+            <div style="font-size:0.72rem;color:#e2e8f0;">踏上自選 10 大魔塔與兵營・三路大地圖與實體城牆・五章 250 波養成</div>
+          </div>
+        </div>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/audio.js"></script>
+  <script src="./js/engine.js"></script>
+  <script src="./js/ui.js"></script>
+  <script>
+    window.addEventListener("load", function() {
+      window.GameEngine.init();
+      window.GameUI.init();
+    });
+  </script>
+</body>
+</html>

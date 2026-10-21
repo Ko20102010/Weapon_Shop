@@ -1,0 +1,17 @@
+{
+  "name": "古域魔陣：守護神殿 (Ancient Arcane Bastion)",
+  "short_name": "古域魔陣",
+  "description": "古代+魔法RPG風格「踏上地下Logo升級擴建」守城大作，支援手機WebApp與離線養成",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f0c1b",
+  "theme_color": "#fbbf24",
+  "icons": [
+    {
+      "src": "./assets/icon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}

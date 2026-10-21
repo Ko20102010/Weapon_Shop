@@ -1,44 +1,41 @@
-# Weapon Shop Empire v0.22.30
+# 🏰 古域魔陣：守護神殿 (Ancient Arcane Bastion) v1.4.1
+## Ancient Arcane Bastion — GitHub Pages Repository Package
 
-Visual-system rebuild based on the user-supplied v0.22.23 source.
+一款結合**「踏上地下魔陣自選 10 大魔塔與兵營 / 擴張領地」**直覺操作與**「古代魔法 RPG 10 小時長線養成」**的 HTML5 守城遊戲，專為手機全螢幕 (PWA / WebApp) 及電腦瀏覽器打造。
 
-## Critical fixes
+---
 
-- Fixed the green-map runtime failure. `playerTick()` shadowed the global keyboard-state object with a nullable `keyboardVector()` result, then attempted to read `.w` from `null` before `draw()` ran.
-- The world now renders before simulation updates, so a future update exception does not leave a blank green canvas.
+## ✨ v1.4.1 核心系統特色
 
-## Artwork changes
+1. **實體城堡防線與雙城門通道 (Solid Fortress Walls & Gatehouses)**：
+   - 具備真實物理阻擋體積，怪物無法穿透實體石牆，只能推進至城門攻擊；英雄與召喚部隊（鐵衛、遊俠、聖騎、魔像）可自由穿梭雙城門出城迎敵。
+   - 三階外觀進化：青苔古石 ➔ 秘銀硬石 ➔ 黃金星界聖殿。
+2. **守護大本營與雙重血量系統 (Citadel Town Hall & Dual HP Bars)**：
+   - 內城中央矗立【守護大本營 (Citadel Core)】，自帶遠古重裝弩砲射擊靠近的魔物。
+   - 頂部 HUD 即時顯示【城防耐久】與【守護大本營】雙動態血量條。城門被破時魔物會湧入內城圍攻大本營；大本營陷落時觸發城池淪陷保護。
+3. **10 大可解鎖魔塔與兵營藍圖 (10 Customizable Towers & Barracks)**：
+   - **奧術塔** (追蹤冰晶減速)、**雷霆像** (連鎖閃電麻痺)、**烈焰台** (爆裂火海)、**鐵衛營** (持盾重裝步兵)、**弓手營** (精靈遠程齊射)、**劍聖壇** (直線貫穿劍氣)、**星隕砲** (破甲重砲)、**聖騎營** (巡邏衝鋒兼撿幣)、**黑洞碑** (引力聚怪吸血)、**金龍殿** (金龍龍息＋召喚泰坦巨神魔像)。
+   - 踏上任意陣位即可於底部快速選塔或切換駐守。
+4. **全角色具象化 2.5D 手繪造型 (Procedural Figures for All Units)**：
+   - 全面去除單純圓圈；所有 11 種魔物（哥布林、骷髏兵、暗影小惡魔、狂暴獸人、毒尾魔蠍、暗影術士、石巨像、霜凍魔狼、煉獄炎魔、虛空掠奪者、領域首領）與 5 種友軍均採用手繪風格立體人形成像。
+5. **三路即時軍情雷達與戰術軍師 (3-Road Threat Radar & Tactical Advisor)**：
+   - 即時掌握北路、中路、南路魔物動態；螢幕邊緣警告箭頭標示外圍逼近魔物。
+   - 動態軍師每秒推薦最合適的應對建築，點擊即可一鍵導航前往建地。
+6. **五大古域戰役與神性轉生 (5 Realms & Ascension Rebirth)**：
+   - 古林、荒漠、地窟、冰封、星界熔爐五大章節共 250 波挑戰與無盡深淵。
+   - 太古星盤三大天賦樹（戰術、財富、建築）、四格 RPG 神裝隨機鍛造與三合一合成。
 
-- Added outlined room platforms and shadows.
-- Added warm sandstone circulation paths.
-- Reworked walls as lower open-workshop stone footings with timber rails and strong outlines.
-- Strengthened HUD, navigation and joystick outlines for phone readability.
-- Preserved existing room, collision and doorway geometry.
+---
 
-## Deployment
+## 🚀 GitHub Pages 快速部署指南
 
-Extract the ZIP to the GitHub repository root. Open with `?v=02230`.
-
-## Version record
-
-- v0.22.30: visual rebuild and green-map runtime fix
-- v0.22.23: document capture-phase input hotfix
-- v0.22.22: mobile input controller rebuild
-- v0.22.21: stale manual-craft DOM reference fix
-- v0.22.20: continuous automatic crafting
-- v0.22.11: artwork stabilisation
-- v0.22.10: artwork-first renderer
-- v0.22.00: 40/40 navigation foundation
-- v0.21.06-dev: route diagnostics
-- v0.21.05: open-space map
-- v0.21.04: route and auto-craft iteration
-- v0.21.03: early auto-craft
-- v0.21.02: clean portrait
-- v0.21.01: mobile layout
-- v0.21.00: shopkeeper journey UI
-- v0.20.00: redesign baseline
-- v0.19.00: trusted gameplay lineage
-
-## Validation status
-
-Source-level tests pass. Physical iPhone Safari and production GitHub Pages deployment were not executed in the build environment.
+1. **上傳至 GitHub 倉庫**：
+   - 在 GitHub 新建一個公開倉庫（例如 `ancient-arcane-bastion`）。
+   - 將本 ZIP 壓縮包解壓縮後的所有檔案與資料夾（包含 `index.html`、`css/`、`js/`、`assets/`、`manifest.json`、`.nojekyll` 等）上傳至倉庫的根目錄。
+2. **開啟 GitHub Pages**：
+   - 進入倉庫頁面，點擊 **Settings** ➔ 左側選單選擇 **Pages**。
+   - 在 **Build and deployment** 下的 **Branch** 選擇 `main`（或 `master`），資料夾保持 `/(root)`，點擊 **Save**。
+3. **立即遊玩**：
+   - 等待約 30～60 秒完成部署後，重新整理 Pages 頁面即可取得網址：
+     `https://<你的 GitHub 帳號>.github.io/<你的倉庫名稱>/`
+   - 手機 Safari / Chrome 開啟該網址後，點擊「分享」➔「加入主畫面 (Add to Home Screen)」，即可享有媲美原生 App 的全螢幕體驗！
