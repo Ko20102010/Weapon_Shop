@@ -1,11 +1,11 @@
 // Weapon Shop Empire v0.21.05
 // 6-Layer Modular Forest Outpost Renderer (zero baked people/stock), Grid A* Pathfinding with anti-corner-cutting, 6 Recipes, Repair Kit, and Player Equipment.
 'use strict';
-const VERSION='v0.22.23';
+const VERSION='v0.22.30';
 const c=document.getElementById('game'),g=c.getContext('2d'),$=id=>document.getElementById(id);
 let vw=1280,vh=720;
 const WORLD={w:1870,h:2870};
-const PREFIX='wse_v02223_slot_',OLD_PREFIXES=['wse_v02222_slot_','wse_v02221_slot_','wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02223',OLD_FOREVER_KEYS=['wse_forever_v02222','wse_forever_v02221','wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
+const PREFIX='wse_v02230_slot_',OLD_PREFIXES=['wse_v02223_slot_','wse_v02222_slot_','wse_v02221_slot_','wse_v02220_slot_','wse_v02211_slot_','wse_v02210_slot_','wse_v02200_slot_','wse_v01702_slot_','wse_v01701_slot_','wse_v01700_slot_','wse_v01602_slot_','wse_v01601_slot_','wse_v01600_slot_','wse_v01501_slot_','wse_v01500_slot_','wse_v01400_slot_','wse_v01200_slot_','wse_v01100_slot_'],FOREVER_KEY='wse_forever_v02230',OLD_FOREVER_KEYS=['wse_forever_v02223','wse_forever_v02222','wse_forever_v02221','wse_forever_v02220','wse_forever_v02211','wse_forever_v02210','wse_forever_v02200','wse_forever_v01702','wse_forever_v01701','wse_forever_v01700','wse_forever_v01602','wse_forever_v01601','wse_forever_v01600','wse_forever_v01501','wse_forever_v01500'];
 let slot=0,playing=false,last=performance.now(),target=null,msgTimer=0,dayTime=0,spawnTimer=2.5,zoom=.66,pinchStart=0,craftAnim=0,craftKey='sword',dragMove={active:false,id:null,sx:0,sy:0,dx:0,dy:0},animClock=0;
 
 // v0.16.02 always uses the live modular renderer. Concept artwork is preview-only.
@@ -68,23 +68,26 @@ if(typeof fetch==='function'){fetch('data/world_map.json?v=0.19.00').then(r=>r.o
 function ensureMapAsset(path){const key='map:'+path;if(!SPRITES[key]){const img=new Image();img.src=path+'?v=0.19.00';SPRITES[key]=img}return SPRITES[key]}
 function drawMapObjects(layer){if(!MAP_DATA?.objects)return;for(const o of MAP_DATA.objects){if(o.layer!==layer)continue;const img=ensureMapAsset(o.asset);if(img.complete&&img.naturalWidth){const ax=o.anchor?.[0]??.5,ay=o.anchor?.[1]??1;g.drawImage(img,o.x-o.w*ax,o.y-o.h*ay,o.w,o.h)}}}
 function drawWallAssetSegment(seg){
-  const horizontal=seg.w>=seg.h;
-  // Deep shadow and stone footing give walls weight at mobile zoom.
-  pxRect(seg.x+5,seg.y+7,seg.w,seg.h,'#241b18aa');
-  pxRect(seg.x-3,seg.y-3,seg.w+6,seg.h+6,'#3a281f');
-  pxRect(seg.x,seg.y,seg.w,seg.h,'#6a4630');
+  const horizontal=seg.w>=seg.h,boundary=seg.w>1800||seg.h>2800;
+  if(boundary)return;
+  const x=seg.x,y=seg.y,w=seg.w,h=seg.h;
+  // Low open-workshop wall language: stone footing + timber rail, never a huge solid slab.
+  pxRect(x+4,y+6,w,h,'#14110f66');
+  pxRect(x-3,y-3,w+6,h+6,'#241b17');
+  pxRect(x,y,w,h,'#5a6268');
   if(horizontal){
-    pxRect(seg.x,seg.y,seg.w,4,'#b47a49');
-    pxRect(seg.x,seg.y+seg.h-5,seg.w,5,'#3a281f');
-    for(let x=seg.x+6;x<seg.x+seg.w-4;x+=34){pxRect(x,seg.y+4,4,Math.max(5,seg.h-9),'#4b3125');pxRect(x+4,seg.y+4,2,Math.max(5,seg.h-9),'#8b5a38')}
+    pxRect(x+2,y+2,w-4,Math.max(5,h-9),'#8a969d');
+    pxRect(x,y+h-7,w,7,'#3a4146');
+    pxRect(x,y-5,w,8,'#573824');
+    pxRect(x+3,y-3,w-6,3,'#b17945');
+    for(let xx=x+4;xx<x+w-4;xx+=48){pxRect(xx,y-10,11,h+17,'#30221c');pxRect(xx+3,y-8,5,h+13,'#855535')}
   }else{
-    pxRect(seg.x,seg.y,4,seg.h,'#b47a49');
-    pxRect(seg.x+seg.w-5,seg.y,5,seg.h,'#3a281f');
-    for(let y=seg.y+6;y<seg.y+seg.h-4;y+=32){pxRect(seg.x+4,y,Math.max(5,seg.w-9),4,'#4b3125');pxRect(seg.x+4,y+4,Math.max(5,seg.w-9),2,'#8b5a38')}
+    pxRect(x+2,y+2,Math.max(5,w-9),h-4,'#8a969d');
+    pxRect(x+w-7,y,7,h,'#3a4146');
+    pxRect(x-5,y,8,h,'#573824');
+    pxRect(x-3,y+3,3,h-6,'#b17945');
+    for(let yy=y+4;yy<y+h-4;yy+=48){pxRect(x-10,yy,w+17,11,'#30221c');pxRect(x-8,yy+3,w+13,5,'#855535')}
   }
-  // End posts make openings read as intentional doorways.
-  const post=(x,y)=>{pxRect(x-4,y-6,12,seg.h+12,'#2d201b');pxRect(x-1,y-4,7,seg.h+8,'#8a5b38');pxRect(x-1,y-4,7,3,'#d49a5b')};
-  if(horizontal){post(seg.x,seg.y);post(seg.x+seg.w-7,seg.y)}
 }
 function sprReady(k){const i=SPRITES[k];return i&&i.complete&&i.naturalWidth>0}
 
@@ -1035,8 +1038,8 @@ function hireEmployeeAtPad(){
 }
 
 function playerTick(dt){
-  const keys=keyboardVector();
-  let dx=keys?keys.x:(dragMove.active?dragMove.dx:0),dy=keys?keys.y:(dragMove.active?dragMove.dy:0);
+  const keyVector=keyboardVector();
+  let dx=keyVector?keyVector.x:(dragMove.active?dragMove.dx:0),dy=keyVector?keyVector.y:(dragMove.active?dragMove.dy:0);
   if(keys.w||keys.arrowup)dy--;
   if(keys.s||keys.arrowdown)dy++;
   if(keys.a||keys.arrowleft)dx--;
@@ -1385,6 +1388,11 @@ function drawLayer1And2(){
   // Water with bank shadows and controlled shimmer.
   pxRect(350,2330,295,250,'#163f55');pxRect(850,2330,996,250,'#163f55');pxRect(350,2340,295,230,'#185e78');pxRect(850,2340,996,230,'#185e78');
   for(let x=370;x<1830;x+=74){const yy=2380+((x/74)%3)*48;pxRect(x,yy,34,4,'#4fafc5');pxRect(x+12,yy+13,23,3,'#2f879d')}
+  // Warm sandstone circulation paths link the critical phone journey without becoming collision.
+  const path=(x,y,w,h)=>{pxRect(x+5,y+7,w,h,'#33261b55');pxRect(x,y,w,h,'#b89055');for(let yy=y+9,row=0;yy<y+h-6;yy+=29,row++)for(let xx=x+8+(row%2)*17;xx<x+w-7;xx+=34){pxRect(xx,yy,22,14,'#c9a66a');pxRect(xx+2,yy+2,18,3,'#e0c486')}};
+  path(720,275,70,2060);path(260,680,1080,52);path(260,1168,1080,52);path(360,1610,930,52);path(570,2040,450,52);
+  // Room platforms use a dark outline and soft shadow, matching the UI's high-contrast language.
+  for(const r of Object.values(R)){pxRect(r.x+9,r.y+12,r.w,r.h,'#17120f66');pxRect(r.x-5,r.y-5,r.w+10,r.h+10,'#251c17')}
   // Rooms: earthy bases with local accents, no floor-wide department flooding.
   const palette={material:['#6f5b3e','#9d7647'],staff:['#8a6d4a','#bd9461'],training:['#705b3e','#9b764a'],forge:['#45494d','#7a5440'],alchemy:['#4f4945','#715f86'],contract:['#654b34','#987048'],attack:['#8f7653','#b28c5c'],defense:['#8f7653','#7790a6'],other:['#8f7653','#798965'],rare:['#392f42','#6a4f7f'],counter:['#9c7c50','#d1a34a'],management:['#755c43','#698aa3'],visitor:['#75654a','#a78a58'],gate:['#39583a','#79945b'],forest:['#214f2c','#3f7d3c']};
   for(const [id,r] of Object.entries(R)){const p=palette[id]||[r.floor,'#8a6947'];drawTiledRoomFloor(r.x,r.y,r.w,r.h,p[0],p[1],id==='forge'||id==='alchemy'?'floorWork':'floorWood')}
@@ -2007,8 +2015,8 @@ function loop(t){
   last=t;
   if(playing){
     refreshMenus();
-    update(dt);
     draw();
+    try{update(dt)}catch(err){console.error('Update failure',err);toast('Gameplay update error — reload if controls stop')}
     $('cash').textContent='$'+S.cash;
     $('rep').textContent='REP '+S.rep;
     $('day').textContent='DAY '+S.day;
